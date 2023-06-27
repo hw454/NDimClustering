@@ -10,17 +10,28 @@
 # pval =nxm array of p-val for b
 # tstat = nxm array of t-stat for b
 
+# 0 Setup the packages and programs
+source("SetupNDimClust.R")
+
 # 1 Use OpenGWAS to load csv for first pair. Exposure and Outcome. 
-source("QC_filtering.R")
+#source("QC_filtering.R")
 
 # 2 Run MRanalysis and save results to theta, theta_se, b, bse, pval, tstat
+# For the worked-example this is already done
+# You may also load MR results from openGWAS data
 
 # 3 Cluster based on results.
-source("Clustering.R")
+#source("Clustering.R") # This will move into loop
 
 # 3 Test clustering on threshold
 # -> Fail - Return to 1 with extra dimension
 # -> Pass - Exit with results. 
-threshold=0.2
-axes=unique(trait_info$phenotype)
-test<-clust_compare(kmeanns.minAIC,stdBeta_df,axes,threshold)
+
+trait_axes=unique(trait_info$phenotype)
+source("QC_filtering_iterative.R")
+source("ClusteringFunction.R")
+source("ClustScores.R")
+source("ClusteringCompare.R")
+
+test<-clust_compare(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
+                    trait_axes,threshold,thresh_norm,clust_norm)
