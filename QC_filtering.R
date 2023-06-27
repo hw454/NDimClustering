@@ -1,28 +1,7 @@
-### 2) QC filtering 
-library(data.table)
-library(dplyr)
-library(ggplot2)
-library(ggrepel)
-
-## having obtained the top SNPs associated with BMI (genome-wide signficance), and ran phewas on them to get their effects on all UKBB traits we have.
-## Data inputs needed: unstanderdised association matrix between IV and traits, SE matrix of association matrix, t-stat matrix of association matrix, P-value matrix of association matrix, trait info (trait, description, sample size)
-
-# variable set-up
-EXP_pheno = "21001"
-st_dir <- getwd()
-res_dir = paste0(st_dir,"/working-example/data/")     # Location of the data directory
-hail_gcorr_dir = paste0(res_dir,"Hail_AllxAll.csv")   # Location of the data files
-fpaths_fil_dir = paste0(res_dir,"fpaths_fil_nfil.txt")
-exp_gcorr_thresh = 0.75
-
-# read in data
-load0 <-paste0(res_dir,"unstdBeta_df.csv")
-print(load0)
-unstdBeta_df = as.matrix(data.table::fread(load0), rownames=1)
-unstdSE_df   = as.matrix(data.table::fread(paste0(res_dir,"unstdSE_df.csv")), rownames=1)
-tstat_df     = as.matrix(data.table::fread(paste0(res_dir,"tstat_df.csv")), rownames=1)
-pval_df      = as.matrix(data.table::fread(paste0(res_dir,"pval_df.csv")), rownames=1)
-trait_info   = data.table::fread(paste0(res_dir,"trait_info_nfil.csv"))
+### 1 QC filtering 
+# - Filter traits which are NA
+# - Filter duplicates
+# - Filter traits which do not meet the association threshold.
 
 # filter out traits that are NA (albumin and other measurements)
 na_traits = which(is.na(trait_info$description)==T)
@@ -120,4 +99,5 @@ print(paste0("SNP filtering revealed ", length(sus_SNPs)," SNPs more strongly as
 
 sus_SNP_ind = which(rownames(stdBeta_df_noEXP) %in% sus_SNPs) #same as sig_ind[1,]
 # save Rdata for later use in scripts 3/4/5
-save(list=c("stdBeta_df","stdBeta_df_noEXP","stdBeta_EXP","stdSE_EXP","stdSE_noEXP","sus_SNP_ind","sus_SNPs","sus_traits","trait_info", "pval_df","trait_info_noEXP", "tstat_df","tstat_dif","tstat_pval_df","tstat_thresh","unstdBeta_df","unstdSE_df", "hail_df"), file = paste0(res_dir,"/QCdata_",EXP_pheno,".Rdata"))
+savelist = c("stdBeta_df","stdBeta_df_noEXP","stdBeta_EXP","stdSE_EXP","stdSE_noEXP","sus_SNP_ind","sus_SNPs","sus_traits","trait_info", "pval_df","trait_info_noEXP", "tstat_df","tstat_dif","tstat_pval_df","tstat_thresh","unstdBeta_df","unstdSE_df", "hail_df")
+save(list=savelist, file = paste0(res_dir,"QCdata_",EXP_pheno,".Rdata"))
