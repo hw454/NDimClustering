@@ -24,15 +24,16 @@ kmeansIC = function(fit){
                     BIC = D + log(n)*m*k))
 }
 
-cluster_kmeans <- function(beta_df,sus_SNP_ind,aim_ind,nr){
+cluster_kmeans <- function(beta_df,aim_df,nr){
   # Set up for k-means clustering
-  b_df_nosus <- beta_df[-sus_SNP_ind,aim_ind] 
-  sus_SNPs <- rownames(beta_df[sus_SNP_ind])
+  print(aim_df$b_df_ind)
+  print(dim(beta_df))
+  b_df <- beta_df[,aim_df$b_df_ind] 
   # Delete Any rows with NaNs
   # Test function: more axes should yeild less or equal data points. Point has full co-ordinate accros axes
   
-  eff_df <- abs(b_df_nosus)
-  if (length(aim_ind)<=1){eff_dfs<-t(eff_df)}
+  eff_df <- abs(b_df)
+  if (length(aim_df$label)<=1){eff_dfs<-t(eff_df)}
   else {eff_dfs <- t(scale(t(eff_df)))}
   
   # Initial cluster dataframe
@@ -99,86 +100,65 @@ cluster_kmeans <- function(beta_df,sus_SNP_ind,aim_ind,nr){
     out_dat2 = out_dat2[c(aligned,swapped),]
     action = 1  #made sure all strands are okay
   }
-  
-  # run MR or all SNPS
-  '%!in%' <- function(x,y)!('%in%'(x,y))
-  axy_ar = c()
-  se_ar = c()
-  MR_output = paste0(res_dir,EXP_pheno,"-",OUT_pheno,"_AICclusters_MR.csv")
-  write.table("", file = MR_output, append = FALSE)
-  for(clustN in 0:nClust.AIC){
-    # harmonise the exposure and outcome data
-    dat <- TwoSampleMR::harmonise_data(
-      exposure_dat = exp_dat2,
-      outcome_dat = out_dat2, action = action
-    )
-    dat = dat[which(dat$SNP %!in% sus_SNPs),]
-    if(clustN>0){dat = dat[which(dat$SNP %in% AICclusters_rsid[[clustN]]),]}
-    # sensitivity - Q-test
-    het <- TwoSampleMR::mr_heterogeneity(dat)
-    het$I2 = ((het$Q-het$Q_df)/het$Q)*100
-    het$Avg_het = het$Q/(het$Q_df-1)
-    plei <- TwoSampleMR::mr_pleiotropy_test(dat)
-    
-    smaller=FALSE
-    tryCatch( {res1 <- TwoSampleMR::mr(dat); }, error = function(e) {smaller<<-TRUE}) #print("Bigger MR list")
-    if(smaller){
-      print("Smaller MR list")
-      res1 <- TwoSampleMR::mr(dat, method_list=c("mr_egger_regression","mr_weighted_median","mr_ivw"))
-    }else{
-      res1 <- TwoSampleMR::mr(dat)
-    }
-    
-    if(nrow(res1)<2 & nrow(res1)>0){
-      axy_ar = c(axy_ar,res1[,'b'])
-      se_ar = c(se_ar,res1[,'se'])
-    }else if(nrow(res1)==0){
-      axy_ar = c(axy_ar,0)
-      se_ar = c(se_ar,0)
-    }else if(nrow(res1)>2){
-      axy_ar = c(axy_ar,res1[which(res1$method=="Inverse variance weighted"),'b'])
-      se_ar  = c(se_ar, res1[which(res1$method=="Inverse variance weighted"),'se'])
-    } 
-    
-    suppressWarnings(write.table(paste0("Cluster", clustN), file=MR_output, sep = ",", quote = FALSE, col.names = FALSE, row.names = FALSE, append = TRUE))
-    suppressWarnings(write.table(as.data.frame(res1), file=MR_output, sep = ",", append = TRUE, row.names = FALSE))
-    suppressWarnings(write.table(as.data.frame(het), file=MR_output, sep = ",", append = TRUE, row.names = FALSE) )
-    suppressWarnings(write.table(as.data.frame(plei), file=MR_output, sep = ",", append = TRUE, row.names = FALSE))
-    suppressWarnings(write.table("*", MR_output, sep = ",", quote = FALSE, col.names = FALSE, row.names = FALSE, append = TRUE))
-  }
-  
-  # forest plot of IVW of different clusters
-  cluster_axy = as.data.frame(cbind("axy_ar"=axy_ar,"se_ar"=se_ar))
-  cluster_axy$clusters = c("All", paste0("Cluster", 1:nClust.AIC))
-  cluster_axy$clusters = factor(x = cluster_axy$clusters, levels = c(rev(paste0("Cluster", 1:nClust.AIC)),"All"))
-  cluster_axy$boxsize = c(0.5,lengths(AICclusters_rsid)/sum(lengths(AICclusters_rsid)))
-  
-  write.csv(cluster_axy, paste0(res_dir,EXP_pheno,"-",OUT_pheno,"_AICclusters_MRsummary.csv"), row.names = FALSE)
-  
-  by_n <- function(n) { seq(-1000, 1000, by = n) } #https://stackoverflow.com/questions/52579553/scale-x-y-continuous-breaks-by-n-in-r-ggplot2
-  
-  pdf(file = paste0(res_dir,EXP_pheno,"-",OUT_pheno,"_AICclusters_MR.pdf"), width=8, height = 6)  ###getting corrupt
-  p <- ggplot(cluster_axy, aes(y=clusters, x=axy_ar, xmin=axy_ar-(1.96*se_ar), xmax=axy_ar+(1.96*se_ar))) +
-    geom_errorbarh(height=0,linewidth=0.5, alpha=0.3) +
-    geom_point(size=cluster_axy$boxsize*10, shape = 15) + 
-    geom_vline(xintercept = cluster_axy[1,1], alpha=0.7, colour = "blue", linetype='dashed') +
-    scale_x_continuous(breaks = by_n(0.05)) + #breaks = seq(-0.6,0.4,0.1)
-    labs(x='IVW causal effect estimate', y = 'Clusters') +
-    geom_vline(xintercept=0, color='black', alpha=.5) +
-    ggtitle("IVW causal effect estimates - K-means clustering based on AIC") + 
-    theme_classic()
-  print(p)
-  dev.off()
-  
-  # save estimates for Q-test
-  q_test = q.meta.test(axy_ar,se_ar)
-  print(paste0("Q-test of heterogeneity between cluster estimates = ", q_test[1],", p-value = ",q_test[2]))
-  cat(paste0("Q-test of heterogeneity between cluster estimates = ", q_test[1],", p-value = ",q_test[2]),
-      file=paste0(res_dir,EXP_pheno,"-",OUT_pheno,"_AICclusters_Qtest.txt"),sep="\n")
-  
   return(kmeans.re)
+}
+all_na_check <- function(b_df,aim_df){
+  #' Check if the entire row is NaN
+  nend=length(aim_df$b_df_ind)
+  narows=which(is.na(b_df[,aim_df$b_df_ind[nend]]))
+  if (length(narows)==dim(b_df)[1]){
+    # All rows are NaN so trait will be removed from trait
+    return(1)
+  } else {return(0)}
+}
+remove_na_from_row <- function(b_df,aim_df){
+  #' Remove rows which contain NA values but only from the columns aim_df$b_df_ind.
+  #' If any of the columns contain only NaNs then return the dataframe with the column removed. 
+  nend=length(aim_df$b_df_ind)
+  narows=which(is.na(b_df[,aim_df$b_df_ind[nend]]))
+  if (length(narows)==0){# No NaN rows
+  }
+  else if (all_na_check(b_df,aim_df)){
+    # All rows are NaN so trait will be removed from trait
+  }
+  else{
+    # Remove the NaN rows from the dataframe
+    b_df <- b_df[-c(narows)]
+  }
+  return(b_df)
+}
+
+clust_metric <- function(cs1,cs2,norm_typ){
+  if (length(cs1)<=1){
+    return(abs(cs1-cs2))
+  }
+  else{return(norm(cs1-cs2,norm_typ))}
+}
+
+aim_df_add_a <- function(aim_df,a,axes,b_df){
+  #' Add the trait a to the dataframe of traits.
+  #' Add the traits label, it's index in the trait list and it's index in the 
+  #' beta dataframe.
+  #print(b_df)
+  aim_df <- aim_df %>% add_row(label= a,axes_ind=which(axes==a),b_df_ind=0)
+  aim_df[aim_df$label==a,'b_df_ind'] <- which(colnames(b_df)== a)
+  aim_df[aim_df$label==a,'nSNPs'] <- sum(!is.na(b_df[,a]))
+  return(aim_df)
+}
+testna <- function(unstdBeta_df,trait_axes){
+  aim_df <- data.frame(
+    label =character(),
+    axes_ind = integer(),
+    b_df_ind = integer(),
+    nSNPs = integer()
+  )
+  # Initialise with outcome
+  aim_df <- aim_df_add_a(aim_df,trait_info$phenotype[125],trait_info$phenotype,
+                         unstdBeta_df)
+  b2_df <- remove_na_from_row(unstdBeta_df,aim_df)
+  return(1)
 }
 #nr=10
 #trait_axes_ind=which(colnames(stdBeta_df_noEXP) %in% trait_axes)
 #load(paste0(res_dir,"QCdata_",EXP_pheno,"ClusterIter",1,".Rdata"))
-#test <- cluster_kmeans(stdBeta_df_noEXP,sus_SNP_ind ,aim_df$b_df_ind,nr)
+#test <- cluster_kmeans(unstdBeta_df,aim_df,nr)
