@@ -1,92 +1,78 @@
 clust_compare <-function(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
                          axes,threshold,thresh_norm,clus_norm){
-  aN=length(axes)
-  aim=c(OUT_pheno)
+  #' Iterate through the columns in axes and clusters the data. 
+  #' If there is a distinct difference between two clusters exit.
+  
   aim_df <- data.frame(
-    label =aim[1],
-    axes_ind = which(axes==OUT_pheno),
-    b_df_ind = which(axes==OUT_pheno)
+    label =character(),
+    axes_ind = integer(),
+    b_df_ind = integer(),
+    nSNPs = integer()
   )
-  for (ai in 1:aN){
+  # Data frame for recording the cluster scores.
+  c_scores<- data.frame(
+    id=character(),
+    num_axis=integer(),
+    clust_num =integer(),
+    clust_size=integer(),
+    NA_Count=integer()
+  )
+  # Initialise with outcome
+  aim_df <- aim_df_add_a(aim_df,OUT_pheno,trait_info$phenotype,
+               unstdBeta_df)
+  for (ai in 1:length(trait_info$phenotype)){
     # Update the traits forming the axis
-    a=axes[ai]
-    if (a %in% aim){# a is already stored in aim.
-      }
-    else {
-      nr=30.0/length(aim)
-      # Filter the data based on the current axes
-      trait_info_iter=trait_info[trait_info$phenotype %in% aim]
-      aim <- append(aim,a)
-      QCFilter_Iter(unstdBeta_df,unstdSE_df,pval_df,tstat_df,trait_info,fpaths_fil_dir,ai)
-      # Load the filtered data
-      load(paste0(res_dir,"QCdata_",EXP_pheno,"ClusterIter",ai,".Rdata"))
+    a=trait_info$phenotype[ai]
+    # Add the trait to the trait dataframe
+    aim_df <- aim_df_add_a(aim_df,a,trait_info$phenotype,
+                 unstdBeta_df)
+    nr=30.0#/length(aim_df$label) # FIXME - Max number of clusters.
+    # Cluster the data on these axes
+    unstdBeta_df <- remove_na_from_row(unstdBeta_df,aim_df)
+    allna <- all_na_check(unstdBeta_df,aim_df)
+    if (allna){
+      #' If the trait column was removed from the beta_df during na removal then 
+      #' remove the trait from the trait data frame and move to the next trait.
+      aim_df <- aim_df[aim_df$label!=a,]
+    }
+    else{
+      print(paste0('Cluster on ',length(aim_df$label),' axes'))
+      print(paste0('New axis ',a))
       # Cluster the data on these axes
-      if (a %in% colnames(stdBeta_df_noEXP)){
-        if (a %in% aim_df$label){
-          aim_df[aim_df$label==a,b_df_ind]=which(colnames(stdBeta_df_noEXP)== a)
-        }
-        else{
-          aim_df_0 <- data.frame(
-          label=a,
-          axes_ind=which(axes==a),
-          b_df_ind=which(colnames(stdBeta_df_noEXP)== a)
-          )
-          aim_df <- aim_df %>% rows_insert(aim_df_0)
-        }
-        cluster_df=cluster_kmeans(stdBeta_df_noEXP,sus_SNP_ind,aim_df$b_df_ind,nr) 
-        c_nums<-unique(cluster_df$cluster)
-        Nsnps=length(cluster_df)
-        # Score the clustered data based on affilliations with axes.
-        c_scores<- data.frame(
-          clust_num =c_nums,
-          clust_size=0,
-          NA_Count=0
-        )
-        c_score0 <- clust_score(cluster_df,stdBeta_df_noEXP,aim_df$label,aim_df$b_df_ind) # Score accross all axis
-        print(c_score0)
-        if (ai==0){
-          c_scores <- c_score0
-        }
-        else{
-          c_scores <- merge(c_scores,c_score0, by="clust_num")
-        }
-        i=0
-        N2=length(c_nums)
-        N1=N2-1
-        for (i in 1:N1){
-          for (j in (i+1):N2){
-            ci=c_nums[i]
-            cj=c_nums[j]
-            cs1<-as.matrix(c_scores[c_scores$clust_num==i,aim_df$label])
-            cs2<-as.matrix(c_scores[c_scores$clust_num==j,aim_df$label])
-            print(cs1)
-            print(cs2)
-            print(threshold*Nsnps)
-            print(norm(cs1-cs2,thresh_norm))
-            print(clust_metric(cs1,cs2,thresh_norm))
-            if (clust_metric(cs1,cs2,thresh_norm)>(threshold*Nsnps)){
-              print("Threshold met on outcome")
-              print(a)
-              return(c_scores)
-            }
+      cluster_df=cluster_kmeans(unstdBeta_df,aim_df,nr) 
+      # Find the set of cluster numbers
+      c_nums<-unique(cluster_df$cluster) 
+      #Nsnps=length(unstdBeta_df) # Number of SNPs used in this analysis
+      # Score the clustered data based on affilliations with axes.
+      # Find the score for this axis
+      c_score0 <- clust_score(cluster_df,
+                            unstdBeta_df,aim_df) # Score across all axis
+      # Initialise new column for new axis
+      c_scores[a]=numeric()
+      # Iterate through each cluster and compare across the others to find if 
+      # any pair have a distinct difference.
+      N2=length(c_nums)
+      N1=N2-1
+      for (i in 1:N1){
+        for (j in (i+1):N2){
+          ci=c_nums[i]
+          cj=c_nums[j]
+          cs1<-as.matrix(c_score0[c_score0$clust_num==i,aim_df$label])
+          cs2<-as.matrix(c_score0[c_score0$clust_num==j,aim_df$label])
+          if (clust_metric(cs1,cs2,thresh_norm)>(threshold)){
+            print("Threshold met on outcome")
+            print(a)
+            return(c_scores)
           }
         }
       }
-      else if(a %in% aim_df$label){
-        aim_df <- aim_df[!aim_df$label==a]
-      }
+      c_scores <- rbind(c_scores,c_score0)
     }
   }
   print("None of the outcomes clustering met the thresholding test. ")
   return(c_scores)
 }
-clust_metric <- function(cs1,cs2,norm_typ){
-  if (length(cs1)<=1){
-    return(abs(cs1-cs2))
-  }
-  else{return(norm(cs1-cs2,norm_typ))}
-}
-
-#test<-clust_compare(stdBeta_df ,SNP_ind,axes,threshold,thresh_norm, clust_norm)
-test<-clust_compare(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
-                    trait_axes,threshold,thresh_norm,clust_norm)
+#test2 <- testna(unstdBeta_df,trait_info$phenotype)
+# test<-clust_compare(stdBeta_df ,SNP_ind,axes,threshold,thresh_norm, clust_norm)
+# test<-clust_compare(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
+# trait_axes,threshold,thresh_norm,clust_norm)
