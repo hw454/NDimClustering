@@ -20,9 +20,15 @@ res_dir = "../NDimClustResults/"                       # Location of the results
 exp_gcorr_thresh = 0.75
 OUT_pheno = "845"
 pheno_irnt = TRUE  #maybe if true change all grepl to paste0(EXP_pheno,"_irnt")
-threshold=0.5
+threshold=0.5 #FIXME threshold should be based on dataspread
 thresh_norm="M"
 clust_norm="M"
+
+# Testing dimensions
+test=1 # testing swicth
+num_trait0=200
+num_trait1=322
+num_rows=100
 
 # Files containing data
 hail_gcorr_dir = paste0(data_dir,"Hail_AllxAll.csv")   # Location of the data files
@@ -38,3 +44,23 @@ unstdSE_df   = as.matrix(data.table::fread(paste0(data_dir,"unstdSE_df.csv"))  ,
 tstat_df     = as.matrix(data.table::fread(paste0(data_dir,"tstat_df.csv"))    , rownames=1)
 pval_df      = as.matrix(data.table::fread(paste0(data_dir,"pval_df.csv"))     , rownames=1)
 trait_info   = data.table::fread(paste0(data_dir,"trait_info_nfil.csv"))
+
+# Crop data for testing
+if (test){
+  b_out     <- unstdBeta_df[which(colnames(unstdBeta_df) %in% c(OUT_pheno,EXP_pheno))]
+  se_out    <-unstdSE_df[   which(colnames(unstdSE_df)   %in% c(OUT_pheno,EXP_pheno))]
+  p_out     <- pval_df[     which(colnames(pval_df)      %in% c(OUT_pheno,EXP_pheno))]
+  t_out     <- tstat_df[    which(colnames(tstat_df)     %in% c(OUT_pheno,EXP_pheno))]
+  trait_out <-trait_info[   trait_info$phenotype         %in% c(OUT_pheno,EXP_pheno)]
+  
+  unstdBeta_df <- cbind(unstdBeta_df[1:num_rows,num_trait0:num_trait1],b_out)
+  unstdSE_df   <- cbind(unstdSE_df[  1:num_rows,num_trait0:num_trait1],se_out)
+  tstat_df     <- cbind(tstat_df[    1:num_rows,num_trait0:num_trait1],t_out)
+  pval_df      <- cbind(pval_df[     1:num_rows,num_trait0:num_trait1],p_out)
+  trait_info   <- rbind(trait_info[             num_trait0:num_trait1],trait_out)
+  
+  colnames(unstdBeta_df)[dim(unstdBeta_df)[2]] <- OUT_pheno
+  colnames(unstdSE_df)[  dim(unstdSE_df  )[2]] <- OUT_pheno
+  colnames(tstat_df)[    dim(tstat_df    )[2]] <- OUT_pheno
+  colnames(pval_df)[     dim(pval_df     )[2]] <- OUT_pheno
+  }
