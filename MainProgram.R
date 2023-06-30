@@ -27,11 +27,10 @@ source("SetupNDimClust.R")
 # -> Fail - Return to 1 with extra dimension
 # -> Pass - Exit with results. 
 
-trait_axes=unique(trait_info$phenotype)
-source("QC_filtering_iterative.R")
+#source("QC_filtering_iterative.R")
 source("ClusteringFunction.R")
 source("ClustScores.R")
 source("ClusteringCompare.R")
 
 test<-clust_compare(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
-                    trait_axes,threshold,thresh_norm,clust_norm)
+                    trait_info$phenotype,threshold,thresh_norm,clust_norm)
