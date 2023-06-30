@@ -1,43 +1,48 @@
-clust_score <- function(clusters_df,beta_df,aim,aim_ind){
+clust_score <- function(clusters_df,beta_df,aim_df){
   Km <- length(unique(clusters_df$cluster))
   SM <- length(clusters_df$clusters)
-  clust_scores <- data.frame(
-    clust_num  =unique(clusters_df$cluster),
-    clust_size =0,
-    NA_Count   =0
-  )
-  for (ai in 1:length(aim)){
-    a=aim[ai]
-    a_ind=aim_ind[ai]
-    clust_scores[a]=0.0
-    for (i in unique(clusters_df$cluster)) {
-      # Extract the data from the clustering for each snp
-      # No probability output for prob in cluster 
-      # psnp <- row$probability # Probability of snp in cluster nc
-      # Get the pathway colocization score from the input data for the SNP
-      snp_assoc<-beta_df[ i,a_ind] # beta_df is a matrix with rows labelled by SNP_id and columns labelled by trait label.
-      # ? How to deal with multiple SNP entries in data input.
-      # Retrieve non-NAN values. 
-      na_l <- length(snp_assoc[is.na(snp_assoc)])
-      snp_path1 <- snp_assoc[!is.na(snp_assoc)]
-      # Check length of remaining values-> n=1, store, -> n>1, store average, -> n=0 pass.
-      l1 <- length(snp_assoc)
+  num_axis=length(aim_df$label)
+  for (i in unique(clusters_df$cluster)) {
+    c_score0<- data.frame(
+      id =character(),
+      num_axis=integer(),
+      clust_num  =integer(),
+      clust_size =integer()
+    )
+    # Cluster id
+    c_id <- paste0('na',num_axis,'_cn',i)
+    # Get the associated SNPs with the cluster
+    SNP_list=names(cluster_df$cluster[cluster_df$cluster==i])
+    # ? How to deal with multiple SNP entries in data input.
+    # Check the number of associated SNPS
+    l1 <- length(SNP_list)
+    c_score0 <- c_score0 %>% add_row(num_axis=num_axis,clust_num=i,
+                                     clust_size=l1)
+    for (ai in 1:num_axis){
+      a=aim_df$label[ai]
       # Track the number of terms in each cluster.
-      clust_scores[clust_scores$clust_num==i,'clust_size'] <- clust_scores[clust_scores$clust_num==i,'clust_size']+l1
-      clust_scores[clust_scores$clust_num==i,'NA_Count']   <- clust_scores[clust_scores$clust_num==i,'NA_Count']+na_l
-    
-      if (l1==0 ){# Do nothing and pass to the next snp
-      }
-      else if(l1==1){
-        # Add the association score to the cluster pathway score. Weight by the probability.
-        clust_scores[clust_scores$clust_num==i,a] <- clust_scores[ clust_scores$clust_num==i,a]+snp_assoc
+      c_score<-axis_score(beta_df,SNP_list,aim_df)
+      c_score0['id']<-c_id
+      if (!(a %in% colnames(c_score0))){
+        c_score0[a]=c_score
       }
       else{
-        # Average remaining values
-        # Add the pathway1 coloc score to the cluster pathway score. Weight by the probability.
-        clust_scores[clust_scores$clust_num==i,a]<-clust_scores[clust_scores$clust_num==i,a]+sum(snp_assoc)
+        c_score0[c_score0$id==c_id,a]<- c_score0[c_score0$id==c_id,a]+c_score
       }
     }
+    if (i==unique(clusters_df$cluster)[1]){
+      clust_scores<-c_score0
+    } else{ clust_scores <-rbind(c_score0,clust_scores) }
   }
   return(clust_scores)
+}
+
+axis_score <- function(beta_df,SNP_list,aim_df){
+  # Get the column index for the trait.
+  b_cols <-aim_df[aim_df$label==a,'b_df_ind']
+  # Get the row indices for the traits in the cluster
+  b_rows<-which(rownames(beta_df) %in% SNP_list)
+  # Get the pathway colocization score from the input data for the SNP
+  snp_assoc<-beta_df[b_rows,b_cols] # beta_df is a matrix with rows labelled by SNP_id and columns labelled by trait label.
+  return(mean(snp_assoc))
 }
