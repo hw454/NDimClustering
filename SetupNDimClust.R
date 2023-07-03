@@ -9,6 +9,7 @@ library(ggrepel)
 library(tidyr)
 #library(xlsx)
 library(TwoSampleMR)
+library(tidyverse)
 
 ## having obtained the top SNPs associated with BMI (genome-wide signficance), and ran phewas on them to get their effects on all UKBB traits we have.
 ## Data inputs needed: unstanderdised association matrix between IV and traits, SE matrix of association matrix, t-stat matrix of association matrix, P-value matrix of association matrix, trait info (trait, description, sample size)
@@ -25,7 +26,7 @@ thresh_norm="M"
 clust_norm="M"
 
 # Testing dimensions
-test=1 # testing swicth
+test=0 # testing swicth
 num_trait0=200
 num_trait1=322
 num_rows=100
