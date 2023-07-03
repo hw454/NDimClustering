@@ -26,8 +26,6 @@ kmeansIC = function(fit){
 
 cluster_kmeans <- function(beta_df,aim_df,nr){
   # Set up for k-means clustering
-  print(aim_df$b_df_ind)
-  print(dim(beta_df))
   b_df <- beta_df[,aim_df$b_df_ind] 
   # Delete Any rows with NaNs
   # Test function: more axes should yeild less or equal data points. Point has full co-ordinate accros axes
@@ -67,39 +65,39 @@ cluster_kmeans <- function(beta_df,aim_df,nr){
   AICclusters_rsid_df = t(plyr::ldply(AICclusters_rsid, rbind))
   write.csv(AICclusters_rsid_df, paste0(res_dir,"AICclusters_rsid_",EXP_pheno,".csv"), row.names = FALSE)
   
-  # MR per cluster - AIC  - first instance of OUTCOME
-  exp_dat = fread(paste0(data_dir,"sig-clumped-IVs_",EXP_pheno,".csv")) 
-  out_dat = fread(paste0(data_dir,"clumped-IVs_",OUT_pheno,".csv")) 
-  
-  exp_dat2 = rename(exp_dat,"unstdBeta"="beta", "unstdSE"="se")
-  out_dat2 = rename(out_dat,"unstdBeta"="beta", "unstdSE"="se")
-  
-  exp_dat2$beta = exp_dat2$tstat/sqrt(exp_dat2$N)
-  out_dat2$beta = out_dat2$tstat/sqrt(out_dat2$N)
-  exp_dat2$se = 1/sqrt(exp_dat2$N)
-  out_dat2$se = 1/sqrt(out_dat2$N)
-  
-  exp_dat2 = format_data(exp_dat2, type="exposure", samplesize_col="N", z_col = "tstat", pval_col = "pval.exposure")
-  out_dat2 = format_data(out_dat2, type="outcome", samplesize_col="N", z_col = "tstat", pval_col = "pval.outcome")
-  
-  common_SNPs = intersect(exp_dat2$SNP, out_dat2$SNP)
-  exp_dat2 = exp_dat2[match(common_SNPs, exp_dat2$SNP),]
-  out_dat2 = out_dat2[match(common_SNPs, out_dat2$SNP),]
-  
-  if(all(exp_dat2$`effect_allele.exposure` == out_dat2$`effect_allele.outcome`)){
-    print("action=1")
-    action = 1
-  } else {
-    print("action=2/3")
-    aligned = which(exp_dat2$`effect_allele.exposure` == out_dat2$`effect_allele.outcome` &
-                      exp_dat2$`other_allele.exposure` == out_dat2$`other_allele.outcome`)
-    swapped = which(exp_dat2$`effect_allele.exposure` == out_dat2$`other_allele.outcome` &
-                      exp_dat2$`other_allele.exposure` == out_dat2$`effect_allele.outcome`)
-    exp_dat2[swapped,'beta.exposure']=exp_dat2[swapped,'beta.exposure']*-1
-    exp_dat2 = exp_dat2[c(aligned,swapped),]
-    out_dat2 = out_dat2[c(aligned,swapped),]
-    action = 1  #made sure all strands are okay
-  }
+  # # MR per cluster - AIC  - first instance of OUTCOME
+  # exp_dat = fread(paste0(data_dir,"sig-clumped-IVs_",EXP_pheno,".csv")) 
+  # out_dat = fread(paste0(data_dir,"clumped-IVs_",OUT_pheno,".csv")) 
+  # 
+  # exp_dat2 = rename(exp_dat,"unstdBeta"="beta", "unstdSE"="se")
+  # out_dat2 = rename(out_dat,"unstdBeta"="beta", "unstdSE"="se")
+  # 
+  # exp_dat2$beta = exp_dat2$tstat/sqrt(exp_dat2$N)
+  # out_dat2$beta = out_dat2$tstat/sqrt(out_dat2$N)
+  # exp_dat2$se = 1/sqrt(exp_dat2$N)
+  # out_dat2$se = 1/sqrt(out_dat2$N)
+  # 
+  # exp_dat2 = format_data(exp_dat2, type="exposure", samplesize_col="N", z_col = "tstat", pval_col = "pval.exposure")
+  # out_dat2 = format_data(out_dat2, type="outcome", samplesize_col="N", z_col = "tstat", pval_col = "pval.outcome")
+  # 
+  # common_SNPs = intersect(exp_dat2$SNP, out_dat2$SNP)
+  # exp_dat2 = exp_dat2[match(common_SNPs, exp_dat2$SNP),]
+  # out_dat2 = out_dat2[match(common_SNPs, out_dat2$SNP),]
+  # 
+  # if(all(exp_dat2$`effect_allele.exposure` == out_dat2$`effect_allele.outcome`)){
+  #   print("action=1")
+  #   action = 1
+  # } else {
+  #   print("action=2/3")
+  #   aligned = which(exp_dat2$`effect_allele.exposure` == out_dat2$`effect_allele.outcome` &
+  #                     exp_dat2$`other_allele.exposure` == out_dat2$`other_allele.outcome`)
+  #   swapped = which(exp_dat2$`effect_allele.exposure` == out_dat2$`other_allele.outcome` &
+  #                     exp_dat2$`other_allele.exposure` == out_dat2$`effect_allele.outcome`)
+  #   exp_dat2[swapped,'beta.exposure']=exp_dat2[swapped,'beta.exposure']*-1
+  #   exp_dat2 = exp_dat2[c(aligned,swapped),]
+  #   out_dat2 = out_dat2[c(aligned,swapped),]
+  #   action = 1  #made sure all strands are okay
+  # }
   return(kmeans.re)
 }
 all_na_check <- function(b_df,aim_df){
@@ -139,7 +137,6 @@ aim_df_add_a <- function(aim_df,a,axes,b_df){
   #' Add the trait a to the dataframe of traits.
   #' Add the traits label, it's index in the trait list and it's index in the 
   #' beta dataframe.
-  #print(b_df)
   aim_df <- aim_df %>% add_row(label= a,axes_ind=which(axes==a),b_df_ind=0)
   aim_df[aim_df$label==a,'b_df_ind'] <- which(colnames(b_df)== a)
   aim_df[aim_df$label==a,'nSNPs'] <- sum(!is.na(b_df[,a]))
