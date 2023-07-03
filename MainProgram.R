@@ -34,3 +34,4 @@ source("ClusteringCompare.R")
 
 test<-clust_compare(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
                     trait_info$phenotype,threshold,thresh_norm,clust_norm)
+source("NClust_Plots.R")
