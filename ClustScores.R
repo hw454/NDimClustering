@@ -2,7 +2,9 @@ clust_score <- function(clusters_df,beta_df,aim_df){
   Km <- length(unique(clusters_df$cluster))
   SM <- length(clusters_df$clusters)
   num_axis=length(aim_df$label)
-  for (i in unique(clusters_df$cluster)) {
+  clust_nums=unique(clusters_df$cluster)
+  for (i in clust_nums) {
+    # Store the cluster scores for each cluster number in c_score0
     c_score0<- data.frame(
       id =character(),
       num_axis=integer(),
@@ -19,25 +21,31 @@ clust_score <- function(clusters_df,beta_df,aim_df){
     c_score0 <- c_score0 %>% add_row(num_axis=num_axis,clust_num=i,
                                      clust_size=l1)
     for (ai in 1:num_axis){
+      # Add the cluster score for each axis to c_score0
       a=aim_df$label[ai]
       # Track the number of terms in each cluster.
-      c_score<-axis_score(beta_df,SNP_list,aim_df)
+      ax_score<-axis_score(beta_df,SNP_list,aim_df,a)
       c_score0['id']<-c_id
       if (!(a %in% colnames(c_score0))){
-        c_score0[a]=c_score
+        c_score0[a]=ax_score
       }
       else{
-        c_score0[c_score0$id==c_id,a]<- c_score0[c_score0$id==c_id,a]+c_score
+        c_score0[c_score0$id==c_id,a]<- c_score0[c_score0$id==c_id,a]+ax_score
       }
     }
-    if (i==unique(clusters_df$cluster)[1]){
-      clust_scores<-c_score0
-    } else{ clust_scores <-rbind(c_score0,clust_scores) }
+    # Add the cluster scores for that cluster number to the dataframe for them all
+    # The full dataframe is created in the first look. This is done instead of 
+    # initialisation due to columns being set in the loop.
+    if (i==clust_nums[1]){
+      clust_scores <- c_score0
+      print(clust_scores)
+    } else{
+    clust_scores <-rbind(c_score0,clust_scores) }
   }
   return(clust_scores)
 }
 
-axis_score <- function(beta_df,SNP_list,aim_df){
+axis_score <- function(beta_df,SNP_list,aim_df,a){
   # Get the column index for the trait.
   b_cols <-aim_df[aim_df$label==a,'b_df_ind']
   # Get the row indices for the traits in the cluster
