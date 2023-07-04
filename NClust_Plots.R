@@ -1,5 +1,5 @@
-#plot_trait_heatmap <- function(c_scores,trait_info){
-c_scores <- test
+plot_trait_heatmap <- function(c_scores){
+#c_scores <- test # When the function container is commented out use this line to rename the result df
   NM <- unique(c_scores$num_axis)
   for (i in NM){
     Ni <- 4+i
@@ -22,10 +22,45 @@ c_scores <- test
       theme(axis.text.x=element_text(angle=90,vjust=0.5)) +
       geom_tile()
     print(heatplot)
-    ggsave(filename=plotname)
+    pw=16
+    ph=4
+    ggsave(filename=plotname,width=pw,heigh=ph)
     dev.off()
   }
-#}
+}
 
-#plot_trait_heatmap(c_scores,trait_info)
+plot_max_diff <- function(c_scores,norm_typ){
+  NM <- unique(c_scores$num_axis)
+  max_diff_df <- data.frame(
+    num_axis = integer(),
+    Max_Diff = numeric()
+  )
+  Max_Diff <- list(length(NM))
+  for (Ni in NM){
+    c_scores_term <- c_scores[c_scores$num_axis==Ni,]
+    clust_nums <- unique(c_scores_term$clust_num)
+    Nt=4+Ni
+    trait_list <- colnames(c_scores)[5:Nt]
+    cs_diff <- 0.0
+    for (cn1 in clust_nums){
+      cs1<-as.matrix(c_scores_term[c_scores_term$clust_num==cn1,trait_list])
+      for (cn2 in clust_nums){
+        cs2<-as.matrix(c_scores_term[c_scores_term$clust_num==cn2,trait_list])
+        cs_diff0<-clust_metric(cs1,cs2,norm_typ)
+        if (cs_diff0>cs_diff){cs_diff <- cs_diff0}
+      }
+    }
+    max_diff_df <- max_diff_df %>% add_row(num_axis=Ni,Max_Diff=cs_diff)
+  }
+  print(max_diff_df)
+  plotname <- paste0(res_dir,"NumAxis_Vs_MaxScoreDiff.png")
+  lineplot<- ggplot(data=max_diff_df, aes(x=num_axis, y=Max_Diff, group=1)) +
+    geom_line()+
+    geom_point()
+  print(lineplot)
+  ggsave(filename=plotname,pw=16,ph=4)
+  dev.off()
+}
+
+#test %>% plot_max_diff(thresh_norm)
 
