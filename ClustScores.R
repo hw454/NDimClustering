@@ -38,7 +38,7 @@ clust_score <- function(clusters_df,beta_df,aim_df){
     # initialisation due to columns being set in the loop.
     if (i==clust_nums[1]){
       clust_scores <- c_score0
-      print(clust_scores)
+      #print(clust_scores)
     } else{
     clust_scores <-rbind(c_score0,clust_scores) }
   }
