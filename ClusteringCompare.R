@@ -74,5 +74,5 @@ clust_compare <-function(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
 }
 #test2 <- testna(unstdBeta_df,trait_info$phenotype)
 # test<-clust_compare(stdBeta_df ,SNP_ind,axes,threshold,thresh_norm, clust_norm)
-test<-clust_compare(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
- trait_axes,threshold,thresh_norm,clust_norm)
+#test<-clust_compare(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
+# trait_axes,threshold,thresh_norm,clust_norm)

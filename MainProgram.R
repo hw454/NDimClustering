@@ -30,8 +30,9 @@ source("SetupNDimClust.R")
 #source("QC_filtering_iterative.R")
 source("ClusteringFunction.R")
 source("ClustScores.R")
-source("ClusteringCompare.R")
-
+source("NClust_Plots.R")
+source("ClusteringCompare.R") # This call must be last
 test<-clust_compare(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
                     trait_info$phenotype,threshold,thresh_norm,clust_norm)
-source("NClust_Plots.R")
+test %>% plot_max_diff(thresh_norm)
+test %>% plot_trait_heatmap()
