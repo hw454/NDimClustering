@@ -25,13 +25,17 @@ clust_compare <-function(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
     # Update the traits forming the axis
     a=trait_info$phenotype[ai]
     # Add the trait to the trait dataframe
-    aim_df <- aim_df_add_a(aim_df,a,trait_info$phenotype,
+    covered <- (a %in% aim_df$label)
+    if (!covered){
+      aim_df <- aim_df_add_a(aim_df,a,trait_info$phenotype,
                  unstdBeta_df)
-    nr=10.0#/length(aim_df$label) # FIXME - Max number of clusters.
-    # Cluster the data on these axes
-    unstdBeta_df <- remove_na_from_row(unstdBeta_df,aim_df)
-    allna <- all_na_check(unstdBeta_df,aim_df)
-    if (allna){
+      nr=10.0#/length(aim_df$label) # FIXME - Max number of clusters.
+      # Cluster the data on these axes
+      unstdBeta_df <- remove_na_from_row(unstdBeta_df,aim_df)
+      allna <- all_na_check(unstdBeta_df,aim_df)
+    }
+    if (covered){}
+    else if (allna){
       #' If the trait column was removed from the beta_df during na removal then 
       #' remove the trait from the trait data frame and move to the next trait.
       aim_df <- aim_df[aim_df$label!=a,]
@@ -57,8 +61,8 @@ clust_compare <-function(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
         for (j in (i+1):N2){
           ci=c_nums[i]
           cj=c_nums[j]
-          cs1<-as.matrix(c_score0[c_score0$clust_num==i,aim_df$label])
-          cs2<-as.matrix(c_score0[c_score0$clust_num==j,aim_df$label])
+          cs1<-as.matrix(c_score0[c_score0$clust_num==ci,aim_df$label])
+          cs2<-as.matrix(c_score0[c_score0$clust_num==cj,aim_df$label])
           if (clust_metric(cs1,cs2,thresh_norm)>(threshold)){
             print("Threshold met on outcome")
             print(a)
