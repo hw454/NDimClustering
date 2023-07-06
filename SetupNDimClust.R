@@ -17,11 +17,9 @@ library(tidyverse)
 # variable set-up
 EXP_pheno = "21001"
 data_dir = "./working-example/data/"                   # Location of the data directory
-res_dir = "../NDimClustResults/"                       # Location of the results directory
-exp_gcorr_thresh = 0.75
+res_dir = "../NDimClustResults/working-example/"                       # Location of the results directory
 OUT_pheno = "845"
-pheno_irnt = TRUE  #maybe if true change all grepl to paste0(EXP_pheno,"_irnt")
-threshold=0.5 #FIXME threshold should be based on dataspread
+threshold=5.0 #FIXME threshold should be based on dataspread
 thresh_norm="M"
 clust_norm="M"
 
