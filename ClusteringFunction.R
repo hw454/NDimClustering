@@ -107,7 +107,8 @@ all_na_check <- function(b_df,aim_df){
   if (length(narows)==dim(b_df)[1]){
     # All rows are NaN so trait will be removed from trait
     return(1)
-  } else {return(0)}
+  }
+  else {return(0)}
 }
 remove_na_from_row <- function(b_df,aim_df){
   #' Remove rows which contain NA values but only from the columns aim_df$b_df_ind.
@@ -137,6 +138,8 @@ aim_df_add_a <- function(aim_df,a,axes,b_df){
   #' Add the trait a to the dataframe of traits.
   #' Add the traits label, it's index in the trait list and it's index in the 
   #' beta dataframe.
+  if (a %in% aim_df$label){
+    return(aim_df)}
   aim_df <- aim_df %>% add_row(label= a,axes_ind=which(axes==a),b_df_ind=0)
   aim_df[aim_df$label==a,'b_df_ind'] <- which(colnames(b_df)== a)
   aim_df[aim_df$label==a,'nSNPs'] <- sum(!is.na(b_df[,a]))
