@@ -14,7 +14,7 @@ clust_score <- function(clusters_df,beta_df,aim_df){
     # Cluster id
     c_id <- paste0('na',num_axis,'_cn',i)
     # Get the associated SNPs with the cluster
-    SNP_list=names(cluster_df$cluster[cluster_df$cluster==i])
+    SNP_list=names(clusters_df$cluster[clusters_df$cluster==i])
     # ? How to deal with multiple SNP entries in data input.
     # Check the number of associated SNPS
     l1 <- length(SNP_list)
