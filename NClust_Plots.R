@@ -2,7 +2,7 @@ plot_trait_heatmap <- function(c_scores){
 #c_scores <- test # When the function container is commented out use this line to rename the result df
   NM <- unique(c_scores$num_axis)
   for (i in NM){
-    Ni <- 4+i
+    Ni <- 2+i
     trait_list <- colnames(c_scores)[5:Ni]
     c_scores_term <- c_scores[c_scores$num_axis==i,]
     c_scores_term <- c_scores_term[,!(names(c_scores_term) %in% c('num_axis','clust_size','id'))]
@@ -22,31 +22,52 @@ plot_trait_heatmap <- function(c_scores){
       theme(axis.text.x=element_text(angle=90,vjust=0.5)) +
       geom_tile()
     print(heatplot)
-    pw=32
+    pw=16
     ph=4
     ggsave(filename=plotname,width=pw,height=ph)
     dev.off()
   }
 }
 
+get_col_list <- function(df,filter_col,N,ignore_cols=c()){
+  #' Filter the dataframe `df` by the column `filter_col` with value N.
+  #' Return the columns names for the columns which are not all Nan once filters 
+  #' and are not in `ignore_cols`
+  filt_df=df[df[filter_col]==N,]
+  c_name=colnames(filt_df)
+  keep_cols=c()
+  for (cn in c_name){
+    if(cn %in% ignore_cols){}
+    else if(!all(is.na(filt_df[cn]))){keep_cols<-c(keep_cols,cn)}
+  }
+  return(keep_cols)
+}
 plot_max_diff <- function(c_scores,norm_typ){
+norm_typ=thresh_norm
+c_scores <- test
   NM <- unique(c_scores$num_axis)
   max_diff_df <- data.frame(
     num_axis = integer(),
     Max_Diff = numeric()
   )
-  Max_Diff <- list(length(NM))
+  ignore_cols=c('clust_size','id','num_axis','total_score')
   for (Ni in NM){
-    c_scores_term <- c_scores[c_scores$num_axis==Ni,]
+    trait_list <- get_col_list(c_scores,'num_axis',Ni,ignore_cols)
+    trait_list_no_cnum<-trait_list[trait_list != 'clust_num']
+    c_scores_term <- c_scores[c_scores$num_axis==Ni,trait_list]
+    c_scores_term['clust_num']<-c_scores[c_scores$num_axis==Ni,'clust_num']
     clust_nums <- unique(c_scores_term$clust_num)
-    Nt=4+Ni
-    trait_list <- colnames(c_scores_term)[5:Nt]
     cs_diff <- 0.0
+    c_scores_term['total_score']=numeric()
     for (cn1 in clust_nums){
-      cs1<-as.matrix(c_scores_term[c_scores_term$clust_num==cn1,trait_list])
+      cs1<-as.matrix(c_scores_term[c_scores_term$clust_num==cn1,trait_list_no_cnum])
+      tot_score=norm(as.matrix(cs1),norm_typ)
+      c_scores_term[c_scores_term$clust_num==cn1,'total_score']=tot_score
       for (cn2 in clust_nums){
-        cs2<-as.matrix(c_scores_term[c_scores_term$clust_num==cn2,trait_list])
+        cs2<-as.matrix(c_scores_term[c_scores_term$clust_num==cn2,trait_list_no_cnum])
         cs_diff0<-clust_metric(cs1,cs2,norm_typ)
+        tot_score0<-norm(as.matrix(cs2),norm_typ)
+        c_scores_term[c_scores_term$clust_num==cn2,'total_score']=tot_score0
         if (is.na(cs_diff0)){}
         else if (cs_diff0>cs_diff){cs_diff <- cs_diff0}
       }
