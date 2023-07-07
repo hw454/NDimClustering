@@ -65,40 +65,7 @@ cluster_kmeans <- function(beta_df,aim_df,nr){
   AICclusters_rsid_df = t(plyr::ldply(AICclusters_rsid, rbind))
   write.csv(AICclusters_rsid_df, paste0(res_dir,"AICclusters_rsid_",EXP_pheno,".csv"), row.names = FALSE)
   
-  # # MR per cluster - AIC  - first instance of OUTCOME
-  # exp_dat = fread(paste0(data_dir,"sig-clumped-IVs_",EXP_pheno,".csv")) 
-  # out_dat = fread(paste0(data_dir,"clumped-IVs_",OUT_pheno,".csv")) 
-  # 
-  # exp_dat2 = rename(exp_dat,"unstdBeta"="beta", "unstdSE"="se")
-  # out_dat2 = rename(out_dat,"unstdBeta"="beta", "unstdSE"="se")
-  # 
-  # exp_dat2$beta = exp_dat2$tstat/sqrt(exp_dat2$N)
-  # out_dat2$beta = out_dat2$tstat/sqrt(out_dat2$N)
-  # exp_dat2$se = 1/sqrt(exp_dat2$N)
-  # out_dat2$se = 1/sqrt(out_dat2$N)
-  # 
-  # exp_dat2 = format_data(exp_dat2, type="exposure", samplesize_col="N", z_col = "tstat", pval_col = "pval.exposure")
-  # out_dat2 = format_data(out_dat2, type="outcome", samplesize_col="N", z_col = "tstat", pval_col = "pval.outcome")
-  # 
-  # common_SNPs = intersect(exp_dat2$SNP, out_dat2$SNP)
-  # exp_dat2 = exp_dat2[match(common_SNPs, exp_dat2$SNP),]
-  # out_dat2 = out_dat2[match(common_SNPs, out_dat2$SNP),]
-  # 
-  # if(all(exp_dat2$`effect_allele.exposure` == out_dat2$`effect_allele.outcome`)){
-  #   print("action=1")
-  #   action = 1
-  # } else {
-  #   print("action=2/3")
-  #   aligned = which(exp_dat2$`effect_allele.exposure` == out_dat2$`effect_allele.outcome` &
-  #                     exp_dat2$`other_allele.exposure` == out_dat2$`other_allele.outcome`)
-  #   swapped = which(exp_dat2$`effect_allele.exposure` == out_dat2$`other_allele.outcome` &
-  #                     exp_dat2$`other_allele.exposure` == out_dat2$`effect_allele.outcome`)
-  #   exp_dat2[swapped,'beta.exposure']=exp_dat2[swapped,'beta.exposure']*-1
-  #   exp_dat2 = exp_dat2[c(aligned,swapped),]
-  #   out_dat2 = out_dat2[c(aligned,swapped),]
-  #   action = 1  #made sure all strands are okay
-  # }
-  return(kmeans.re)
+  return(kmeans.minAIC)
 }
 all_na_check <- function(b_df,aim_df){
   #' Check if the entire row is NaN
@@ -131,7 +98,16 @@ clust_metric <- function(cs1,cs2,norm_typ){
   if (length(cs1)<=1){
     return(abs(cs1-cs2))
   }
-  else{return(norm(cs1-cs2,norm_typ))}
+  else{
+    clustid_1=which(!is.na(cs1))
+    clustid_2=which(!is.na(cs2))
+    clust_ids=intersect(clustid_1,clustid_2)
+    if (length(clust_ids)==0){return(NaN)}
+    else if(length(clust_ids)==1){return(abs(cs1[clust_ids]-cs2[clust_ids]))}
+    else{
+      return(norm(as.matrix(cs1[clust_ids]-cs2[clust_ids]),norm_typ))
+    }
+  }
 }
 
 aim_df_add_a <- function(aim_df,a,axes,b_df){
@@ -140,10 +116,11 @@ aim_df_add_a <- function(aim_df,a,axes,b_df){
   #' beta dataframe.
   if (a %in% aim_df$label){
     return(aim_df)}
-  aim_df <- aim_df %>% add_row(label= a,axes_ind=which(axes==a),b_df_ind=0)
-  aim_df[aim_df$label==a,'b_df_ind'] <- which(colnames(b_df)== a)
-  aim_df[aim_df$label==a,'nSNPs'] <- sum(!is.na(b_df[,a]))
-  return(aim_df)
+  else{
+  aim_df <- aim_df %>% add_row(label= a,'axes_ind'=which(axes==a)[1],'b_df_ind'=0)
+  aim_df[aim_df$label==a,'b_df_ind'] <- which(colnames(b_df)== a)[1]
+  aim_df[aim_df$label==a,'nSNPs'] <- sum(!is.na(b_df[,a]))[1]
+  return(aim_df)}
 }
 testna <- function(unstdBeta_df,trait_axes){
   aim_df <- data.frame(
@@ -158,6 +135,7 @@ testna <- function(unstdBeta_df,trait_axes){
   b2_df <- remove_na_from_row(unstdBeta_df,aim_df)
   return(1)
 }
+
 #nr=10
 #trait_axes_ind=which(colnames(stdBeta_df_noEXP) %in% trait_axes)
 #load(paste0(res_dir,"QCdata_",EXP_pheno,"ClusterIter",1,".Rdata"))
