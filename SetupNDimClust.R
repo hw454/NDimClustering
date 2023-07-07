@@ -17,7 +17,7 @@ library(tidyverse)
 # variable set-up
 EXP_pheno = "21001"
 data_dir = "./working-example/data/"                   # Location of the data directory
-res_dir = "../NDimClustResults/working-example/"                       # Location of the results directory
+res_dir = "../NDimClustResults/working-exampleMinClust/"                       # Location of the results directory
 OUT_pheno = "845"
 threshold=5.0 #FIXME threshold should be based on dataspread
 thresh_norm="M"
@@ -25,8 +25,8 @@ clust_norm="M"
 
 # Testing dimensions
 test=0 # testing swicth
-num_trait0=200
-num_trait1=322
+num_trait0=400
+num_trait1=410
 num_rows=100
 
 # Files containing data
