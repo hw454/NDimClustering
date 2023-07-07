@@ -27,50 +27,57 @@ clust_compare <-function(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
     # Add the trait to the trait dataframe
     covered <- (a %in% aim_df$label)
     if (!covered){
+      #print(covered)
+      # If the axis is already included then add row is not run.
       aim_df <- aim_df_add_a(aim_df,a,trait_info$phenotype,
                  unstdBeta_df)
       nr=10.0#/length(aim_df$label) # FIXME - Max number of clusters.
       # Cluster the data on these axes
       unstdBeta_df <- remove_na_from_row(unstdBeta_df,aim_df)
       allna <- all_na_check(unstdBeta_df,aim_df)
-    }
-    if (covered){}
-    else if (allna){
-      #' If the trait column was removed from the beta_df during na removal then 
-      #' remove the trait from the trait data frame and move to the next trait.
-      aim_df <- aim_df[aim_df$label!=a,]
-    }
-    else{
-      print(paste0('Cluster on ',length(aim_df$label),' axes'))
-      print(paste0('New axis ',a))
-      # Cluster the data on these axes
-      cluster_df=cluster_kmeans(unstdBeta_df,aim_df,nr) 
-      # Find the set of cluster numbers
-      c_nums<-unique(cluster_df$cluster) 
-      # Score the clustered data based on affilliations with axes.
-      # Find the score for this axis
-      c_score0 <- clust_score(cluster_df,
-                            unstdBeta_df,aim_df) # Score across all axis
-      # Initialise new column for new axis
-      c_scores[a]=numeric()
-      # Iterate through each cluster and compare across the others to find if 
-      # any pair have a distinct difference.
-      N2=length(c_nums)
-      N1=N2-1
-      for (i in 1:N1){
-        for (j in (i+1):N2){
-          ci=c_nums[i]
-          cj=c_nums[j]
-          cs1<-as.matrix(c_score0[c_score0$clust_num==ci,aim_df$label])
-          cs2<-as.matrix(c_score0[c_score0$clust_num==cj,aim_df$label])
-          if (clust_metric(cs1,cs2,thresh_norm)>(threshold)){
-            print("Threshold met on outcome")
-            print(a)
-            return(c_scores)
+      if (allna){
+        #' If the trait column was removed from the beta_df during na removal then 
+        #' remove the trait from the trait data frame and move to the next trait.
+        aim_df <- aim_df[aim_df$label!=a,]
+      }
+      else{
+        # If the trait is not all NaN then run clustering.
+        print(paste0('Cluster on ',length(aim_df$label),' axes'))
+        print(paste0('New axis ',a))
+        # Cluster the data on these axes
+        cluster_df=cluster_kmeans(unstdBeta_df,aim_df,nr) 
+        # Find the set of cluster numbers
+        c_nums<-unique(cluster_df$cluster) 
+        # Score the clustered data based on affilliations with axes.
+        # Find the score for this axis
+        c_score0 <- clust_score(cluster_df,
+                                unstdBeta_df,aim_df) # Score across all axis
+        # Initialise new column for new axis
+        c_scores[a]=numeric()
+        # Iterate through each cluster and compare across the others to find if 
+        # any pair have a distinct difference.
+        N2=length(c_nums)
+        N1=N2-1
+        for (i in 1:N1){
+          for (j in (i+1):N2){
+            ci=c_nums[i]
+            cj=c_nums[j]
+            cs1<-as.matrix(c_score0[c_score0$clust_num==ci,aim_df$label])
+            cs2<-as.matrix(c_score0[c_score0$clust_num==cj,aim_df$label])
+            metric_score=clust_metric(cs1,cs2,thresh_norm)
+            if (is.na(metric_score)){}
+            else{
+              if (metric_score>threshold){
+                print("Threshold met on outcome")
+                print(a)
+                c_scores <- rbind(c_scores,c_score0)
+                return(c_scores)
+              }
+            }
           }
         }
       }
-      c_scores <- rbind(c_scores,c_score0)
+      c_scores <- rbind(c_scores,c_score0)   
     }
   }
   print("None of the outcomes clustering met the thresholding test. ")
