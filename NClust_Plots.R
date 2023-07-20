@@ -1,26 +1,43 @@
 plot_trait_heatmap <- function(c_scores){
-#c_scores <- test # When the function container is commented out use this line to rename the result df
+#  c_scores <- test1 # When the function container is commented out use this line to rename the result df
   NM <- unique(c_scores$num_axis)
+  ignore_cols=c('clust_size','id','num_axis','total_score')
+  full_trait_list=colnames(c_scores)
+  full_trait_list<-full_trait_list[!(full_trait_list %in% ignore_cols)]
+  full_trait_list<-full_trait_list[full_trait_list != 'clust_num']
+  #c_scores[!is.na(c_scores[full_trait_list])]=log(c_scores[!is.na(c_scores[full_trait_list])])
+  #not_na=na.omit(c_scores[full_trait_list])
+  #print(not_na)
+  vmin=min(log(abs(c_scores[full_trait_list])),na.rm=TRUE)
+  vmax=max(log(abs(c_scores[full_trait_list])),na.rm=TRUE)
+  break_width=floor((vmax-vmin)/4)
+  print(vmin)
+  print(vmax)
   for (i in NM){
-    Ni <- 2+i
-    trait_list <- colnames(c_scores)[5:Ni]
-    c_scores_term <- c_scores[c_scores$num_axis==i,]
-    c_scores_term <- c_scores_term[,!(names(c_scores_term) %in% c('num_axis','clust_size','id'))]
-    c_scores_term <- c_scores_term[ , colSums(is.na(c_scores_term))==0]
-    #c_scores_term <- c_scores_term[order(c_scores_term$clust_num),]
+    # Get the traits for this iteration
+    trait_list <- get_col_list(c_scores,'num_axis',i,ignore_cols)
+    trait_list_no_cnum<-trait_list[trait_list != 'clust_num']
     # Extract the association scores for each clust trait pair.
-    #Scores_matrix <- data.matrix(c_scores_term[trait_list])
-    #rownames(Scores_matrix) <- c_scores_term$clust_num
-    #ggplot(Scores_matrix, aes(colnames(Scores_mtrix), rownames(Scores_matrix), fill= Scores_matrix)) + 
-     # geom_tile()
+    c_scores_term <- c_scores[c_scores$num_axis==i,]
+    c_scores_term <- c_scores_term[ trait_list]
     long_form_df <- c_scores_term %>% gather('trait','score',-'clust_num')
-    #idnum<-which(colnames(c_scores_term)=='clust_num')
-    #measurenum <- which(colnames(c_scores_term) %in% trait_list)
-    #long_form_df2 <- melt(c_scores_term,id.vars=idnum,measure.vars=measurenum)
+    # Remove NAN rows.
+    #long_form_df <- long_form_df[complete.cases(long_form_df),]
+    # Use log scale on the association scores
+    long_form_df$score <- log(abs(long_form_df$score))
+    # Plot the scores against the traits.
     plotname=paste0(res_dir,'trait_vs_ClustScores_iter',i,'.png')
     heatplot<-ggplot(long_form_df, aes(x = trait, y = clust_num, fill = score)) +
       theme(axis.text.x=element_text(angle=90,vjust=0.5)) +
-      geom_tile()
+      geom_tile()+
+      # The limits are fixed but the colour change points are moving 
+      #FIXME
+      # Mark the two clusters with the highest difference at each step
+      scale_fill_gradient2(low="cyan",high="blue", mid="purple",
+                          # na.value = "grey50",
+                         midpoint=mean(long_form_df$score),    
+                         breaks=seq(vmin,vmax,break_width),
+                         limits=c(vmin, vmax))
     print(heatplot)
     pw=16
     ph=4
@@ -42,13 +59,14 @@ get_col_list <- function(df,filter_col,N,ignore_cols=c()){
   }
   return(keep_cols)
 }
-plot_max_diff <- function(c_scores,norm_typ){
+create_max_diff <- function(c_scores,norm_typ){
 norm_typ=thresh_norm
-c_scores <- test
   NM <- unique(c_scores$num_axis)
   max_diff_df <- data.frame(
     num_axis = integer(),
-    Max_Diff = numeric()
+    Max_Diff = numeric(),
+    clust_num1 = integer(),
+    clust_num2=integer()
   )
   ignore_cols=c('clust_size','id','num_axis','total_score')
   for (Ni in NM){
@@ -59,6 +77,8 @@ c_scores <- test
     clust_nums <- unique(c_scores_term$clust_num)
     cs_diff <- 0.0
     c_scores_term['total_score']=numeric()
+    c1out<-0
+    c2out<-0
     for (cn1 in clust_nums){
       cs1<-as.matrix(c_scores_term[c_scores_term$clust_num==cn1,trait_list_no_cnum])
       tot_score=norm(as.matrix(cs1),norm_typ)
@@ -69,21 +89,41 @@ c_scores <- test
         tot_score0<-norm(as.matrix(cs2),norm_typ)
         c_scores_term[c_scores_term$clust_num==cn2,'total_score']=tot_score0
         if (is.na(cs_diff0)){}
-        else if (cs_diff0>cs_diff){cs_diff <- cs_diff0}
+        else if (cs_diff0>cs_diff){
+          cs_diff <- cs_diff0
+          c1out <- cs1
+          c2out <- cs2}
       }
     }
-    max_diff_df <- max_diff_df %>% add_row(num_axis=Ni,Max_Diff=cs_diff)
+    max_diff_df <- max_diff_df %>% add_row(num_axis=Ni,Max_Diff=cs_diff,clust_num1=c1out,clust_num2=c2out)
   }
   #print(max_diff_df)
+  #dev.off()
+  return(max_diff_df)
+}
+
+plot_max_diff <- function(max_df){
   plotname <- paste0(res_dir,"NumAxis_Vs_MaxScoreDiff.png")
-  lineplot <- ggplot(data=max_diff_df, aes(x=num_axis, y=Max_Diff, group=1)) +
-    geom_line()+
-    geom_point()
+  lineplot <- ggplot() +
+    geom_line(data=max_df, aes(x=num_axis, y=Max_Diff, group=1),color='black')+
+    geom_point(data=max_df, aes(x=num_axis, y=Max_Diff, group=1),color='black')
   print(lineplot)
   pw=4
   ph=4
   ggsave(filename=plotname,width=pw,height=ph)
-  #dev.off()
+}
+
+plot_max_diff_both <- function(max_df1,max_df2){
+  plotname <- paste0(res_dir,"NumAxis_Vs_MaxScoreDiff_Compare.png")
+  lineplot <- ggplot() +
+    geom_line(data=max_df1, aes(x=num_axis, y=Max_Diff, group=1),color='black')+
+    geom_point(data=max_df1, aes(x=num_axis, y=Max_Diff, group=1),color='black')+
+    geom_line(data=max_df2, aes(x=num_axis, y=Max_Diff),color='red',linetype='dashed')+
+    geom_point(data=max_df2, aes(x=num_axis, y=Max_Diff),color='red',linetype='dashed')
+  print(lineplot)
+  pw=4
+  ph=4
+  ggsave(filename=plotname,width=pw,height=ph)
 }
 
 #test %>% plot_max_diff(thresh_norm)
