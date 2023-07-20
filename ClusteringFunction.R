@@ -24,7 +24,9 @@ kmeansIC = function(fit){
                     BIC = D + log(n)*m*k))
 }
 
-cluster_kmeans <- function(beta_df,aim_df,nr){
+cluster_kmeans_basic <- function(beta_df,aim_df,nr){
+  #' Using the association scores for each SNP accross traits cluster the traits
+  #' using kmeans. Return the cluster setup which minimises AIC.
   # Set up for k-means clustering
   b_df <- beta_df[,aim_df$b_df_ind] 
   # Delete Any rows with NaNs
@@ -41,32 +43,43 @@ cluster_kmeans <- function(beta_df,aim_df,nr){
   IC_df$nCluster = 2:(nr+1)
   for(i in 2:(nr+1)){
     set.seed(240) # setting seed
-    kmeans.re <- kmeans(eff_dfs, centers = i, nstart = (nr+1), iter.max = 300)
-    cluster_list[[length(cluster_list)+1]] = kmeans.re
-    IC = kmeansIC(kmeans.re)
+    clust_re <- kmeans(eff_dfs, centers = i, nstart = (nr+1), iter.max = 300)
+    cluster_list[[length(cluster_list)+1]] = clust_re
+    IC = kmeansIC(clust_re)
     IC_df[(i-1),1] = IC$AIC
   }
   # cluster number identification for each observation
-  kmeans.minAIC = cluster_list[[which(IC_df$AIC==min(IC_df$AIC))]]
-  nClust.AIC = max(kmeans.minAIC$cluster)
-  
-  # plot AIC
-  pdf(file=paste0(res_dir,"AIC-ncluster_",EXP_pheno,".pdf"), width=5, height = 7)
-  plot(IC_df$nCluster,IC_df$AIC, xlab="nCluster", ylab="AIC")
-  abline(v=nClust.AIC,col="red")
-  dev.off()
-  
-  # assigning SNPs to clusters
-  AICclusters_rsid = list()
-  for(i in 1:nClust.AIC){
-    AICclusters_rsid[[i]] = names(kmeans.minAIC$cluster)[which(kmeans.minAIC$cluster==i)]
-  }
-  print(paste0("Number of SNPs in each AIC grouped clusters: ", paste0(lengths(AICclusters_rsid), collapse = ", ")))
-  AICclusters_rsid_df = t(plyr::ldply(AICclusters_rsid, rbind))
-  write.csv(AICclusters_rsid_df, paste0(res_dir,"AICclusters_rsid_",EXP_pheno,".csv"), row.names = FALSE)
-  
-  return(kmeans.minAIC)
+  return(clust_re)
 }
+cluster_kmeans_min <- function(beta_df,aim_df,nr){
+  #' Using the association scores for each SNP accross traits cluster the traits
+  #' using kmeans. Return the cluster setup which minimises AIC.
+  # Set up for k-means clustering
+  b_df <- beta_df[,aim_df$b_df_ind] 
+  # Delete Any rows with NaNs
+  # Test function: more axes should yeild less or equal data points. Point has full co-ordinate accros axes
+  
+  eff_df <- abs(b_df)
+  if (length(aim_df$label)<=1){eff_dfs<-t(eff_df)}
+  else {eff_dfs <- t(scale(t(eff_df)))}
+  
+  # Initial cluster dataframe
+  cluster_list = list()
+  IC_df = data.frame(matrix(data=NA, nrow = nr, ncol=1))
+  colnames(IC_df) = c("AIC")
+  IC_df$nCluster = 2:(nr+1)
+  for(i in 2:(nr+1)){
+    set.seed(240) # setting seed
+    clust_re <- kmeans(eff_dfs, centers = i, nstart = (nr+1), iter.max = 300)
+    cluster_list[[length(cluster_list)+1]] = clust_re
+    IC = kmeansIC(clust_re)
+    IC_df[(i-1),1] = IC$AIC
+  }
+  # cluster number identification for each observation
+  clust_re_minAIC = cluster_list[[which(IC_df$AIC==min(IC_df$AIC))]]
+  return(clust_re_minAIC)
+}
+
 all_na_check <- function(b_df,aim_df){
   #' Check if the entire row is NaN
   nend=length(aim_df$b_df_ind)
@@ -117,10 +130,10 @@ aim_df_add_a <- function(aim_df,a,axes,b_df){
   if (a %in% aim_df$label){
     return(aim_df)}
   else{
-  aim_df <- aim_df %>% add_row(label= a,'axes_ind'=which(axes==a)[1],'b_df_ind'=0)
-  aim_df[aim_df$label==a,'b_df_ind'] <- which(colnames(b_df)== a)[1]
-  aim_df[aim_df$label==a,'nSNPs'] <- sum(!is.na(b_df[,a]))[1]
-  return(aim_df)}
+    aim_df <- aim_df %>% add_row(label= a,'axes_ind'=which(axes==a)[1],'b_df_ind'=0)
+    aim_df[aim_df$label==a,'b_df_ind'] <- which(colnames(b_df)== a)[1]
+    aim_df[aim_df$label==a,'nSNPs'] <- sum(!is.na(b_df[,a]))[1]
+    return(aim_df)}
 }
 testna <- function(unstdBeta_df,trait_axes){
   aim_df <- data.frame(
@@ -139,4 +152,16 @@ testna <- function(unstdBeta_df,trait_axes){
 #nr=10
 #trait_axes_ind=which(colnames(stdBeta_df_noEXP) %in% trait_axes)
 #load(paste0(res_dir,"QCdata_",EXP_pheno,"ClusterIter",1,".Rdata"))
-#test <- cluster_kmeans(unstdBeta_df,aim_df,nr)
+aim_df <- data.frame(
+  label =character(),
+  axes_ind = integer(),
+  b_df_ind = integer(),
+  nSNPs = integer()
+)
+# Initialise with outcome
+# aim_df <- aim_df_add_a(aim_df,OUT_pheno,trait_info$phenotype,
+#                        unstdBeta_df)
+# aim_df <- aim_df_add_a(aim_df,trait_info$phenotype[2],trait_info$phenotype,
+#                        unstdBeta_df)
+# nr=3
+# test <- cluster_kmeans(unstdBeta_df,aim_df,nr)
