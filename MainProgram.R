@@ -32,7 +32,19 @@ source("ClusteringFunction.R")
 source("ClustScores.R")
 source("NClust_Plots.R")
 source("ClusteringCompare.R") # This call must be last
-test<-clust_compare(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
-                    trait_info$phenotype,threshold,thresh_norm,clust_norm)
-test %>% plot_max_diff(thresh_norm)
-test %>% plot_trait_heatmap()
+res_dir = "../NDimClustResults/working-example/"   
+test1<-clust_compare(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
+                    trait_info$phenotype,threshold,thresh_norm,clust_norm,'basic')
+max_diff_df1<- test1 %>% create_max_diff(thresh_norm)
+test1 %>% plot_trait_heatmap()
+max_diff_df1 %>% plot_max_diff()
+
+res_dir = "../NDimClustResults/working-exampleMinClust/"   
+test2<-clust_compare(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
+                     trait_info$phenotype,threshold,thresh_norm,clust_norm,'min')
+test2 %>% plot_trait_heatmap()
+max_diff_df2<- test2 %>% create_max_diff(thresh_norm)
+max_diff_df2 %>% plot_max_diff()
+
+# Plot both max_diffs on the same plot
+max_diff_df1 %>% plot_max_diff_both(max_diff_df2)
