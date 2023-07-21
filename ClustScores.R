@@ -1,4 +1,4 @@
-clust_score <- function(clusters_df,beta_df,pval_df,aim_df){
+clust_score <- function(clusters_df,beta_df,pval_df,aim_df,bp_on=TRUE){
   #' The dataframe of clusters is used alongside the beta and pvalue for each SNP
   #' to score the clusters on their association with each trait.
   #' Information for the traits is stored in aim_df
@@ -28,7 +28,7 @@ clust_score <- function(clusters_df,beta_df,pval_df,aim_df){
       # Add the cluster score for each axis to c_score0
       #a=aim_df$label[ai]
       # Track the number of terms in each cluster.
-      ax_score<-axis_score(beta_df,pval_df,SNP_list,aim_df,a)
+      ax_score<-axis_score(beta_df,pval_df,SNP_list,aim_df,a,bp_on)
       # Account for the probability of being in the cluster
       c_score0['id']<-c_id
       if (!(a %in% colnames(c_score0))){
@@ -50,12 +50,18 @@ clust_score <- function(clusters_df,beta_df,pval_df,aim_df){
   return(clust_scores)
 }
 
-axis_score <- function(beta_df,pval_df,SNP_list,aim_df,a){
+axis_score <- function(beta_df,pval_df,SNP_list,aim_df,a,bp_on=TRUE){
   # Get the column index for the trait.
   b_cols <-aim_df[aim_df$label==a,'b_df_ind']
   # Get the row indices for the traits in the cluster
   b_rows<-which(rownames(beta_df) %in% SNP_list)
   # Get the pathway colocization score from the input data for the SNP
-  snp_assoc<-abs(beta_df[b_rows,b_cols]*pval_df[b_rows,b_cols]) # beta_df is a matrix with rows labelled by SNP_id and columns labelled by trait label.
-  return(mean(snp_assoc))
+  if (bp_on){
+    snp_assoc<-abs(beta_df[b_rows,b_cols]*pval_df[b_rows,b_cols]) # beta_df is a matrix with rows labelled by SNP_id and columns labelled by trait label.
+  }
+  else{
+    snp_assoc<-abs(beta_df[b_rows,b_cols]) # beta_df is a matrix with rows labelled by SNP_id and columns labelled by trait label.
+    
+  }
+    return(mean(snp_assoc))
 }

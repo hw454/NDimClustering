@@ -1,5 +1,6 @@
 clust_compare <-function(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
-                         axes,threshold,thresh_norm,clus_norm,which_clust='basic'){
+                         axes,threshold,thresh_norm,clus_norm,
+                         which_clust='basic',bp_on=TRUE){
   #' Iterate through the columns in axes and clusters the data. 
   #' If there is a distinct difference between two clusters exit.
   
@@ -52,7 +53,7 @@ clust_compare <-function(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
         # Score the clustered data based on affilliations with axes.
         # Find the score for this axis
         c_score0 <- clust_score(cluster_df,
-                                unstdBeta_df,pval_df,aim_df) # Score across all axis
+                                unstdBeta_df,pval_df,aim_df,bp_on) # Score across all axis
         # Initialise new column for new axis
         c_scores[a]=numeric()
         # Iterate through each cluster and compare across the others to find if 
