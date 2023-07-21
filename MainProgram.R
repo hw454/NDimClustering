@@ -11,7 +11,6 @@
 # tstat = nxm array of t-stat for b
 
 # 0 Setup the packages and programs
-source("SetupNDimClust.R")
 
 # 1 Use OpenGWAS to load csv for first pair. Exposure and Outcome. 
 #source("QC_filtering.R")
@@ -32,19 +31,70 @@ source("ClusteringFunction.R")
 source("ClustScores.R")
 source("NClust_Plots.R")
 source("ClusteringCompare.R") # This call must be last
-res_dir = "../NDimClustResults/working-example/"   
-test1<-clust_compare(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
-                    trait_info$phenotype,threshold,thresh_norm,clust_norm,'basic')
-max_diff_df1<- test1 %>% create_max_diff(thresh_norm)
-test1 %>% plot_trait_heatmap()
-max_diff_df1 %>% plot_max_diff()
 
-res_dir = "../NDimClustResults/working-exampleMinClust/"   
-test2<-clust_compare(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
-                     trait_info$phenotype,threshold,thresh_norm,clust_norm,'min')
-test2 %>% plot_trait_heatmap()
-max_diff_df2<- test2 %>% create_max_diff(thresh_norm)
-max_diff_df2 %>% plot_max_diff()
+EXP_pheno = "21001"
+data_dir = "./working-example/data/"                   # Location of the data directory
+OUT_pheno = "845"
+res_dir0 = "../NDimClustResults/working-example/"   
 
+clust_typ_str1='basic'
+bp_on1=TRUE
+clust_typ_str2='min'
+bp_on2=FALSE
+clust_typ_list=c(clust_typ_str1,clust_typ_str2)
+bp_on_list=c(bp_on1,bp_on2)
+
+iter_df<-data.frame(
+  index=integer(),
+  clust_typ=character(),
+  bp_on=logical()
+)
+iter=0
+clust_out_list=c()
+max_diff_out_list=c()
+for (clust_typ_str in clust_typ_list){
+  for (bp_on in bp_on_list){
+    if (bp_on){bp_str<-'_bpON'}
+    else{bp_str<-'_bpOFF'}
+    res_dir<- paste0(res_dir0,clust_typ_str,bp_str,'/')
+    source("SetupNDimClust.R")
+    iter_df %>% add_row('index'=iter,'clust_typ'=clust_typ_str,'bp_on'=bp_on)
+    iter<-iter+1
+    test1<-clust_compare(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
+                    trait_info$phenotype,threshold,thresh_norm,clust_norm,
+                    clust_typ_str,bp_on)
+    print('Clust done')
+    max_diff_df1<- test1 %>% create_max_diff(thresh_norm)
+    print('Diff done')
+    test1 %>% plot_trait_heatmap(clust_typ_str,bp_on)
+    print('Heatmap plot done')
+    max_diff_df1 %>% plot_max_diff(clust_typ_str,bp_on)
+    print('Diff plot done')
+    #clust_out_list<-c(clust_out_list,test1)
+    #max_diff_out_list<-c(max_diff_out_list,max_diff_df1)
+  }
+}
+
+# MAKE A LIST VERSION
 # Plot both max_diffs on the same plot
-max_diff_df1 %>% plot_max_diff_both(max_diff_df2)
+#plot_max_diff_list(max_diff_out_list,iter_df)
+
+# EXP_pheno = "21001"
+# data_dir = "../NDimClustInputs/"                   # Location of the data directory
+# OUT_pheno = "845"
+# res_dir = "../NDimClustResults/OpenGWASdata/"   
+# test1<-clust_compare(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
+#                      trait_info$phenotype,threshold,thresh_norm,clust_norm,'basic')
+# max_diff_df1<- test1 %>% create_max_diff(thresh_norm)
+# test1 %>% plot_trait_heatmap()
+# max_diff_df1 %>% plot_max_diff()
+# 
+# res_dir = "../NDimClustResults/working-exampleMinClust/"   
+# test2<-clust_compare(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
+#                      trait_info$phenotype,threshold,thresh_norm,clust_norm,'min')
+# test2 %>% plot_trait_heatmap()
+# max_diff_df2<- test2 %>% create_max_diff(thresh_norm)
+# max_diff_df2 %>% plot_max_diff()
+# 
+# # Plot both max_diffs on the same plot
+# max_diff_df1 %>% plot_max_diff_both(max_diff_df2)

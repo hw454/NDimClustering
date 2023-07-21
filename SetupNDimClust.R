@@ -15,10 +15,6 @@ library(tidyverse)
 ## Data inputs needed: unstanderdised association matrix between IV and traits, SE matrix of association matrix, t-stat matrix of association matrix, P-value matrix of association matrix, trait info (trait, description, sample size)
 
 # variable set-up
-EXP_pheno = "21001"
-data_dir = "./working-example/data/"                   # Location of the data directory
-res_dir = "../NDimClustResults/working-exampleMinClust/"                       # Location of the results directory
-OUT_pheno = "845"
 threshold=5.0 #FIXME threshold should be based on dataspread
 thresh_norm="M"
 clust_norm="M"
