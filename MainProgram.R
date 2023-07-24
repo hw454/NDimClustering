@@ -49,17 +49,15 @@ iter_df<-data.frame(
   clust_typ=character(),
   bp_on=logical()
 )
-iter=0
-clust_out_list=c()
-max_diff_out_list=c()
+iter=1
 for (clust_typ_str in clust_typ_list){
   for (bp_on in bp_on_list){
+    print(iter)
     if (bp_on){bp_str<-'_bpON'}
     else{bp_str<-'_bpOFF'}
     res_dir<- paste0(res_dir0,clust_typ_str,bp_str,'/')
     source("SetupNDimClust.R")
-    iter_df %>% add_row('index'=iter,'clust_typ'=clust_typ_str,'bp_on'=bp_on)
-    iter<-iter+1
+    iter_df<- iter_df %>% add_row('index'=iter,'clust_typ'=clust_typ_str,'bp_on'=bp_on)
     test1<-clust_compare(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
                     trait_info$phenotype,threshold,thresh_norm,clust_norm,
                     clust_typ_str,bp_on)
@@ -70,14 +68,26 @@ for (clust_typ_str in clust_typ_list){
     print('Heatmap plot done')
     max_diff_df1 %>% plot_max_diff(clust_typ_str,bp_on)
     print('Diff plot done')
-    #clust_out_list<-c(clust_out_list,test1)
-    #max_diff_out_list<-c(max_diff_out_list,max_diff_df1)
+    if (iter==1){
+      clust_out<-test1
+      clust_out['input_iter']<-iter
+      max_diff_df1['input_iter']<-iter
+      max_diff_df0<-max_diff_df1
+    }
+    else{
+      test1['input_iter']<-iter
+      clust_out<-rbind(clust_out,test1)
+      max_diff_df1['input_iter']<-iter
+      max_diff_df0<- rbind(max_diff_df0,max_diff_df1)
+    }
+    iter<-iter+1
   }
 }
 
 # MAKE A LIST VERSION
+res_dir<- paste0(res_dir0,'/')
 # Plot both max_diffs on the same plot
-#plot_max_diff_list(max_diff_out_list,iter_df)
+plot_max_diff_list(max_diff_df0,iter_df)
 
 # EXP_pheno = "21001"
 # data_dir = "../NDimClustInputs/"                   # Location of the data directory
