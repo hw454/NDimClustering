@@ -20,10 +20,10 @@ thresh_norm="M"
 clust_norm="M"
 
 # Testing dimensions
-test=0 # testing swicth
+test=1 # testing swicth
 num_trait0=400
 num_trait1=410
-num_rows=100
+num_rows=50
 
 # Files containing data
 hail_gcorr_dir = paste0(data_dir,"Hail_AllxAll.csv")   # Location of the data files
