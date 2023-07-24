@@ -146,20 +146,26 @@ plot_max_diff_both <- function(max_df1,max_df2){
 #test %>% plot_max_diff(thresh_norm)
 
 plot_max_diff_list <- function(max_df_list,iter_df){
+  N_sets<-unique(max_df_list$input_iter)
   plotname <- paste0(res_dir,"NumAxis_Vs_MaxScoreDiff_Compare.png")
   lineplot <- ggplot() 
-  for (plot_iter in 1:length(max_df_list)){
+  for (plot_iter in N_sets){
+    max_df0=max_df_list[max_df_list$input_iter==plot_iter,]
+    max_df0['clust_typ']<-iter_df$clust_typ[plot_iter]
+    max_df0['bp_on']<-iter_df$bp_on[plot_iter]
+    print(iter_df$clust_typ[plot_iter])
     lineplot<-lineplot+
-    geom_line(data=max_df2, 
-              aes(x=num_axis, y=Max_Diff,
-                  col=as.factor(iter_df$clust_typ_str[plot_iter]),
-                  shape=as.factor(iter_df$bp_on[plot_iter])))+
-    geom_point(data=max_df2, aes(x=num_axis, y=Max_Diff))
+    geom_line(data=max_df0, 
+              aes(x=num_axis, y=Max_Diff,col=clust_typ)
+              )+
+    geom_point(data=max_df0, aes(x=num_axis, y=Max_Diff,
+                                 col=clust_typ,shape=bp_on)
+               )
   }
   lineplot<-lineplot+labs(x='Number of iterations',
                           y='Maximum difference',
                           shape='bp_on',
-                          colour='clust type')
+                          color='clust type')
   print(lineplot)
   pw=4
   ph=4
