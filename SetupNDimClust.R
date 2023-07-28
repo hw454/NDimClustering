@@ -15,12 +15,13 @@ library(tidyverse)
 ## Data inputs needed: unstanderdised association matrix between IV and traits, SE matrix of association matrix, t-stat matrix of association matrix, P-value matrix of association matrix, trait info (trait, description, sample size)
 
 # variable set-up
-threshold=5.0 #FIXME threshold should be based on dataspread
-thresh_norm="M"
-clust_norm="M"
+threshmul=5.0
+clust_threshold=1e-5
+thresh_norm="F"
+clust_norm="F"
 
 # Testing dimensions
-test=1 # testing swicth
+test=0 # testing switch
 num_trait0=400
 num_trait1=410
 num_rows=50
