@@ -1,4 +1,4 @@
-plot_trait_heatmap <- function(c_scores,clust_typ_str,bp_on){
+plot_trait_heatmap <- function(c_scores,clust_typ_str,bp_on=TRUE,clust_prob_on=TRUE){
 #  c_scores <- test1 # When the function container is commented out use this line to rename the result df
   NM <- unique(c_scores$num_axis)
   ignore_cols=c('clust_size','id','num_axis','total_score')
@@ -11,12 +11,15 @@ plot_trait_heatmap <- function(c_scores,clust_typ_str,bp_on){
   vmin=min(log(abs(c_scores[full_trait_list])),na.rm=TRUE)
   vmax=max(log(abs(c_scores[full_trait_list])),na.rm=TRUE)
   break_width=(vmax-vmin)/4
+  colmid=(vmax+vmin)/2
   print(paste('vmin',vmin))
   print(paste('vmax',vmax))
   print(paste('break_width',break_width))
   if (bp_on){bp_str<-' and bp in score'}
-  else{' and bp not in score'}
-  title_str=paste('Association score for trait against cluster. Cluster type',clust_typ_str,bp_str)
+  else{bp_str<-' and bp not in score'}
+  if (clust_prob_on){clust_prob_str<-' and clust_prob in score'}
+  else{clust_prob_str<-' and clust_prob not in score'}
+  title_str=paste('Association score for trait against cluster. Cluster type',clust_typ_str,bp_str,clust_prob_str)
   for (i in NM){
     # Get the traits for this iteration
     trait_list <- get_col_list(c_scores,'num_axis',i,ignore_cols)
@@ -41,7 +44,7 @@ plot_trait_heatmap <- function(c_scores,clust_typ_str,bp_on){
       # Mark the two clusters with the highest difference at each step
       scale_fill_gradient2(low="cyan",high="blue", mid="purple",
                           # na.value = "grey50",
-                         midpoint=mean(long_form_df$score),    
+                         midpoint=colmid,    
                          breaks=seq(vmin,vmax,break_width),
                          limits=c(vmin, vmax))+
       ggtitle(title_iter)
@@ -109,23 +112,32 @@ norm_typ=thresh_norm
   return(max_diff_df)
 }
 
-plot_max_diff <- function(max_df,clust_typ_str='basic',bp_on=TRUE){
+plot_max_diff <- function(max_df,clust_typ_str='basic',bp_on=TRUE,clust_prob_on=TRUE){
   plotname <- paste0(res_dir,"NumAxis_Vs_MaxScoreDiff")
   if (bp_on){
     bp_str<-' and bp on'
-    plotname<-paste0(plotname,clust_typ_str,'_bpON.png')
+    bp_name_str='_bpON'
     }
   else{
     bp_str<- ' and bp off'
-    plotname<-paste0(plotname,clust_typ_str,'_bpOFF.png')
+    bp_name_str='_bpOFF'
   }
-  plot_title=paste('Number of axis against max cluster difference score. \n Clustering type ',clust_typ_str,bp_str)
+  if (bpclust_prob_on){
+    clust_prob_str<-' and clust prob on'
+    clust_prob_name_str='_clustprobON'
+  }
+  else{
+    clust_prob_str<- ' and clust prob off'
+    clust_prob_name_str='_clustprobOFF'
+  }
+  plotname<-paste0(plotname,clust_typ_str,bp_name_str,clust_prob_name_str,'.png')
+  plot_title=paste('Number of axis against max cluster difference score. \n Clustering type',clust_typ_str,bp_str,clust_prob_str)
   lineplot <- ggplot() +
     geom_line(data=max_df, aes(x=num_axis, y=Max_Diff, group=1),color='black')+
     geom_point(data=max_df, aes(x=num_axis, y=Max_Diff, group=1),color='black')+
     ggtitle(plot_title)
   print(lineplot)
-  pw=4
+  pw=16
   ph=4
   ggsave(filename=plotname,width=pw,height=ph)
 }
@@ -149,14 +161,15 @@ plot_max_diff_list <- function(max_df_list,iter_df){
   N_sets<-unique(max_df_list$input_iter)
   plotname <- paste0(res_dir,"NumAxis_Vs_MaxScoreDiff_Compare.png")
   lineplot <- ggplot() 
+  print(N_sets)
   for (plot_iter in N_sets){
     max_df0=max_df_list[max_df_list$input_iter==plot_iter,]
     max_df0['clust_typ']<-iter_df$clust_typ[plot_iter]
     max_df0['bp_on']<-iter_df$bp_on[plot_iter]
-    print(iter_df$clust_typ[plot_iter])
+    max_df0['cp_on']<-iter_df$clust_prob_on[plot_iter]
     lineplot<-lineplot+
     geom_line(data=max_df0, 
-              aes(x=num_axis, y=Max_Diff,col=clust_typ)
+              aes(x=num_axis, y=Max_Diff,col=clust_typ,linetype=cp_on)
               )+
     geom_point(data=max_df0, aes(x=num_axis, y=Max_Diff,
                                  col=clust_typ,shape=bp_on)
@@ -165,7 +178,8 @@ plot_max_diff_list <- function(max_df_list,iter_df){
   lineplot<-lineplot+labs(x='Number of iterations',
                           y='Maximum difference',
                           shape='bp_on',
-                          color='clust type')
+                          color='clust type',
+                          linetype='clust prob on')
   print(lineplot)
   pw=4
   ph=4
