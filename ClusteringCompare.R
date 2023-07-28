@@ -1,6 +1,6 @@
 clust_compare <-function(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
-                         axes,threshold,thresh_norm,clus_norm,
-                         which_clust='basic',bp_on=TRUE){
+                         axes,threshold,thresh_norm,clust_threshold,clus_norm,
+                         which_clust='basic',bp_on=TRUE,clust_prob_on=TRUE){
   #' Iterate through the columns in axes and clusters the data. 
   #' If there is a distinct difference between two clusters exit.
   
@@ -16,12 +16,15 @@ clust_compare <-function(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
     num_axis=integer(),
     clust_num =integer(),
     clust_size=integer(),
+    clust_prob=numeric(),
     NA_Count=integer()
   )
   # Initialise with outcome
-  aim_df <- aim_df_add_a(aim_df,OUT_pheno,trait_info$phenotype,
-               unstdBeta_df)
-  #FIXME
+  aim_df <- data.frame(label=OUT_pheno,
+                       axes_ind=which(trait_info$phenotype==OUT_pheno)[1],
+                       b_df_ind= which(colnames(unstdBeta_df)== OUT_pheno)[1],
+                       nSNPs=sum(!is.na(unstdBeta_df[,OUT_pheno]))[1]
+                       )
   for (ai in 1:length(trait_info$phenotype)){
     # Update the traits forming the axis
     a=trait_info$phenotype[ai]
@@ -34,7 +37,7 @@ clust_compare <-function(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
                  unstdBeta_df)
       nr=10.0#/length(aim_df$label) # FIXME - Max number of clusters.
       # Cluster the data on these axes
-      unstdBeta_df <- remove_na_from_row(unstdBeta_df,aim_df)
+      #unstdBeta_df <- remove_na_from_row(unstdBeta_df,aim_df)
       allna <- all_na_check(unstdBeta_df,aim_df)
       if (allna){
         #' If the trait column was removed from the beta_df during na removal then 
@@ -47,13 +50,13 @@ clust_compare <-function(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
         print(paste0('New axis ',a))
         # Cluster the data on these axes
         if (which_clust=='min'){cluster_df=cluster_kmeans_min(unstdBeta_df,aim_df,nr)}
-        else{cluster_df=cluster_kmeans_basic(unstdBeta_df,aim_df,nr)}
+        else{cluster_df=cluster_kmeans_basic(unstdBeta_df,aim_df,nr,clust_threshold,clust_norm)}
         # Find the set of cluster numbers
         c_nums<-unique(cluster_df$cluster) 
         # Score the clustered data based on affilliations with axes.
         # Find the score for this axis
         c_score0 <- clust_score(cluster_df,
-                                unstdBeta_df,pval_df,aim_df,bp_on) # Score across all axis
+                                unstdBeta_df,pval_df,aim_df,bp_on,clust_prob_on) # Score across all axis
         # Initialise new column for new axis
         c_scores[a]=numeric()
         # Iterate through each cluster and compare across the others to find if 
