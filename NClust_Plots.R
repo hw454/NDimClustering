@@ -122,7 +122,7 @@ plot_max_diff <- function(max_df,clust_typ_str='basic',bp_on=TRUE,clust_prob_on=
     bp_str<- ' and bp off'
     bp_name_str='_bpOFF'
   }
-  if (bpclust_prob_on){
+  if (clust_prob_on){
     clust_prob_str<-' and clust prob on'
     clust_prob_name_str='_clustprobON'
   }

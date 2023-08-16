@@ -16,15 +16,15 @@ library(tidyverse)
 
 # variable set-up
 threshmul=5.0
-clust_threshold=1e-5
+clust_threshold=1e-8
 thresh_norm="F"
 clust_norm="F"
 
 # Testing dimensions
-test=0 # testing switch
-num_trait0=400
-num_trait1=410
-num_rows=50
+test=1 # testing switch
+num_trait0=200
+num_trait1=400
+num_rows=100
 
 # Files containing data
 hail_gcorr_dir = paste0(data_dir,"Hail_AllxAll.csv")   # Location of the data files

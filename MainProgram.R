@@ -80,7 +80,7 @@ for (clust_typ_str in clust_typ_list){
       iter_df<- iter_df %>% add_row('index'=iter,'clust_typ'=clust_typ_str,
                                   'bp_on'=bp_on,'clust_prob_on'=clust_prob_on)
       print('Begining algorithm for inputs')
-      print(iter_df[length(iter_df)])
+      print(iter_df[iter_df$index==iter,])
       test1<-clust_compare(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
                     trait_info$phenotype,diff_threshold,thresh_norm,
                     clust_threshold,clust_norm,
