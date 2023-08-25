@@ -1,6 +1,7 @@
 clust_compare <-function(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
                          axes,threshold,thresh_norm,clust_threshold,clus_norm,
-                         which_clust='basic',bp_on=TRUE,clust_prob_on=TRUE){
+                         which_clust='basic',bp_on=TRUE,clust_prob_on=TRUE,
+                         max_dist=0.0,nr=5){
   #' Iterate through the columns in axes and clusters the data. 
   #' If there is a distinct difference between two clusters exit.
   
@@ -30,7 +31,6 @@ clust_compare <-function(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
       # If the axis is already included then add row is not run.
       aim_df <- aim_df_add_a(aim_df,a,trait_info$phenotype,
                  unstdBeta_df)
-      nr=10.0#/length(aim_df$label) # FIXME - Max number of clusters.
       # Cluster the data on these axes
       #unstdBeta_df <- remove_na_from_row(unstdBeta_df,aim_df)
       allna <- all_na_check(unstdBeta_df,aim_df)
@@ -44,8 +44,8 @@ clust_compare <-function(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
         print(paste0('Cluster on ',length(aim_df$label),' axes'))
         print(paste0('New axis ',a))
         # Cluster the data on these axes
-        if (which_clust=='min'){cluster_df=cluster_kmeans_min(unstdBeta_df,aim_df,nr)}
-        else{cluster_df=cluster_kmeans_basic(unstdBeta_df,aim_df,nr,clust_norm,clust_threshold)}
+        if (which_clust=='min'){cluster_df=cluster_kmeans_min(unstdBeta_df,aim_df,nr,max_dist)}
+        else{cluster_df=cluster_kmeans_basic(unstdBeta_df,aim_df,nr,max_dist,clust_norm,clust_threshold)}
         # Find the set of cluster numbers
         c_nums<-unique(cluster_df$cluster) 
         # Score the clustered data based on affilliations with axes.
@@ -59,33 +59,52 @@ clust_compare <-function(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
         # any pair have a distinct difference.
         N2=length(c_nums)
         N1=N2-1
-        for (i in 1:N1){
-          for (j in (i+1):N2){
-            ci=c_nums[i]
-            cj=c_nums[j]
-            cs1<-as.matrix(c_score0[c_score0$clust_num==ci,aim_df$label])
-            cs2<-as.matrix(c_score0[c_score0$clust_num==cj,aim_df$label])
-            # IF there are no members to a cluster it's score will be NaN
-            if (!all(is.na(cs1)) && !all(is.na(cs2)) && nrow(cs1) && nrow(cs2)==0){
-              metric_score=clust_metric(cs1,cs2,thresh_norm)
-              if (is.na(metric_score)){}
-              else{
-                if (metric_score>threshold){
-                  print("Threshold met on phenotype:")
-                  print(a)
-                  c_scores <- rbind(c_scores,c_score0)
-                  return(c_scores)
-                }
-              }
-            }
-          }
-        }
+        #FIXME find all diffs then take max
+        diff_scores_list <- lapply(c_nums,compare_oneclust_tolist,
+                                   c_nums=c_nums,
+                                   c_scores=c_scores,
+                                   aim_df=aim_df)
+        diff_score_list<-diff_score_list[!sapply(diff_score_list,is.null)]
+        diff_scores<-Reduce(rbind,diff_score_list)
+        row=which(diff_scores,)
       }
+      c_score0['num_axis']=length(aim_df$label)
       c_scores <- rbind(c_scores,c_score0)   
     }
+    
   }
   print("None of the outcomes clustering met the thresholding test. ")
   return(c_scores)
+}
+
+compare_oneclust_tolist<-function(cn1,c_nums,c_scores,aim_df){
+  diff_score_list<-lapply(c_nums,clust_score_diff,
+                          cn1=cn1,
+                          c_scores=c_scores,
+                          aim_df)
+  diff_score_list<-diff_score_list[!sapply(diff_score_list,is.null)]
+  diff_scores<-Reduce(rbind,diff_score_list)
+  return(diff_scores)
+}
+
+clust_score_diff <- function(cn1,cn2,c_scores,aim_df){
+  #' Find the score difference between two clusters
+  #' If NaN return Null
+  cs1<-as.matrix(c_score0[c_score0$clust_num==cn1,aim_df$label])
+  cs2<-as.matrix(c_score0[c_score0$clust_num==cn2,aim_df$label])
+  # IF there are no members to a cluster it's score will be NaN
+  if (!all(is.na(cs1)) && !all(is.na(cs2)) && nrow(cs1) && nrow(cs2)==0){
+    metric_score=clust_metric(cs1,cs2,thresh_norm)
+    if (is.na(metric_score)){return()}
+    else{
+      score_diff=data.frame(
+        c_num1=cn1,
+        c_num2=cn2,
+        diff=metric_score
+      )
+    }
+  }
+  else{return()}
 }
 #test2 <- testna(unstdBeta_df,trait_info$phenotype)
 # test<-clust_compare(stdBeta_df ,SNP_ind,axes,threshold,thresh_norm, clust_norm)

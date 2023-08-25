@@ -45,7 +45,7 @@ if (!file.exists(res_dir0)){
 # - type of clustering
 clust_typ_str1='basic'
 clust_typ_str2='min'
-clust_typ_list=c(clust_typ_str1,clust_typ_str2)
+clust_typ_list=c(clust_typ_str1)#,clust_typ_str1)
 # - probability used from beta value
 bp_on1=TRUE
 bp_on2=FALSE
@@ -72,19 +72,21 @@ for (clust_typ_str in clust_typ_list){
       else{clust_prob_str<-'_clustprobOFF'}
       res_dir<- paste0(res_dir0,clust_typ_str,bp_str,clust_prob_str,'/')
       source("SetupNDimClust.R")
-      row=which(trait_info$pheno_category=='Outcome')
-      OUT_pheno=trait_info$phenotype[row]
       # Find the distances between all points to initialise the threshold for cluster difference.
-      dist_df<-setup_dist(unstdBeta_df,norm_typ)
-      diff_threshold=threshmul*var(dist_df$dist,na.rm=TRUE) 
+      dist_df<-setup_dist(unstdBeta_df,thresh_norm)
+      diff_threshold=threshmul*var(dist_df$dist,na.rm=na_rm)
+      max_dist=max(dist_df$dist)
       iter_df<- iter_df %>% add_row('index'=iter,'clust_typ'=clust_typ_str,
                                   'bp_on'=bp_on,'clust_prob_on'=clust_prob_on)
       print('Begining algorithm for inputs')
       print(iter_df[iter_df$index==iter,])
+      Rprof()
       test1<-clust_compare(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
                     trait_info$phenotype,diff_threshold,thresh_norm,
                     clust_threshold,clust_norm,
-                    clust_typ_str,bp_on,clust_prob_on )
+                    clust_typ_str,bp_on,clust_prob_on,max_dist,nr)
+      print(summaryRprof())
+      Rprof(NULL)
       print('Clust done')
       max_diff_df1<- test1 %>% create_max_diff(thresh_norm)
       print('Diff done')
@@ -92,16 +94,14 @@ for (clust_typ_str in clust_typ_list){
       print('Heatmap plot done')
       max_diff_df1 %>% plot_max_diff(clust_typ_str,bp_on,clust_prob_on)
       print('Diff plot done')
+      test1['input_iter']<-iter
+      max_diff_df1['input_iter']<-iter
       if (iter==1){
         clust_out<-test1
-        clust_out['input_iter']<-iter
-        max_diff_df1['input_iter']<-iter
         max_diff_df0<-max_diff_df1
       }
       else{
-        test1['input_iter']<-iter
         clust_out<-rbind(clust_out,test1)
-        max_diff_df1['input_iter']<-iter
         max_diff_df0<- rbind(max_diff_df0,max_diff_df1)
       }
       iter<-iter+1

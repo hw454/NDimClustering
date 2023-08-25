@@ -37,8 +37,8 @@ rsconnect/
 *.txt
 *.pdf
 *.csv
-
 # PYTHON FILES
 # Log and cache
 *.pycache
 *.log
+HeartRateCustom.py

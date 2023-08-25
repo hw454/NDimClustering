@@ -9,7 +9,28 @@ kmeansIC = function(fit){
   return(data.frame(AIC = D + 2*m*k,
                     BIC = D + log(n)*m*k))
 }
-cluster_kmeans_basic <- function(beta_df,aim_df,nr,norm_typ="F",clust_threshold=1e-5){
+
+closest_clust<-function(snp_id,b_df,clust_re,max_dist,norm_typ="F"){
+  snp_dist<-max_dist
+  for (cent in clust_re$centers){
+    snp_clust_dist<-norm(cent-b_df[snp,],norm_typ)
+    clust_re$clust_dist[snp]=snp_clust_dist
+    if (snp_clust_dist<snp_dist){
+      # Assign cluster number when distance is less than the previous centres
+      snp_dist<-snp_clust_dist
+      clust_num<-which(clust_re$centers==cent)
+    }
+  }
+  out_df<-data_frame(
+    row.names=snp_id,
+              clust_num=clust_num,
+              clust_dist=snp_dist,
+              clust_prob=1.0
+  )
+  return(out_df)
+}
+
+cluster_kmeans_basic <- function(beta_df,aim_df,nr,max_dist,norm_typ="F",clust_threshold=1e-5){
   #' Using the association scores for each SNP accross traits cluster the traits
   #' using kmeans. Return the cluster setup which minimises AIC.
   # Set up for k-means clustering
@@ -27,37 +48,18 @@ cluster_kmeans_basic <- function(beta_df,aim_df,nr,norm_typ="F",clust_threshold=
   # Find the clusters and their centres
   clust_re <- kmeans_skip_nan(b_df, centers = nr, nstart = (nr+1), iter.max = 300,
                               clust_threshold=clust_threshold,norm_typ=norm_typ)
-  # cluster number identification for each observation
-  # FIXME this could be done inside clustering algorithm now this is manual. 
-  for (snp in names(clust_re$cluster)){
-    clust_num<-clust_re$cluster[snp]
-    clust_cent<-clust_re$centers
-    snp_clust_dist<-norm(clust_cent-b_df[snp,],"F")
-    clust_re$clust_dist[snp]=snp_clust_dist
-  }
   # For each SNP that has not been assigned due to NaNs assign to nearest cluster. 
-  for (snp in setdiff(names(beta_df),names(b_df_comp))){
-    snp_dist=max(dist_df)
-    for (cent in clust_re$centers){
-      snp_clust_dist<-norm(cent-b_df[snp,],"F")
-      clust_re$clust_dist[snp]=snp_clust_dist
-      if (snp_clust_dist<snp_dist){
-        # Assign cluster number when distance is less than the previous centres
-        snp_dist<-snp_clust_dist
-        clust_num<-which(clust_re$centers==cent)
-      }
-    }
-    # Save the cluster assignment to the dataframe
-    clust_re$cluster[snp]=clust_num
-    clust_re$clust_dist[snp]=snp_dist
-  }
-  # Cluster prob is a weighting based on distance from the centre of the cluster
-  clust_re$clust_prob<-1/(1+clust_re$clust_dist)
-  # Ensure the names of the row match the SNP names
-  names(clust_re$clust_prob)<-names(clust_re$cluster)
+  #FIXME replace with lapply
+  snp_clusters_list<-lapply(setdiff(names(beta_df),names(b_df_comp)),
+                           closest_clust,b_df=beta_df,
+                           clust_re=clust_re,max_dist=max_dist,
+                           norm_typ=norm_typ)
+  nan_cluster_df<-Reduce(rbind,snp_clusters_list)
+  nan_cluster_df$clust_prob<- nan_cluster_df$clust_dist %>% clust_prob_calc()
+  clust_re <- clust_re %>% rbind(nan_cluster_df)
   return(clust_re)
 }
-cluster_kmeans_min <- function(beta_df,aim_df,nr){
+cluster_kmeans_min <- function(beta_df,aim_df,nr,max_dist){
   #' Using the association scores for each SNP accross traits cluster the traits
   #' using kmeans. Return the cluster setup which minimises AIC.
   # Set up for k-means clustering
@@ -66,15 +68,14 @@ cluster_kmeans_min <- function(beta_df,aim_df,nr){
   # Test function: more axes should yeild less or equal data points. Point has full co-ordinate accros axes
   # Filter complete cases
   b_df_comp <- b_df[complete.cases(b_df)]
-  eff_df <- abs(b_df)
-  if (length(aim_df$label)<=1){eff_dfs<-t(eff_df_comp)}
+  eff_df <- abs(b_df_comp)
+  if (length(aim_df$label)<=1){eff_dfs<-t(eff_df)}
   else {eff_dfs <- t(scale(t(eff_df)))}
   
   # Initial cluster dataframe
   cluster_list = list()
   IC_df = data.frame(matrix(data=NA, nrow = nr, ncol=1))
   colnames(IC_df) = c("AIC")
-  IC_df$nCluster = 2:(nr+1)
   for(i in 2:(nr+1)){
     set.seed(240) # setting seed
     clust_re <- kmeans(eff_dfs, centers = i, nstart = (nr+1), iter.max = 300)
@@ -92,22 +93,23 @@ cluster_kmeans_min <- function(beta_df,aim_df,nr){
     clust_re_minAIC$clust_dist[snp]=snp_clust_dist
   }
   # Assign NaNs to nearest cluster
-  for (snp in setdiff(names(beta_df),names(b_df_comp))){
-    snp_dist=max(dist_df)
-    for (cent in clust_re_minAIC$centers){
-      snp_clust_dist<-norm(cent-b_df[snp,],"F")
-      clust_re_minAIC$clust_dist[snp]=snp_clust_dist
-      if (snp_clust_dist<snp_dist){
-        snp_dist<-snp_clust_dist
-        clust_num<-which(clust_re_minAIC$centers==cent)
-      }
-    }
-    clust_re_minAIC$cluster[snp]=clust_num
-    clust_re_minAIC$clust_dist[snp]=snp_dist
-  }  
+  nan_clusts<-lapply(setdiff(names(b_df),names(b_df_comp)),closest_clust,
+                     b_df=b_df,
+                     clust_re=clust_re_minAIC,
+                     max_dist=max_dist,
+                     norm_typ=norm_typ)
+  nan_clusts_df<-Reduce(rbind,nan_clusts)
   names(clust_re_minAIC$clust_dist)<-names(clust_re_minAIC$cluster)
-  clust_re_minAIC$clust_prob<-1/(1+clust_re_minAIC$clust_dist)
-  return(clust_re_minAIC)
+  clust_out=data.frame(
+    row.names=names(clust_re_minAIC$cluster),
+    clust_num=clust_re_minAIC$cluster,
+    clust_dist=clust_re_minAIC$clust_dist,
+    clust_prob=clust_re_minAIC$clust_prob
+  )
+  clust_out<-rbind(clust_out,nan_clusts_df)
+  if (prob_on){
+  clust_out$clust_prob<- clust_re_minAIC$clust_dist %>% clust_prob_calc()}
+  return(clust_out)
 }
 
 all_na_check <- function(b_df,aim_df){

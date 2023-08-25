@@ -5,9 +5,6 @@ plot_trait_heatmap <- function(c_scores,clust_typ_str,bp_on=TRUE,clust_prob_on=T
   full_trait_list=colnames(c_scores)
   full_trait_list<-full_trait_list[!(full_trait_list %in% ignore_cols)]
   full_trait_list<-full_trait_list[full_trait_list != 'clust_num']
-  #c_scores[!is.na(c_scores[full_trait_list])]=log(c_scores[!is.na(c_scores[full_trait_list])])
-  #not_na=na.omit(c_scores[full_trait_list])
-  #print(not_na)
   vmin=min(log(abs(c_scores[full_trait_list])),na.rm=TRUE)
   vmax=max(log(abs(c_scores[full_trait_list])),na.rm=TRUE)
   break_width=(vmax-vmin)/4
@@ -58,57 +55,104 @@ plot_trait_heatmap <- function(c_scores,clust_typ_str,bp_on=TRUE,clust_prob_on=T
 
 get_col_list <- function(df,filter_col,N,ignore_cols=c()){
   #' Filter the dataframe `df` by the column `filter_col` with value N.
-  #' Return the columns names for the columns which are not all Nan once filters 
+  #' Return the columns names for the columns which are not all NaNs
   #' and are not in `ignore_cols`
   filt_df=df[df[filter_col]==N,]
   c_name=colnames(filt_df)
-  keep_cols=c()
-  for (cn in c_name){
-    if(cn %in% ignore_cols){}
-    else if(!all(is.na(filt_df[cn]))){keep_cols<-c(keep_cols,cn)}
-  }
-  return(keep_cols)
+  keep_cols_list=lapply(c_name,check_col_nans,
+                        ignore_cols=ignore_cols,
+                        df=filt_df)
+  keep_cols_list<-keep_cols_list[!sapply(keep_cols_list,is.null)]
+  return(keep_cols_list)
 }
-create_max_diff <- function(c_scores,norm_typ){
-norm_typ=thresh_norm
-  NM <- unique(c_scores$num_axis)
-  max_diff_df <- data.frame(
-    num_axis = integer(),
-    Max_Diff = numeric(),
-    clust_num1 = integer(),
-    clust_num2=integer()
-  )
-  ignore_cols=c('clust_size','id','num_axis','total_score')
-  for (Ni in NM){
-    trait_list <- get_col_list(c_scores,'num_axis',Ni,ignore_cols)
-    trait_list_no_cnum<-trait_list[trait_list != 'clust_num']
-    c_scores_term <- c_scores[c_scores$num_axis==Ni,trait_list]
-    #c_scores_term['clust_num']<-c_scores[c_scores$num_axis==Ni,'clust_num']
-    clust_nums <- unique(c_scores_term$clust_num)
-    cs_diff <- 0.0
-    c_scores_term['total_score']=numeric()
-    c1out<-0
-    c2out<-0
-    for (cn1 in clust_nums){
-      cs1<-as.matrix(c_scores_term[c_scores_term$clust_num==cn1,trait_list_no_cnum])
-      tot_score=norm(as.matrix(cs1),norm_typ)
-      c_scores_term[c_scores_term$clust_num==cn1,'total_score']=tot_score
-      for (cn2 in clust_nums){
-        cs2<-as.matrix(c_scores_term[c_scores_term$clust_num==cn2,trait_list_no_cnum])
-        cs_diff0<-clust_metric(cs1,cs2,norm_typ)
-        tot_score0<-norm(as.matrix(cs2),norm_typ)
-        c_scores_term[c_scores_term$clust_num==cn2,'total_score']=tot_score0
-        if (is.na(cs_diff0)){}
-        else if (cs_diff0>cs_diff){
-          cs_diff <- cs_diff0
-          c1out <- cn1
-          c2out <- cn2}
-      }
+
+check_col_nans <- function(col,df,ignore_cols){
+  if(cn %in% ignore_cols){return()}
+  else if(!all(is.na(filt_df[cn]))){return(cn)}
+  else{return()}
+}
+
+max_diff_single_axis <- function(Ni,ignore_colsc_scores,trait_list){
+  trait_list <- get_col_list(c_scores,'num_axis',Ni,ignore_cols)
+  trait_list_no_cnum<-trait_list[trait_list != 'clust_num']
+  c_scores_term <- c_scores[c_scores$num_axis==Ni,trait_list]
+  #c_scores_term['clust_num']<-c_scores[c_scores$num_axis==Ni,'clust_num']
+  clust_nums <- unique(c_scores_term$clust_num)
+  cs_diff <- 0.0
+  c_scores_term['total_score']=numeric()
+  c1out<-0
+  c2out<-0
+  for (cn1 in clust_nums){
+    cs1<-as.matrix(c_scores_term[c_scores_term$clust_num==cn1,trait_list_no_cnum])
+    tot_score=norm(as.matrix(cs1),norm_typ)
+    c_scores_term[c_scores_term$clust_num==cn1,'total_score']=tot_score
+    for (cn2 in clust_nums){
+      cs2<-as.matrix(c_scores_term[c_scores_term$clust_num==cn2,trait_list_no_cnum])
+      cs_diff0<-clust_metric(cs1,cs2,norm_typ)
+      tot_score0<-norm(as.matrix(cs2),norm_typ)
+      c_scores_term[c_scores_term$clust_num==cn2,'total_score']=tot_score0
+      if (is.na(cs_diff0)){}
+      else if (cs_diff0>cs_diff){
+        cs_diff <- cs_diff0
+        c1out <- cn1
+        c2out <- cn2}
     }
-    max_diff_df <- max_diff_df %>% add_row(num_axis=Ni,Max_Diff=cs_diff,clust_num1=c1out,clust_num2=c2out)
   }
-  #print(max_diff_df)
-  #dev.off()
+  out_df <- data.frame(
+    num_axis=Ni,
+    Max_Diff=cs_diff,
+    clust_num1=c1out,
+    clust_num2=c2out)
+  return(out_df)
+}
+
+
+max_diff_single_axis <- function(Ni,ignore_cols,c_scores,trait_list,norm_typ){
+  ## Compare all cluster pairs two identify the maximum difference between any two clusters
+  ## Output: MaxDiff, Clustnum-1, Clustnum-2, Number of axis
+  trait_list <- get_col_list(c_scores,'num_axis',Ni,ignore_cols)
+  trait_list_no_cnum <- trait_list[trait_list != 'clust_num']
+  c_scores_term <- c_scores[c_scores$num_axis==Ni,trait_list]
+  c_scores_term['total_score']=numeric()
+  clust_nums <- unique(c_scores_term$clust_num)
+  cs_diff <- 0.0
+  c1out<-0
+  c2out<-0
+  for (cn1 in clust_nums){
+    cs1<-as.matrix(c_scores_term[c_scores_term$clust_num==cn1,trait_list_no_cnum])
+    tot_score=norm(as.matrix(cs1),norm_typ)
+    c_scores_term[c_scores_term$clust_num==cn1,'total_score']=tot_score
+    for (cn2 in clust_nums){
+      cs2<-as.matrix(c_scores_term[c_scores_term$clust_num==cn2,trait_list_no_cnum])
+      cs_diff0<-clust_metric(cs1,cs2,norm_typ)
+      tot_score0<-norm(as.matrix(cs2),norm_typ)
+      c_scores_term[c_scores_term$clust_num==cn2,'total_score']=tot_score0
+      if (is.na(cs_diff0)){}
+      else if (cs_diff0>cs_diff){
+        cs_diff <- cs_diff0
+        c1out <- cn1
+        c2out <- cn2}
+    }
+  }
+  out_df <- data.frame(
+    num_axis=Ni,
+    Max_Diff=cs_diff,
+    clust_num1=c1out,
+    clust_num2=c2out)
+  return(out_df)
+}
+
+create_max_diff <- function(c_scores,norm_typ){
+  ## Iterate through the number of axis to identify the maximum difference between any
+  ## two clusters are significantly different
+  NM <- unique(c_scores$num_axis)
+  ignore_cols=c('clust_size','id','num_axis','total_score')
+  max_diff_list <- lapply(NM,max_diff_single_axis,
+                          ignore_cols=ignore_cols,
+                          c_scores=c_scores,
+                          trait_list=trait_list,
+                          norm_typ=norm_typ)
+  max_diff_df<- Reduce(rbind,max_diff_list)
   return(max_diff_df)
 }
 
@@ -161,7 +205,6 @@ plot_max_diff_list <- function(max_df_list,iter_df){
   N_sets<-unique(max_df_list$input_iter)
   plotname <- paste0(res_dir,"NumAxis_Vs_MaxScoreDiff_Compare.png")
   lineplot <- ggplot() 
-  print(N_sets)
   for (plot_iter in N_sets){
     max_df0=max_df_list[max_df_list$input_iter==plot_iter,]
     max_df0['clust_typ']<-iter_df$clust_typ[plot_iter]
