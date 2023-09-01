@@ -62,7 +62,7 @@ clust_compare <-function(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
         #FIXME find all diffs then take max
         diff_scores_list <- lapply(c_nums,compare_oneclust_tolist,
                                    c_nums=c_nums,
-                                   c_scores=c_scores,
+                                   c_score0=c_score0,
                                    aim_df=aim_df)
         diff_score_list<-diff_score_list[!sapply(diff_score_list,is.null)]
         diff_scores<-Reduce(rbind,diff_score_list)
@@ -77,17 +77,17 @@ clust_compare <-function(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
   return(c_scores)
 }
 
-compare_oneclust_tolist<-function(cn1,c_nums,c_scores,aim_df){
+compare_oneclust_tolist<-function(cn1,c_nums,c_score0,aim_df){
   diff_score_list<-lapply(c_nums,clust_score_diff,
                           cn1=cn1,
-                          c_scores=c_scores,
+                          c_score0=c_score0,
                           aim_df)
   diff_score_list<-diff_score_list[!sapply(diff_score_list,is.null)]
   diff_scores<-Reduce(rbind,diff_score_list)
   return(diff_scores)
 }
 
-clust_score_diff <- function(cn1,cn2,c_scores,aim_df){
+clust_score_diff <- function(cn1,cn2,c_score0,aim_df){
   #' Find the score difference between two clusters
   #' If NaN return Null
   cs1<-as.matrix(c_score0[c_score0$clust_num==cn1,aim_df$label])
