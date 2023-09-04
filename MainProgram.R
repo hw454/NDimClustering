@@ -27,7 +27,8 @@ source("ClustScores.R")
 source("NClust_Plots.R")
 source("CalcDist.R")
 source("kmeans_skip_nan.R")
-source("ClusteringPCACompare.R")
+source("ClusteringCompare.R")
+source("Principal_Component_Analysis.R")
 
 # Location of the data directory
 data_dir <- "./working-example/data/"
