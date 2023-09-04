@@ -1,4 +1,4 @@
-principal_component_analysis <- function(b_df, pval_df,
+pca <- function(b_df, pval_df,
                                          np = 3, narm = TRUE) {
   #' Compute the np principal components of b_df.
   #' Inputs: b_df - Data matrix, columns are axis, rows are points.
@@ -18,7 +18,7 @@ principal_component_analysis <- function(b_df, pval_df,
   # represented by np largest Eigen values.
   b_pc_df    <- transform_coords(b_df, e_mat)
   pval_pc_df <- transform_coords(pval_df, e_mat)
-  out_list   <- c("transform" = e_mat, "beta" = b_pc_df, "pval" = pval_df)
+  out_list   <- list("transform" = e_mat, "beta" = b_pc_df, "pval" = pval_df)
   return(out_list)
 }
 transform_coords <- function(p_mat, t_mat) {
@@ -44,7 +44,8 @@ find_np_eigen_mat <- function(mat, np) {
   #' Take the np largest eigen values and their corresponding eigen vectors.
   ev <- eigen(mat)
   # The vectors matrix contains the unit eigen vectors in the columns
-  vecs <- ev$vectors[, 1:np]
+  nend <- np %>% min(dim(mat)[1])
+  vecs <- ev$vectors[, 1:nend]
   return(vecs)
 }
 
@@ -69,6 +70,6 @@ test_scale <- function(b_df, se_df, p_df) {
 }
 test_pca <- function(b_df, pval_df,
 np = 3, narm = TRUE) {
-  principal_component_analysis(b_df, pval_df, np, narm)
+  pca(b_df, pval_df, np, narm)
 }
-test_pca(unstdBeta_df[, 1:10])
+# test_pca(unstd_beta_df[, 1:10], pval_df[, 1:10])

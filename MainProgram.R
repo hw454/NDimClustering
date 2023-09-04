@@ -22,13 +22,13 @@
 # -> Fail - Return to 1 with extra dimension
 # -> Pass - Exit with results.
 
-source("ClusteringFunction.R")
-source("ClustScores.R")
-source("NClust_Plots.R")
-source("CalcDist.R")
-source("kmeans_skip_nan.R")
-source("ClusteringCompare.R")
-source("Principal_Component_Analysis.R")
+source("./ClusteringFunction.R")
+source("./ClustScores.R")
+source("./NClust_Plots.R")
+source("./CalcDist.R")
+source("./kmeans_skip_nan.R")
+source("./ClusteringCompare.R")
+source("./PrincipalComponentAnalysis.R")
 
 # Location of the data directory
 data_dir <- "./working-example/data/"
@@ -74,8 +74,6 @@ for (clust_typ_str in clust_typ_list) {
       }
       res_dir <- paste0(res_dir0, clust_typ_str, bp_str, clust_prob_str, "/")
       source("SetupNDimClust.R")
-      row <- which(trait_info$pheno_category == "Outcome")
-      out_pheno <- trait_info$phenotype[row]
       # Find the distances between all points to initialise the threshold
       # for cluster difference.
       dist_df <- setup_dist(unstdBeta_df, clust_norm)
@@ -85,7 +83,12 @@ for (clust_typ_str in clust_typ_list) {
       "clust_prob_on" = clust_prob_on)
       print("Begining algorithm for inputs")
       print(iter_df[length(iter_df)])
-      test1 <- clust_pca_compare()
+      test1 <- clust_pca_compare(unstd_beta_df,unstd_se_df, pval_df,
+                                 diff_threshold = diff_threshold, 
+                                 thresh_norm = thresh_norm, 
+                                 clust_threshold = clust_threshold,
+                                 clust_norm, np = np, nr = np, which_clust = clust_typ_str,
+                                 bp_on = bp_on, clust_prob_on = clust_prob_on, narm = TRUE)
       print("Clust done")
       max_diff_df1 <- test1 %>% create_max_diff(thresh_norm)
       print("Diff done")

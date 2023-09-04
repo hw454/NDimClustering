@@ -9,18 +9,18 @@ kmeans_skip_nan <- function(eff_dfs, centers = nr, nstart = (nr + 1),
   )
   min_max_df <- min_max_df %>% na.omit()
   centroid_list <- lapply(rownames(min_max_df), rand_cent,
-                          ncents = centers, min_max_df = min_max_df)
+                          n_cents = centers, min_max_df = min_max_df)
   centroids <- Reduce(cbind, centroid_list)
   snp_list <- rownames(eff_dfs)
-  nSNPs <- length(snp_list)
-  clust_samp <- replicate(nSNPs, sample(1:centers, 1))
+  nsnps <- length(snp_list)
+  clust_samp <- replicate(nsnps, sample(1:centers, 1))
   cluster_df <- data.frame(
     row.names = rownames(eff_dfs),
     clusters = clust_samp
   )
   cluster_df["clust_prob"] <- numeric()
   clust_dist_list <- lapply(snp_list, cent_dist_calc,
-                          eff_dfs = eff_dfs, cluster_df = cluster_df,
+                          b_dfs = eff_dfs, cluster_df = cluster_df,
                           centroids = centroids, norm_typ = norm_typ)
   clust_dist_df <- Reduce(rbind, clust_dist_list)
   cluster_df <- cbind(cluster_df, clust_dist_df)
@@ -37,35 +37,37 @@ kmeans_skip_nan <- function(eff_dfs, centers = nr, nstart = (nr + 1),
     # Check if the previous centres differ from the cluster means.
     thresh_list <- lapply(rownames(centroids), clust_cent_check,
                         iter = iter, cluster_df = cluster_df,
-                        eff_dfs = eff_dfs, centroids = centroids,
+                        b_dfs = eff_dfs, centroids = centroids,
                         na_rm = na_rm, norm_typ = norm_typ)#,
                         #axes_nonnan=axes_nonnan)
-    thresh_check_df <- Reduce(rbind,thresh_list)
+    thresh_check_df <- Reduce(rbind, thresh_list)
     # Are all the new centroids within the threshold of the previous
     thresh_t <- sum(thresh_check_df$thresh_check == FALSE)
-    if(all(thresh_check_df$thresh_check)) {
+    if (all(thresh_check_df$thresh_check)) {
       print(paste("Clusters converged", iter))
       break
     }
-    centroids <- thresh_check_df[ , !names(thresh_check_df) %in% c("thresh_check")]
+    centroids <- thresh_check_df[,
+                  !names(thresh_check_df) %in% c("thresh_check")]
     # Are all the new centroids within the threshold of the previous
   }
-  if (prob_on){
+  if (prob_on) {
     cluster_df$clust_prob <- cluster_df$clust_dist %>% clust_prob_calc()
   }
  return(cluster_df)
 }
 
-snp_closest_clust<-function(snp_id, eff_dfs, cluster_df, centroids, norm_typ) {
+snp_closest_clust <- function(snp_id, eff_dfs, cluster_df,
+                              centroids, norm_typ) {
   #' For each cluster check whether the centre is closer than the currently
   #' assigned cluster
   snp_score <- eff_dfs[snp_id, ]
   snp_dist <- cluster_df[snp_id, "clust_dist"]
-  snp_clust_num = cluster_df[snp_id, "clusters"]
-  for(clust_num in rownames(centroids)) {
+  snp_clust_num <- cluster_df[snp_id, "clusters"]
+  for (clust_num in rownames(centroids)) {
     dist <- norm(data.matrix(
               na.omit(centroids[clust_num, ] - snp_score)), norm_typ)
-     if(dist < snp_dist) {
+     if (dist < snp_dist) {
        snp_dist <- dist
         snp_clust_num <- clust_num
      }
@@ -78,7 +80,7 @@ snp_closest_clust<-function(snp_id, eff_dfs, cluster_df, centroids, norm_typ) {
    )
   return(snp_cluster_df)
 }
-cent_dist_calc <- function(snp_id, b_dfs, cluster_df, centroids, norm_typ){
+cent_dist_calc <- function(snp_id, b_dfs, cluster_df, centroids, norm_typ) {
    snp_score <- b_dfs[snp_id, ]
    c_num <- cluster_df[snp_id, "clusters"]
    cent <- centroids[c_num, ]
@@ -87,6 +89,7 @@ cent_dist_calc <- function(snp_id, b_dfs, cluster_df, centroids, norm_typ){
                        "clust_dist" = c_dist)
   return(clust_df)
 }
+
 clust_prob_calc <- function(d) {
   dist <- 1.0 / (1.0 + d)
   return(dist)
@@ -110,23 +113,23 @@ clust_cent_check <- function(c_num, iter, cluster_df, b_dfs, centroids,
     }
     # Calculate how much the centroid has moved.
     centroiddiff <- data.matrix(
-                                na.omit(centroidscheck[c_num, ] - centroids[c_num, ]))
-    centroidchange <- norm(centroiddiff,norm_typ)
-    # Check if the difference between the new and old centres has gone below the threshold
-  }
-  else{
+                                na.omit(centroidscheck[c_num, ]
+                                - centroids[c_num, ]))
+    centroidchange <- norm(centroiddiff, norm_typ)
+    # Check if the diff between new and old centres is below the threshold
+  } else {
     centroidchange <- 0
-   }
-   centroid_df <- data.frame(
-     row.names = c_num,
-     thresh_check = (centroidchange < clust_threshold & iter > 1)
-   )
-   if(centroid_df[c_num, "thresh_check"]){
-     centroid_df <- cbind(centroid_df, centroids[c_num, ])
-   } else {
+  }
+  centroid_df <- data.frame(
+    row.names = c_num,
+    thresh_check = (centroidchange < clust_threshold & iter > 1)
+  )
+  if (centroid_df[c_num, "thresh_check"]) {
+    centroid_df <- cbind(centroid_df, centroids[c_num, ])
+  } else {
      centroid_df <- cbind(centroid_df, centroidscheck[c_num, ])
-   }
-   return(centroid_df)
+  }
+  return(centroid_df)
  }
 
 rand_cent <- function(a, min_max_df, n_cents) {
