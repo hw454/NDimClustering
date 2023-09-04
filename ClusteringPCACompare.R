@@ -1,4 +1,4 @@
-clust_pca_compare <- function(unstd_beta_df, unstd_se_df, pval_df,
+clust_pca_compare <- function(unstd_beta_df, unstd_se_df, pval_df, # nolint
                          axes, threshold, thresh_norm, clust_threshold,
                          clus_norm, np = 3, nr = 10, which_clust = "basic",
                          bp_on = TRUE, clust_prob_on = TRUE) {
@@ -22,9 +22,10 @@ clust_pca_compare <- function(unstd_beta_df, unstd_se_df, pval_df,
   # Add np columns for each PC
   c_scores <- add_np_pca_cols(c_scores, np)
   # Initialise with outcome
+  out_col <- which(colnames(unstd_beta_df) == OUT_pheno)[1]
   aim_df <- data.frame(label = OUT_pheno,
-                       axes_ind = which(trait_info$phenotype ==OUT_pheno)[1],
-                       b_df_ind = which(colnames(unstd_beta_df) == OUT_pheno)[1],
+                       axes_ind = which(trait_info$phenotype == OUT_pheno)[1],
+                       b_df_ind = out_col,
                        nSNPs = sum(!is.na(unstd_beta_df[, OUT_pheno]))[1]
   )
   for (ai in 1:length(trait_info$phenotype)){
@@ -32,16 +33,16 @@ clust_pca_compare <- function(unstd_beta_df, unstd_se_df, pval_df,
     a <- trait_info$phenotype[ai]
     # Add the trait to the trait dataframe
     covered <- (a %in% aim_df$label)
-    if (!covered){
+    if (!covered) {
       # If the axis is already included then add row is not run.
       aim_df <- aim_df_add_a(aim_df, a, trait_info$phenotype,
                              unstd_beta_df)
       if (allna) {
-        #' If the trait column was removed from the beta_df during na removal then 
-        #' remove the trait from the trait data frame and move to the next trait.
+        #' If the trait column was removed from the beta_df
+        #' during na removal then remove the trait from the
+        #' trait data frame and move to the next trait.
         aim_df <- aim_df[aim_df$label != a, ]
-      }
-      else{
+      } else {
         # If the trait is not all NaN then run clustering.
         print(paste0("PCA on ", length(aim_df$label), " axes"))
         print(paste0("New axis ", a))
@@ -72,12 +73,12 @@ clust_pca_compare <- function(unstd_beta_df, unstd_se_df, pval_df,
         # Find the score for each PC
         c_score0 <- clust_pca_score(cluster_df, b_pc_mat, p_pc_mat,
         bp_on, clust_prob_on)
-        # Iterate through each cluster and compare across the others to find if 
+        # Iterate through each cluster and compare across the others to find if
         # any pair have a distinct difference.
-        N2 <- length(c_nums)
-        N1 <- N2-1
-        for (i in 1:N1){
-          for (j in (i+1):N2){
+        n2 <- length(c_nums)
+        n1 <- n2 - 1
+        for (i in 1:n1){
+          for (j in (i + 1):n2){
             ci <- c_nums[i]
             cj <- c_nums[j]
             cs1 <- as.matrix(c_score0[c_score0$clust_num == ci, pc_cols])
@@ -85,7 +86,7 @@ clust_pca_compare <- function(unstd_beta_df, unstd_se_df, pval_df,
             metric_score <- clust_metric(cs1, cs2, thresh_norm)
             if (is.na(metric_score)) {
             } else {
-              if (metric_score>threshold) {
+              if (metric_score > threshold) {
                 print(paste("Threshold met on outcome", a))
                 c_scores <- rbind(c_scores, c_score0)
                 return(c_scores)
@@ -113,7 +114,8 @@ p_col_df <- function(i) {
   colnames(out) <- c(cname)
   return(out)
 }
-#test2 <- testna(unstdBeta_df,trait_info$phenotype)
-# test<-clust_compare(stdBeta_df ,SNP_ind,axes,threshold,thresh_norm, clust_norm)
-#test<-clust_compare(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
-# trait_axes,threshold,thresh_norm,clust_norm)
+#' test2 <- testna(unstdBeta_df,trait_info$phenotype)
+#' test<-clust_compare(stdBeta_df ,SNP_ind,axes,
+#' threshold,thresh_norm, clust_norm)
+#' test<-clust_compare(unstdBeta_df,unstdSE_df,pval_df,tstat_df,
+#' trait_axes,threshold,thresh_norm,clust_norm)
