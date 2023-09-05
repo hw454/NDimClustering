@@ -76,34 +76,36 @@ for (clust_typ_str in clust_typ_list) {
       source("SetupNDimClust.R")
       # Find the distances between all points to initialise the threshold
       # for cluster difference.
-      dist_df <- setup_dist(unstdBeta_df, clust_norm)
+      dist_df <- setup_dist(unstd_beta_df, clust_norm)
       diff_threshold <- threshmul * var(dist_df$dist, na.rm = TRUE)
       iter_df <- iter_df %>% add_row("index" = iter,
       "clust_typ" = clust_typ_str, "bp_on" = bp_on,
       "clust_prob_on" = clust_prob_on)
       print("Begining algorithm for inputs")
       print(iter_df[length(iter_df)])
-      test1 <- clust_pca_compare(unstd_beta_df,unstd_se_df, pval_df,
+      out <- clust_pca_compare(unstd_beta_df,unstd_se_df, pval_df,
                                  diff_threshold = diff_threshold, 
                                  thresh_norm = thresh_norm, 
                                  clust_threshold = clust_threshold,
                                  clust_norm, np = np, nr = np, which_clust = clust_typ_str,
                                  bp_on = bp_on, clust_prob_on = clust_prob_on, narm = TRUE)
       print("Clust done")
-      max_diff_df1 <- test1 %>% create_max_diff(thresh_norm)
+      max_diff_df <- out$max_diff
+      c_scores <- out$clust_scores
+      #max_diff_df1 <- test1 %>% create_max_diff(thresh_norm)
       print("Diff done")
-      test1 %>% plot_trait_heatmap(clust_typ_str, bp_on, clust_prob_on)
+      c_scores %>% plot_trait_heatmap(clust_typ_str, bp_on, clust_prob_on)
       print("Heatmap plot done")
-      max_diff_df1 %>% plot_max_diff(clust_typ_str, bp_on, clust_prob_on)
+      max_diff_df %>% plot_max_diff(clust_typ_str, bp_on, clust_prob_on)
       print("Diff plot done")
       if (iter == 1) {
-        clust_out <- test1
+        clust_out <- c_scores
         clust_out["input_iter"] <- iter
         max_diff_df1["input_iter"] <- iter
         max_diff_df0 <- max_diff_df1
       } else {
-        test1["input_iter"] <- iter
-        clust_out <- rbind(clust_out, test1)
+        c_scores["input_iter"] <- iter
+        clust_out <- rbind(clust_out, c_scores)
         max_diff_df1["input_iter"] <- iter
         max_diff_df0 <- rbind(max_diff_df0, max_diff_df1)
       }

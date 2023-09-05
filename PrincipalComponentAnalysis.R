@@ -1,5 +1,5 @@
-pca <- function(b_df, pval_df,
-                                         np = 3, narm = TRUE) {
+pca <- function(b_df, pval_df,se_df, 
+                np = 3, narm = TRUE) {
   #' Compute the np principal components of b_df.
   #' Inputs: b_df - Data matrix, columns are axis, rows are points.
   #' pval_df - P-values associated with each point, these need to be
@@ -11,14 +11,18 @@ pca <- function(b_df, pval_df,
   # Normalise each Column
   std_b_df <- scale_mat(b_df, narm)
   # Compute Correlation Matrix
-  c_mat <- cor(b_df)
+  c_mat <- cor(b_df,method = "pearson", use = "pairwise.complete.obs")
   # Find Eigen Vectors and Eigen Values
   e_mat <- find_np_eigen_mat(c_mat, np = np)
   # Map Scores onto the space of the components
   # represented by np largest Eigen values.
-  b_pc_df    <- transform_coords(b_df, e_mat)
-  pval_pc_df <- transform_coords(pval_df, e_mat)
-  out_list   <- list("transform" = e_mat, "beta" = b_pc_df, "pval" = pval_df)
+  b_pc_mat   <- transform_coords(b_df, e_mat)
+  pval_pc_mat <- transform_coords(pval_df, e_mat)
+  se_pc_mat <- transform_coords(se_df,e_mat)
+  out_list   <- list("transform" = e_mat, 
+                     "beta" = b_pc_mat, 
+                     "pval" = pval_pc_mat,
+                     "se" = se_pc_mat)
   return(out_list)
 }
 transform_coords <- function(p_mat, t_mat) {
@@ -42,6 +46,9 @@ trans_vec <- function(p_mat, r, t_mat) {
 find_np_eigen_mat <- function(mat, np) {
   #' Find the eigen values and vectors for the matrix mat.
   #' Take the np largest eigen values and their corresponding eigen vectors.
+  #' Pairs with NaN correlation have no correlating scores and we can therefore 
+  #' set their correlation to 0.
+  mat[is.na(mat)] <- 0.0
   ev <- eigen(mat)
   # The vectors matrix contains the unit eigen vectors in the columns
   nend <- np %>% min(dim(mat)[1])
@@ -50,6 +57,9 @@ find_np_eigen_mat <- function(mat, np) {
 }
 
 scale_mat <- function(mat, narm = TRUE) {
+  #' Rescale the columns of the matrix `mat` so that the values lie 
+  #' between -1 and 1 with the with the same distribution.
+  #' narm indicates whether NaNs should be removed in the sample calculations.
   # Compute the Sample Mean with na_rm
   xbar <- apply(mat, 2, mean, na.rm = narm)
   # Compute the Sample SE with na_rm
