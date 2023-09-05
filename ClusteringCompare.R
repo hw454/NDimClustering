@@ -28,6 +28,10 @@ clust_pca_compare <- function(unstd_beta_df, unstd_se_df, pval_df, # nolint
                        b_df_ind = out_col,
                        nSNPs = sum(!is.na(unstd_beta_df[, out_pheno]))[1]
   )
+  max_df <- data.frame(num_axis = integer(),
+                       cn1 = integer(),
+                       cn2 = integer(),
+                       max_diff = integer())
   for (ai in 1:length(trait_info$phenotype)){
     # Update the traits forming the axis
     a <- trait_info$phenotype[ai]
@@ -56,10 +60,10 @@ clust_pca_compare <- function(unstd_beta_df, unstd_se_df, pval_df, # nolint
         b_df <- unstd_beta_df[,aim_df$label]
         se_df <- unstd_se_df[,aim_df$label]
         p_df <- pval_df[,aim_df$label]
-        pca_list   <- pca(b_df, p_df, np, narm)
-        print(pca_list)
+        pca_list   <- pca(b_df, p_df, se_df, np, narm)
         b_pc_mat    <- pca_list$beta
         p_pc_mat    <- pca_list$pval
+        se_pc_mat   <- pca_list$se
         t_mat       <- pca_list$transform
         # Get column names for PCs
         pc_cols <- colnames(b_pc_mat)
@@ -90,6 +94,9 @@ clust_pca_compare <- function(unstd_beta_df, unstd_se_df, pval_df, # nolint
                                   axis = colnames(b_pc_mat))
         diff_score_list <- diff_score_list[! sapply(diff_score_list, is.null)]
         diff_scores <- Reduce(rbind, diff_score_list)
+        row <- which.max(diff_scores$diff)
+        max_df0 <- diff_scores[row,]
+        max_df <-rbind(max_df0,max_df)
         if (max(diff_scores$diff) > diff_threshold) {
           print(paste("Threshold met on outcome", a))
           return(c_scores)
@@ -100,7 +107,9 @@ clust_pca_compare <- function(unstd_beta_df, unstd_se_df, pval_df, # nolint
     }
   }
   print("None of the outcomes clustering met the thresholding test. ")
-  return(c_scores)
+  out_list <- list("clust_scores" = c_scores,
+                   "max_diff" = max_df)
+  return(out_list)
 }
 
 clust_compare <- function(unstd_beta_df, unstd_se_df, pval_df, tstat_df,
