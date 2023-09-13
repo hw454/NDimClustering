@@ -21,7 +21,12 @@ clust_threshold <- 1e-5
 thresh_norm <- "F"
 clust_norm <- "F"
 nr <- 10 # Number of clusters
-np <- 3 # Number of PCs
+np <- 2 # Number of PCs
+na_percent <- 0.25 # The percentage of a column that can acceptably be not NaN
+thresholds <- list("diff_mul" = threshmul, "diff" = 1e-5, "clust" = clust_threshold)
+na_handling <- list("narm" = TRUE, "percent" = 0.95)
+nums <- list("nr" = nr, "np" = np, "max_dist"=1.0)
+norm_typs <- list("clust" =  clust_norm, "thresh_norm" =  thresh_norm)
 
 # Testing dimensions
 test <- 0 # testing switch
@@ -61,23 +66,29 @@ exp_pheno <- trait_info$phenotype[row]
 
 # Crop data for testing
 if (test) {
-  b_out <- unstd_beta_df[which(
-    colnames(unstd_beta_df) %in% c(out_pheno, exp_pheno))]
-  se_out <- unstd_se_df[which(
-    colnames(unstd_se_df) %in% c(out_pheno, exp_pheno))]
-  p_out <- pval_df[which(colnames(pval_df) %in% c(out_pheno, exp_pheno))]
-  t_out <- tstat_df[which(colnames(tstat_df) %in% c(out_pheno, exp_pheno))]
+  b_out <- unstd_beta_df[1:num_rows, which(
+                        colnames(unstd_beta_df) %in% c(out_pheno, exp_pheno))]
+  se_out <- unstd_se_df[1:num_rows, which(
+                        colnames(unstd_se_df) %in% c(out_pheno, exp_pheno))]
+  p_out <- pval_df[1:num_rows, which(colnames(pval_df) %in% c(out_pheno, exp_pheno))]
+  t_out <- tstat_df[1:num_rows, which(colnames(tstat_df) %in% c(out_pheno, exp_pheno))]
   trait_out <- trait_info[trait_info$phenotype %in% c(out_pheno, exp_pheno)]
 
   unstd_beta_df <- cbind(unstd_beta_df[1:num_rows, num_trait0:num_trait1],
-   b_out)
-  unstd_se_df <- cbind(unstd_se_df[1:num_rows, num_trait0:num_trait1], se_out)
+                        b_out)
+  unstd_se_df  <- cbind(unstd_se_df[1:num_rows, num_trait0:num_trait1], se_out)
   tstat_df     <- cbind(tstat_df[1:num_rows, num_trait0:num_trait1], t_out)
   pval_df      <- cbind(pval_df[1:num_rows, num_trait0:num_trait1], p_out)
   trait_info   <- rbind(trait_info[num_trait0:num_trait1], trait_out)
 
-  colnames(unstd_beta_df)[dim(unstdBeta_df)[2]] <- out_pheno
-  colnames(unstd_se_df)[dim(unstdSE_df)[2]] <- out_pheno
+  colnames(unstd_beta_df)[dim(unstd_beta_df)[2]] <- out_pheno
+  colnames(unstd_se_df)[dim(unstd_se_df)[2]] <- out_pheno
   colnames(tstat_df)[dim(tstat_df)[2]] <- out_pheno
   colnames(pval_df)[dim(pval_df)[2]] <- out_pheno
   }
+
+# Collect the matrices into one object
+data_matrices <- list("beta" = unstd_beta_df,
+                      "pval" = pval_df,
+                      "se" = unstd_se_df,
+                      "trait_info" = trait_info)
