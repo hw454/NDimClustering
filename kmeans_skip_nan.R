@@ -1,35 +1,39 @@
-kmeans_skip_nan <- function(eff_dfs, centers = nr, nstart = (nr + 1),
+kmeans_skip_nan <- function(b_mat, centers = nr,
                             iter.max = 300, clust_threshold = 1e-5,
                             norm_typ = "F", na_rm = FALSE, prob_on = TRUE) {
   set.seed(123)
+  snp_list <- rownames(b_mat)
+  # Generate data frame with max and min data. 
+  # Min and Max are columns. Rows for each column of b_mat
   min_max_df <- data.frame(
-    row.names = names(eff_dfs),
-    min = apply(eff_dfs, 2, min, na.rm = na_rm),
-    max = apply(eff_dfs, 2, max, na.rm = na_rm)
+    row.names = colnames(b_mat),
+    min = apply(b_mat, 2, min, na.rm = na_rm),
+    max = apply(b_mat, 2, max, na.rm = na_rm)
   )
   min_max_df <- min_max_df %>% na.omit()
+  # Randomly assign central coords per cluster.
   centroid_list <- lapply(rownames(min_max_df), rand_cent,
                           n_cents = centers, min_max_df = min_max_df)
   centroids <- Reduce(cbind, centroid_list)
-  snp_list <- rownames(eff_dfs)
+  # Randomly assign cluster to snps
+
   nsnps <- length(snp_list)
   clust_samp <- replicate(nsnps, sample(1:centers, 1))
   cluster_df <- data.frame(
-    row.names = rownames(eff_dfs),
-    clusters = clust_samp
+    row.names = snp_list,
+    clust_num = clust_samp
   )
   cluster_df["clust_prob"] <- numeric()
   clust_dist_list <- lapply(snp_list, cent_dist_calc,
-                          b_dfs = eff_dfs, cluster_df = cluster_df,
+                          b_mat = b_mat, cluster_df = cluster_df,
                           centroids = centroids, norm_typ = norm_typ)
   clust_dist_df <- Reduce(rbind, clust_dist_list)
   cluster_df <- cbind(cluster_df, clust_dist_df)
   for (iter in 1:iter.max){
     # For each SNP find the cluster with the closest centre.
     snp_clust_list <- lapply(snp_list, snp_closest_clust,
-                              eff_dfs = eff_dfs, cluster_df = cluster_df,
+                              b_mat = b_mat, cluster_df = cluster_df,
                              centroids = centroids, norm_typ = norm_typ)
-
     # Combine the list of dataframes into one dataframe.
     # Override Cluster_df with the new assignment
     cluster_df <- Reduce(rbind, snp_clust_list)
@@ -37,7 +41,7 @@ kmeans_skip_nan <- function(eff_dfs, centers = nr, nstart = (nr + 1),
     # Check if the previous centres differ from the cluster means.
     thresh_list <- lapply(rownames(centroids), clust_cent_check,
                         iter = iter, cluster_df = cluster_df,
-                        b_dfs = eff_dfs, centroids = centroids,
+                        b_dfs = b_mat, centroids = centroids,
                         na_rm = na_rm, norm_typ = norm_typ)#,
                         #axes_nonnan=axes_nonnan)
     thresh_check_df <- Reduce(rbind, thresh_list)
@@ -57,32 +61,32 @@ kmeans_skip_nan <- function(eff_dfs, centers = nr, nstart = (nr + 1),
  return(cluster_df)
 }
 
-snp_closest_clust <- function(snp_id, eff_dfs, cluster_df,
+snp_closest_clust <- function(snp_id, b_mat, cluster_df,
                               centroids, norm_typ) {
   #' For each cluster check whether the centre is closer than the currently
   #' assigned cluster
-  snp_score <- eff_dfs[snp_id, ]
+  snp_score <- b_mat[snp_id, ]
   snp_dist <- cluster_df[snp_id, "clust_dist"]
-  snp_clust_num <- cluster_df[snp_id, "clusters"]
-  for (clust_num in rownames(centroids)) {
+  snp_clust_num <- cluster_df[snp_id, "clust_num"]
+  for (c_num in rownames(centroids)) {
     dist <- norm(data.matrix(
-              na.omit(centroids[clust_num, ] - snp_score)), norm_typ)
+              na.omit(centroids[c_num, ] - snp_score)), norm_typ)
      if (dist < snp_dist) {
        snp_dist <- dist
-        snp_clust_num <- clust_num
+        snp_clust_num <- c_num
      }
    }
    snp_cluster_df <- data.frame(
      row.names = snp_id,
      clust_dist = snp_dist,
-     clusters = snp_clust_num,
+     clust_num = snp_clust_num,
      clust_prob = 1.0
    )
   return(snp_cluster_df)
 }
-cent_dist_calc <- function(snp_id, b_dfs, cluster_df, centroids, norm_typ) {
-   snp_score <- b_dfs[snp_id, ]
-   c_num <- cluster_df[snp_id, "clusters"]
+cent_dist_calc <- function(snp_id, b_mat, cluster_df, centroids, norm_typ) {
+   snp_score <- b_mat[snp_id, ]
+   c_num <- cluster_df[snp_id, "clust_num"]
    cent <- centroids[c_num, ]
    c_dist <- norm(data.matrix(na.omit(cent - snp_score)), norm_typ)
    clust_df <- data.frame(row.names = snp_id,
@@ -97,7 +101,7 @@ clust_prob_calc <- function(d) {
 
 clust_cent_check <- function(c_num, iter, cluster_df, b_dfs, centroids,
                             na_rm = TRUE, norm_typ = "F") {
-  sub_snp_list <- which(cluster_df$clusters == c_num)
+  sub_snp_list <- which(cluster_df$clust_num == c_num)
   snp_scores <- b_dfs[sub_snp_list, ]
   nterms <- length(sub_snp_list)
   centroidscheck <- centroids # Initialise the centroids checking dataframe
