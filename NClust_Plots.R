@@ -1,5 +1,4 @@
-plot_trait_heatmap <- function(c_scores, clust_typ_str,
-bp_on = TRUE, clust_prob_on = TRUE) {
+plot_trait_heatmap <- function(c_scores, iter_traits) {
 #  c_scores <- test1 # When the function container is commented out use this line to rename the result df
   nm <- unique(c_scores$num_axis)
   ignore_cols <- c("clust_size", "id", "num_axis", "total_score")
@@ -13,18 +12,9 @@ bp_on = TRUE, clust_prob_on = TRUE) {
   print(paste("vmin", vmin))
   print(paste("vmax", vmax))
   print(paste("break_width", break_width))
-  if (bp_on){
-    bp_str <- " and bp in score"
-  } else {
-    bp_str <-" and bp not in score"
-  }
-  if (clust_prob_on){
-    clust_prob_str <- " and clust_prob in score"
-  } else{
-    clust_prob_str <- " and clust_prob not in score"
-   }
+  d_str <- desc_str(iter_traits)
   title_str <- paste("Association score for trait against cluster. 
-  Cluster type", clust_typ_str, bp_str, clust_prob_str)
+  Cluster type", d_str)
   for (i in nm){
     # Get the traits for this iteration
     trait_list <- get_col_list(c_scores, "num_axis", i, ignore_cols)
@@ -32,8 +22,8 @@ bp_on = TRUE, clust_prob_on = TRUE) {
     # FIXME calculate total score for each cluster an add as trait.
     # Extract the association scores for each clust trait pair.
     c_scores_term <- c_scores[c_scores$num_axis == i, ]
-    c_scores_term <- c_scores_term[trait_list]
-    long_form_df <- c_scores_term %>% gather("trait", "score", -"clust_num")
+    c_scores_term <- c_scores_term[,colnames(c_scores_term) %in% trait_list]
+    long_form_df <- c_scores_term %>% gather("trait", "score", -clust_num)
     # Use log scale on the association scores
     long_form_df$score <- log(abs(long_form_df$score))
     # Plot the scores against the traits.
@@ -56,6 +46,7 @@ bp_on = TRUE, clust_prob_on = TRUE) {
     ph <- 4
     ggsave(filename = plotname, width = pw, height = ph)
   }
+  return()
 }
 
 get_col_list <- function(df, filter_col, N, ignore_cols=c()) {
@@ -67,14 +58,14 @@ get_col_list <- function(df, filter_col, N, ignore_cols=c()) {
   keep_cols_list <-lapply(c_name, check_col_nans,
                         ignore_cols = ignore_cols,
                         df = filt_df)
-  keep_cols_list <- keep_cols_list[!sapply(keep_cols_list,is.null())]
+  keep_cols_list <- keep_cols_list[!sapply(keep_cols_list,is.null)]
   return(keep_cols_list)
 }
 
 check_col_nans <- function(cn, df, ignore_cols) {
   if (cn %in% ignore_cols) {
     return()
-  } else if (!all(is.na(filt_df[cn]))) {
+  } else if (!all(is.na(df[cn]))) {
     return(cn)
   } else {
     return()
@@ -93,7 +84,7 @@ max_diff_single_axis <- function(ni, ignore_cols, c_scores, trait_list, norm_typ
   for (cn1 in clust_nums){
     cs1 <- as.matrix(c_scores_term[c_scores_term == cn1, trait_list_no_cnum])
     tot_score <- norm(ax.matrix(cs1), norm_typ)
-    c_scores_term[ c_scores_term$clust_num==cn1, "total_score"] <- tot_score
+    c_scores_term[ c_scores_term$clust_num == cn1, "total_score"] <- tot_score
     for (cn2 in clust_nums){
       cs2 <- as.matrix(c_scores_term[c_scores_term$clust_num == cn2,
                                     trait_list_no_cnum])
@@ -110,7 +101,7 @@ max_diff_single_axis <- function(ni, ignore_cols, c_scores, trait_list, norm_typ
   }
   out_df <- data.frame(
     num_axis = ni,
-    Max_Diff = cs_diff,
+    max_diff = cs_diff,
     clust_num1 = c1out,
     clust_num2 = c2out
   )
@@ -121,7 +112,7 @@ create_max_diff <- function(c_scores, norm_typ){
   nm <- unique(c_scores$num_axis)
   max_diff_df <- data.frame(
     num_axis = integer(),
-    Max_Diff = numeric(),
+    max_diff = numeric(),
     clust_num1 = integer(),
     clust_num2 = integer()
   )
@@ -135,31 +126,16 @@ create_max_diff <- function(c_scores, norm_typ){
   return(max_diff_df)
 }
 
-plot_max_diff <- function(max_df, clust_typ_str = "basic",
-                          bp_on = TRUE, clust_prob_on = TRUE) {
-  plotname <- paste0(res_dir, "NumAxis_Vs_MaxScoreDiff")
-  if (bp_on) {
-    bp_str <- " and bp on"
-    bp_name_str <- "_bpON"
-    } else{
-    bp_str <- " and bp off"
-    bp_name_str <- "_bpOFF"
-  }
-  if (clust_prob_on){
-    clust_prob_str <- " and clust prob on"
-    clust_prob_name_str <- "_clustprobON"
-  } else {
-    clust_prob_str <- " and clust prob off"
-    clust_prob_name_str <- "_clustprobOFF"
-  }
-  plotname <- paste0(plotname, clust_typ_str, bp_name_str,
-                     clust_prob_name_str, ".png")
+plot_max_diff <- function(max_df, iter_traits, res_df) {
+  method_str <- method_str(iter_traits)
+  d_str <- desc_str(iter_traits)
+  plotname <- paste0(res_dir, "NumAxis_Vs_MaxScoreDiff", method_str, ".png")
   plot_title <- paste("Number of axis against max cluster difference score. 
-  \n Clustering type", clust_typ_str, bp_str, clust_prob_str)
+  \n Clustering type", d_str)
   lineplot <- ggplot() +
-    geom_line(data = max_df, aes(x = num_axis, y = Max_Diff, group = 1),
+    geom_line(data = max_df, aes(x = num_axis, y = diff, group = 1),
               color = 'black') +
-    geom_point(data = max_df, aes(x = num_axis, y = Max_Diff, group = 1),
+    geom_point(data = max_df, aes(x = num_axis, y = diff, group = 1),
               color = 'black') +
     ggtitle(plot_title)
   print(lineplot)
@@ -173,16 +149,16 @@ plot_max_diff_both <- function(max_df1, max_df2){
   plotname <- paste0(res_dir, "NumAxis_Vs_MaxScoreDiff_Compare.png")
   lineplot <- ggplot() +
     geom_line(data = max_df1,
-              aes(x = num_axis, y = Max_Diff, group = 1),
+              aes(x = num_axis, y = diff, group = 1),
               color= "black") +
     geom_point(data = max_df1,
-              aes(x = num_axis, y = Max_Diff, group = 1),
+              aes(x = num_axis, y = diff, group = 1),
               color= "black") +
     geom_line(data = max_df2, 
-              aes(x = num_axis, y = Max_Diff),
+              aes(x = num_axis, y = diff),
               color = "red", linetype = "dashed") +
     geom_point(data = max_df2,
-              aes(x = num_axis, y = Max_Diff),
+              aes(x = num_axis, y = diff),
               color = "red", linetype = "dashed")
   print(lineplot)
   pw <- 4
@@ -190,32 +166,45 @@ plot_max_diff_both <- function(max_df1, max_df2){
   ggsave(filename = plotname, width = pw, height = ph)
 }
 
+plot_single_max_dff <- function(plot_iter, max_df_list, iter_df){
+  max_df <- max_df_list[max_df_list$input_iter == plot_iter, ]
+  max_df["clust_typ"] <- iter_df$clust_typ[plot_iter]
+  max_df["bp_on"] <- iter_df$bp_on[plot_iter]
+  max_df["cp_on"] <- iter_df$clust_prob_on[plot_iter]
+  lineplot<-lineplot+
+    geom_line(data = max_df0,
+              aes(x = num_axis, y = diff, col = clust_typ, linetype = cp_on)
+    ) +
+    geom_point(data = max_df0, aes(x = num_axis, y = diff,
+                                   col = clust_typ,shape = bp_on)
+    )
+  lineplot<-lineplot+ labs(x = "Number of iterations",
+                           y = "Maximum difference",
+                           shape= "bp_on",
+                           color= "clust type",
+                           linetype= "clust prob on")
+  pw <- 4
+  ph <- 4
+  ggsave(filename = plotname, width = pw, height = ph)
+  return(lineplot)
+}
 
 plot_max_diff_list <- function(max_df_list, iter_df) {
   N_sets <- unique(max_df_list$input_iter)
   plotname <- paste0(res_dir, "NumAxis_Vs_MaxScoreDiff_Compare.png")
   lineplot <- ggplot()
-  print(N_sets)
-  for (plot_iter in N_sets){
-    max_df0 <- max_df_list[max_df_list$input_iter == plot_iter, ]
-    max_df0["clust_typ"] <- iter_df$clust_typ[plot_iter]
-    max_df0["bp_on"] <- iter_df$bp_on[plot_iter]
-    max_df0["cp_on"] <- iter_df$clust_prob_on[plot_iter]
-    lineplot<-lineplot+
-    geom_line(data = max_df0,
-              aes(x = num_axis, y = Max_Diff, col = clust_typ, linetype = cp_on)
-              ) +
-    geom_point(data = max_df0, aes(x = num_axis, y = Max_Diff,
-                                 col = clust_typ,shape = bp_on)
-               )
-  }
-  lineplot<-lineplot+ labs(x = "Number of iterations",
-                          y = "Maximum difference",
-                          shape= "bp_on",
-                          color= "clust type",
-                          linetype= "clust prob on")
-  print(lineplot)
-  pw <- 4
-  ph <- 4
-  ggsave(filename = plotname, width = pw, height = ph)
+  lplots <- lapply(1:N_sets, plot_single_max_dff,
+         max_df_list = max_df_list,
+         iter_df = iter_df,
+         pplot = lineplot)
+  return(0)
+}
+
+clust_scatter <- function(clusters, b_mat, 
+                          se_mat, num_axis, method_str) {
+  pdf(file = paste0(res_dir,out_pheno,"clusters_",num_axis, method_str,".pdf"),
+      width = 8, height = 6)  ###getting corrupt
+  p <- ggplot() +
+      geom_point(data=b_mat, aes(x = P1, y = P2, col = clusters$clust_num))
+  dev.off()
 }
