@@ -199,7 +199,10 @@ trait_df_add_a <- function(trait_df, a, axes){
   if (a %in% trait_df$label) {
     return(trait_df)
   } else {
-    trait_df <- trait_df %>% add_row(label = a, "axes_ind" = which(axes == a)[1])
+    trait_df0 <- data.frame(label = a, 
+                            axes_ind = which(axes == a)[1]
+                            )
+    trait_df <- rbind(trait_df,trait_df0)
     return(trait_df)
   }
 }
