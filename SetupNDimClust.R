@@ -26,7 +26,7 @@ na_percent <- 0.25 # The percentage of a column that can acceptably be not NaN
 
 # Testing dimensions
 test <- 0 # testing switch
-num_trait0 <- 1
+num_trait0 <- 380
 num_trait1 <- 410
 num_rows <- 50
 

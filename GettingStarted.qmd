@@ -1,7 +1,19 @@
 ---
 title: "Getting Started"
-format: html
+author: "Hayley Wragg"
+toc: true
+number-sections: true
+format:
+  html: 
+    code-fold: true
+    html-math-method: katex
+  pdf: 
+    geometry: 
+      - top=30mm
+      - left=20mm
 ---
+# Setup
+### R-Packages
 Load the packages needed starting with the standard R packages
 
 ```{R}
@@ -14,20 +26,20 @@ library(dplyr) # To use %>%
 #library(tidyverse)
 ```
 
+### Source functions
 Load the functions from the files in this director.
 
 ```{R}
 source("./ClusteringFunction.R")
 source("./ClustScores.R")
 source("./NClust_Plots.R")
-source("./CalcDist.R")
 source("./kmeans_skip_nan.R")
 source("./ClusteringCompare.R")
 source("./PrincipalComponentAnalysis.R")
-source("./StringFunctions.R")
 source("./ClusterAndPlot.R")
 ```
 
+### Set directory
 Before you can use any of the functions you must first load the data. To do this you must set the relative directory the data is saved in and where you would like to save results.
 ```{R}
 # Location of the data directory
@@ -44,6 +56,7 @@ hail_gcorr_dir <- paste0(data_dir, "Hail_AllxAll.csv")
 fpaths_fil_dir <- paste0(data_dir, "fpaths_fil_nfil.txt")
 ```
 
+### Load the data
 Now you know where the data is saved you can load the data. You need a matrix for the association scores between SNPs and traits, a matrix for the standard error association with these scores, a matrix for the p-value associated with these scores and a matrix for the t-statistic associated with these scores. 
 ```{R}
 #' read in data as matrices.
@@ -76,6 +89,7 @@ row <- which(trait_info$pheno_category == "Exposure")[1]
 exp_pheno <- trait_info$phenotype[row]
 ```
 
+### Setup testing
 It's a good idea to build and test your code on a subset of the data. You can do this by setting the test variables and cropping the matrices. 
 
 ```{R}
@@ -104,12 +118,12 @@ data_matrics <- crop_data(mat_list = list("beta" = unstd_beta_df,
                         "trait_info" = trait_info)
 }
 ```
-## Running the program
-The program will run without any inputs since the data is save globally. 
+# Running the program
+The program will run with only data inputs and use default values for all others.
 ```{R}
-cluster_and_plot()
+data_matrices %>% cluster_and_plot(out_pheno)
 ```
-# Adjusting the inputs
+## Adjusting the inputs
 Set the variables for the main program. If they are not set here then the default values from the full-program will be used. 
 
 Start with the numerics terms.
@@ -130,6 +144,7 @@ bp_on = TRUE # If TRUE then the snp beta contributions to clust scores will be w
 clust_prob_on = TRUE # If TRUE then the snp contribution to the cluster score is weighted by the probability the snp is correctly allocated to that cluster.
 clust_typ_str = "basic" # The type of clustering approach you want to use. basic will find nr clusters. Min will find the number of clusters which minimise the AIC between 1 and nr. 
 ```
+### Passing through optional inputs
 There are a lot of variables that can be adjusted. To contain them within the function call group similar terms into lists. To ensure the correct values are used later name the terms instead of using positioning.
 ```{R}
 # Contain the variables into lists, threshold$diff and nums$max_dist will both be updated later.
@@ -143,7 +158,14 @@ clust_vars <- data.frame(
           "clust_prob_on" = clust_prob_on,
           "clust_typ" = clust_typ_str)
 ```
+### Running with optional inputs
 Now run your program with the varied inputs. 
 ```{R}
-clust_and_plot(iter,iter_df = clust_vars)
+data_matrices %>% clust_and_plot(out_pheno, 
+                                iter=1,
+                                iter_df = clust_vars,
+                                threshold = thresholds,
+                                na_handling = na_handling,
+                                norm_typs = norm_typs,
+                                nums = nums)
 ```
