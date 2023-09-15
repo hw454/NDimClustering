@@ -17,11 +17,11 @@ score_cluster <- function(c_num, beta_df, clusters_df, num_axis,
   snp_list <- rownames(clusters_df[clusters_df$clust_num == c_num, ])
   clust_probs <- clusters_df[snp_list, "clust_prob"]
   trait_score_df_list <- lapply(traits, axis_score,
-                                c_id = c_id, 
-                                snp_list = snp_list, 
+                                c_id = c_id,
+                                snp_list = snp_list,
                                 beta_df = beta_df,
-                                pval_df = pval_df, 
-                                clust_probs = clust_probs, 
+                                pval_df = pval_df,
+                                clust_probs = clust_probs,
                                 bp_on = bp_on)
   c_score0 <- Reduce(cbind, trait_score_df_list)
   c_score0["clust_num"] <- c_num
@@ -33,19 +33,18 @@ bp_on = TRUE) {
     #' Get the score for all points in the cluster weighting by the
   #' pvalues of the association and their weighting within the cluster
   # Get the row indices for the traits in the cluster
-  b_rows <- which(rownames(beta_df) %in% snp_list)
   b_sub <- na.omit(beta_df[snp_list, a])
   c_sub <- na.omit(clust_probs)
   if (bp_on) {
     p_sub <- na.omit(pval_df[snp_list, a])
-    snp_assoc <- abs(b_sub * p_sub * clust_probs)
-    total_probs <- sum(p_sub * clust_probs)
+    snp_assoc <- abs(b_sub * p_sub * c_sub)
+    total_probs <- sum(p_sub * c_sub)
   } else {
-    snp_assoc <- abs(b_sub * clust_probs)
-    total_probs <- sum(clust_probs)
+    snp_assoc <- abs(b_sub * c_sub)
+    total_probs <- sum(c_sub)
   }
   axis_snp_assoc <- sum(snp_assoc) / total_probs
-  trait_score_df <- data.frame(row.names =  c_id, 
+  trait_score_df <- data.frame(row.names =  c_id,
                                a = axis_snp_assoc)
   colnames(trait_score_df) <- c(a)
   return(trait_score_df)
