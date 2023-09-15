@@ -80,15 +80,19 @@ clust_pca_compare <- function(data_matrices,
         if (iter_traits$clust_typ == "min") {
           cluster_df <- cluster_kmeans_min(b_pc_mat,
                                            nums$nr,
-                                           iter_traits$clust_prob_on,
-                                           norm_typs$clust,
-                                           thresholds$clusts, 
-                                           na_handling$narm)
+                                           nums$max_dist,
+                                           clust_prob_on = iter_traits$clust_prob_on, # nolint
+                                           norm_typ = norm_typs$clust,
+                                           threshold = thresholds$clusts,
+                                           narm = na_handling$narm)
         } else {
           cluster_df <- cluster_kmeans_basic(b_pc_mat,
                                              nums$nr,
-                                             thresholds$clust, 
-                                             norm_typs$clust)
+                                             nums$max_dist,
+                                             clust_prob_on = iter_traits$clust_prob_on, # nolint
+                                             threshold = thresholds$clust,
+                                             norm_typ = norm_typs$clust,
+                                             narm = na_handling$narm)
         }
         # Find the set of cluster numbers
         c_nums <- unique(cluster_df$clust_num)
@@ -141,6 +145,7 @@ na_col_check <- function (b_col, percent = 0.95) {
 
 compare_oneclust_tolist <- function(cn1, c_nums, c_score0, axis,
                                     clust_norm = "F") {
+  #' Compare all clusters in the list c_nums to cn1 and store these differences
   diff_score_list <- lapply(c_nums, clust_score_diff,
                             cn1 = cn1,
                             c_score0 = c_score0,
@@ -175,6 +180,8 @@ clust_score_diff <- function(cn1, cn2, c_score0, axis, norm_typ = "F") {
 }
 
 add_np_pca_cols <- function(df, np) {
+  #' Create dataframe with columns with labels Pi
+  #' for i in 1 to np to the dataframe.
   p_cols <- lapply(1:np, p_col_df)
   np_df <- Reduce(cbind, p_cols)
   full_df <- cbind(df, np_df)
@@ -182,6 +189,7 @@ add_np_pca_cols <- function(df, np) {
 }
 
 p_col_df <- function(i) {
+  #' Create a dataframe with column Pi
   cname <- paste0("P", i)
   out <- data.frame(col = numeric())
   colnames(out) <- c(cname)
