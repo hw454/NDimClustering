@@ -80,37 +80,28 @@ norm_typ = "F", threshold = 1e-5, narm = TRUE) {
   return(clust_re)
 }
 
-cluster_kmeans_min <- function(b_df, nr = 10, max_dist = 10.0, clust_prob_on = TRUE,
-                               norm_typ = "F", threshold = 1e-5, narm = TRUE) {
+cluster_kmeans_min <- function(b_df,
+                              nr = 10, max_dist = 10.0, clust_prob_on = TRUE,
+                              norm_typ = "F", threshold = 1e-5, narm = TRUE) {
   #' Using the association scores for each SNP accross traits cluster the traits
   #' using kmeans. Return the cluster setup which minimises AIC.
 
-  # Columns
-  ax <- colnames(b_df)
   # Filter complete cases
-  b_df_comp <- b_df[complete.cases(b_df),]
+  b_df_comp <- b_df[complete.cases(b_df), ]
 
   # Initial cluster dataframe
-  ic_list <- lapply(2:(nr+1), kmeans_ic, 
+  ic_list <- lapply(2:(nr+1), kmeans_ic,
                     data_mat = b_df_comp,
-                    clust_thres = threshold, 
-                    clust_norm = norm_typ, 
-                    na_rm = narm, 
+                    clust_thres = threshold,
+                    clust_norm = norm_typ,
+                    na_rm = narm,
                     clust_prob_on = clust_prob_on)
-  ic_df <- Reduce(rbind,ic_list)
+  ic_df <- Reduce(rbind, ic_list)
   # Find the number of centres that minimizes the AIC
-  min_cents <- ic_df$ncents[which.min(ic_df$aic),]
-  # Use the number of centres to locate corresponding clusters since there 
+  min_cents <- ic_df$ncents[which.min(ic_df$aic), ]
+  # Use the number of centres to locate corresponding clusters since there
   # maybe variations due to machine precision in the aic values.
-  clust_re_min_aic <- ic_df[which(ic_df$ncents == min_cents)] 
-  # cluster number identification for each observation
-  #FIXME dist now calculated and stored within clustering algorithm
-  #snp_dist_list <- lapply(rownames(b_df_comp),
-   ##                       clust_dist_calc,
-    #                      clust_re = clust_re_min_aic,
-     #                     b_df = b_df,
-      #                    norm_typ = norm_typ)
-  #clust_re_min_aic <- Reduce(rbind, snp_dist_list)
+  clust_re_min_aic <- ic_df[which(ic_df$ncents == min_cents)]
   # Assign terms with NaNs to nearest cluster
   nan_clusts <- lapply(setdiff(rownames(b_df), rownames(b_df_comp)),
                        closest_clust,
@@ -124,18 +115,6 @@ cluster_kmeans_min <- function(b_df, nr = 10, max_dist = 10.0, clust_prob_on = T
     clust_out$clust_prob <- clust_out$clust_dist %>% clust_prob_calc()
   }
   return(clust_out)
-}
-
-na_col_check <- function (b_col, percent = 0.95) {
-  #' Check if the entire row is NaN
-  n_accept <- length(b_col)*(1-percent)
-  narows <- which(b_col %>% is.na())
-  if (length(narows) > n_accept) {
-    # All rows are NaN so trait will be removed from trait
-    return(1)
-  } else {
-    return(0)
-    }
 }
 
 test_all_na <- function(b_df, nan_col = "30600_irnt"){
