@@ -2,13 +2,13 @@
 # - Install packages required for NDim clustering.
 # - Load the data to be clustered.
 
-library(data.table)
+#library(data.table)
 library(dplyr)
-library(ggplot2)
-library(ggrepel)
-library(tidyr)
-library(TwoSampleMR)
-library(tidyverse)
+#library(ggplot2)
+#library(ggrepel)
+#library(tidyr)
+#library(TwoSampleMR)
+#library(tidyverse)
 
 #' Data inputs needed: unstanderdised association matrix between IV and traits,
 #' SE matrix of association matrix, t-stat matrix of association matrix,
@@ -23,26 +23,25 @@ clust_norm <- "F"
 nr <- 10 # Number of clusters
 np <- 2 # Number of PCs
 na_percent <- 0.25 # The percentage of a column that can acceptably be not NaN
-thresholds <- list("diff_mul" = threshmul, "diff" = 1e-5, "clust" = clust_threshold)
-na_handling <- list("narm" = TRUE, "percent" = 0.95)
-nums <- list("nr" = nr, "np" = np, "max_dist"=1.0)
-norm_typs <- list("clust" =  clust_norm, "thresh_norm" =  thresh_norm)
 
 # Testing dimensions
 test <- 0 # testing switch
-num_trait0 <- 400
+num_trait0 <- 1
 num_trait1 <- 410
 num_rows <- 50
-
 
 # Files containing data
 hail_gcorr_dir <- paste0(data_dir, "Hail_AllxAll.csv")
 fpaths_fil_dir <- paste0(data_dir, "fpaths_fil_nfil.txt")
 
-# Create results directory if it doesn't exist
-if (!dir.exists(res_dir)) {
-  dir.create(res_dir)
-}
+# Contain the variables into lists, threshold$diff and
+# nums$max_dist will both be updated later.
+thresholds <- list("diff_mul" = threshmul,
+                       "diff" = 1e-5,
+                       "clust" = clust_threshold)
+na_handling <- list("narm" = TRUE, "percent" = na_percent)
+nums <- list("nr" = nr, "np" = np, "max_dist" =  1.0)
+norm_typs <- list("clust" =  clust_norm, "thresh_norm" =  thresh_norm)
 
 #' read in data as matrices.
 #' rows labeled by SNP_id and columns labelled by trait info.
@@ -59,6 +58,7 @@ pval_df      <- as.matrix(data.table::fread(paste0(data_dir, "pval_df.csv")),
                         rownames = 1)
 trait_info   <- data.table::fread(paste0(data_dir, "trait_info_nfil.csv"))
 
+# Find the label for the Outcome trait and the first Exposure trait
 row <- which(trait_info$pheno_category == "Outcome")
 out_pheno <- trait_info$phenotype[row]
 row <- which(trait_info$pheno_category == "Exposure")[1]
@@ -66,29 +66,19 @@ exp_pheno <- trait_info$phenotype[row]
 
 # Crop data for testing
 if (test) {
-  b_out <- unstd_beta_df[1:num_rows, which(
-                        colnames(unstd_beta_df) %in% c(out_pheno, exp_pheno))]
-  se_out <- unstd_se_df[1:num_rows, which(
-                        colnames(unstd_se_df) %in% c(out_pheno, exp_pheno))]
-  p_out <- pval_df[1:num_rows, which(colnames(pval_df) %in% c(out_pheno, exp_pheno))]
-  t_out <- tstat_df[1:num_rows, which(colnames(tstat_df) %in% c(out_pheno, exp_pheno))]
-  trait_out <- trait_info[trait_info$phenotype %in% c(out_pheno, exp_pheno)]
-
-  unstd_beta_df <- cbind(unstd_beta_df[1:num_rows, num_trait0:num_trait1],
-                        b_out)
-  unstd_se_df  <- cbind(unstd_se_df[1:num_rows, num_trait0:num_trait1], se_out)
-  tstat_df     <- cbind(tstat_df[1:num_rows, num_trait0:num_trait1], t_out)
-  pval_df      <- cbind(pval_df[1:num_rows, num_trait0:num_trait1], p_out)
-  trait_info   <- rbind(trait_info[num_trait0:num_trait1], trait_out)
-
-  colnames(unstd_beta_df)[dim(unstd_beta_df)[2]] <- out_pheno
-  colnames(unstd_se_df)[dim(unstd_se_df)[2]] <- out_pheno
-  colnames(tstat_df)[dim(tstat_df)[2]] <- out_pheno
-  colnames(pval_df)[dim(pval_df)[2]] <- out_pheno
-  }
-
-# Collect the matrices into one object
-data_matrices <- list("beta" = unstd_beta_df,
-                      "pval" = pval_df,
-                      "se" = unstd_se_df,
-                      "trait_info" = trait_info)
+data_matrics <- crop_data(mat_list = list("beta" = unstd_beta_df,
+                               "pval" = pval_df,
+                               "se" = unstd_se_df),
+                          trait_df = trait_info,
+                          out_pheno = out_pheno,
+                          exp_pheno = exp_pheno,
+                          n_rows = num_rows,
+                          n_col0 = num_trait0,
+                          n_col1 = num_trait1)
+} else {
+  # Collect the matrices into one object
+  data_matrices <- list("beta" = unstd_beta_df,
+                        "pval" = pval_df,
+                        "se" = unstd_se_df,
+                        "trait_info" = trait_info)
+}
