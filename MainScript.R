@@ -25,12 +25,10 @@
 source("./ClusteringFunction.R")
 source("./ClustScores.R")
 source("./NClust_Plots.R")
-source("./CalcDist.R")
 source("./kmeans_skip_nan.R")
 source("./ClusteringCompare.R")
 source("./PrincipalComponentAnalysis.R")
-source("./StringFunctions.R")
-source("./CropMatrices")
+source("./ClusterAndPlot.R")
 
 # Location of the data directory
 data_dir <- "./working-example/data/"
@@ -55,46 +53,18 @@ clust_prob_on_list <- c(clust_prob_on1, clust_prob_on2)
 
 source("SetupNDimClust.R")
 
-full_prog <- function(iter = 0, iter_df = data.frame(
-  "bp_on" = FALSE,
-  "clust_prob_on" = FALSE,
-  "clust_typ" = "basic")){
-  iter_traits <- iter_df[iter,]
-  res_dir <- set_directory(res_dir0, iter_traits)
-  # Find the distances between all points to initialise the threshold
-  # for cluster difference.
-  dist_df <- setup_dist(unstd_beta_df, norm_typs$clust)
-  threshold$diff <- threshold$diff_mul * var(dist_df$dist, na.rm = TRUE)
-  max_dist <- max(dist_df$dist,na.rm = na_rm)
-  nums$max_dist <- max_dist
-  print("Begining algorithm for inputs")
-  print(iter_traits)
-  out <- clust_pca_compare(data_matrices = data_matrices,
-                           thresholds = thresholds,
-                           na_handling = na_handling,
-                           iter_traits = iter_traits,
-                           norm_typs = norm_typs,
-                           nums = nums
-                          )
-  print("Clust done")
-  max_diff_df <- out$max_diff
-  c_scores <- out$clust_scores
-  #max_diff_df1 <- test1 %>% create_max_diff(thresh_norm)
-  print("Diff done")
-  c_scores %>% plot_trait_heatmap(iter_traits)
-  print("Heatmap plot done")
-  max_diff_df %>% plot_max_diff(iter_traits)
-  print("Diff plot done")
-  out <- list("iter_df" = iter_df,"c_scores" = c_scores,"max_df" = max_diff_df)
-  return(out)
-}
 
 # Initialise the dataframe for storing the run details of each iteration
-iter_df <- make_iter_df(clust_typ_list,bp_on_list,clust_prob_on_list)
+iter_df <- make_iter_df(clust_typ_list, bp_on_list, clust_prob_on_list)
 
 niter <- dim(iter_df)[1]
 
 # For each each set of input parameters run the full clustering program
-res_out <- lapply(1:niter, full_prog,
-                  iter_df = iter_df)
-
+res_out <- lapply(1:niter, cluster_and_plot,
+                  data_matrices = data_matrices,
+                  iter_df = iter_df,
+                  out_pheno = out_pheno,
+                  thresholds = thresholds,
+                  na_handling = na_handling,
+                  norm_typs = norm_typs,
+                  nums = nums)

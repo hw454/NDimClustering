@@ -1,4 +1,4 @@
-pca <- function(b_df, pval_df,se_df, 
+pca <- function(b_df, pval_df, se_df, 
                 np = 3, narm = TRUE) {
   #' Compute the np principal components of b_df.
   #' Inputs: b_df - Data matrix, columns are axis, rows are points.
@@ -11,7 +11,7 @@ pca <- function(b_df, pval_df,se_df,
   # Normalise each Column
   std_b_df <- scale_mat(b_df, narm)
   # Compute Correlation Matrix
-  c_mat <- cor(std_b_df,method = "pearson", use = "pairwise.complete.obs")
+  c_mat <- cor(std_b_df, method = "pearson", use = "pairwise.complete.obs")
   # Find Eigen Vectors and Eigen Values
   e_mat <- find_np_eigen_mat(c_mat, np = np)
   # Map Scores onto the space of the components
@@ -32,7 +32,6 @@ transform_coords <- function(p_mat, t_mat) {
   vec_list <- lapply(row.names(p_mat), trans_vec,
                    p_mat = p_mat, t_mat = t_mat)
   vec_df <- Reduce(rbind, vec_list)
-  
   return(vec_df)
 }
 
