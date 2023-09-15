@@ -1,4 +1,5 @@
-clust_pca_compare <- function(data_matrices, 
+clust_pca_compare <- function(data_matrices,
+                         out_pheno,
                          thresholds = list("diff" = 1e-5, "clust" = 1e-5),
                          na_handling = list("narm" = TRUE, "percent" = 0.95),
                          iter_traits = list(iter = 0, 
@@ -6,9 +7,10 @@ clust_pca_compare <- function(data_matrices,
                                             "clust_prob_on" = TRUE,
                                             "clust_typ" = "basic"),
                          norm_typs = list("clust" = "F", "thresh" = "F"),
-                         nums = list("max_dist" =1, "np" = 3, "nr" = 5)
+                         nums = list("max_dist" = 1, "np" = 3, "nr" = 5)
                         ) {
-  #' Iterate through the columns in axes and clusters the data.
+  #' Iterate through the traits in trait_info contained in the
+  #' data_matrices list. Clust the data at each iteration.
   #' If there is a distinct difference between two clusters exit.
   trait_df <- data.frame(
     label = character(),
@@ -26,14 +28,11 @@ clust_pca_compare <- function(data_matrices,
     NA_Count = integer()
   )
   # Add np columns for each PC
-  c_scores <- add_np_pca_cols(c_scores, np)
+  c_scores <- add_np_pca_cols(c_scores, nums$np)
   # Initialise with outcome
-  out_col <- which(colnames(unstd_beta_df) == out_pheno)[1]
   trait_df <- data.frame(label = out_pheno,
-                       axes_ind = which(trait_info$phenotype == out_pheno)[1],
-                       b_df_ind = out_col,
-                       nSNPs = sum(!is.na(unstd_beta_df[, out_pheno]))[1]
-  )
+                       axes_ind = which(data_matrices$trait_info$phenotype == out_pheno)[1]
+                       )
   max_df <- data.frame(num_axis = integer(),
                        cn1 = integer(),
                        cn2 = integer(),
@@ -51,25 +50,29 @@ clust_pca_compare <- function(data_matrices,
       allna <- na_col_check(data_matrices$b_df[, a], na_handling$percent)
       if (!allna) {
         # Add trait to trait dataframe
-        trait_df <- trait_df_add_a(trait_df, a, data_matrices$trait_info$phenotype)
-        trait_lab <- paste0("trait",num_axis)
-        trait_df <- append(df_list$trait, list(trait_lab = trait_df))
-        # If the trait is not all NaN then run clustering.
-        print(paste0("PCA on ", length(trait_df$label), " axes"))
-        print(paste0("New axis ", a))
+        trait_df <- trait_df_add_a(trait_df, 
+                                   a = a, 
+                                   axes = data_matrices$trait_info$phenotype)
         # Num axis
         num_axis <- length(trait_df$label)
+        trait_lab <- paste0("traits_", num_axis)
+        trait_list <- list(trait_df)
+        names(trait_list) <- trait_lab
+        df_list$trait <- append(df_list$trait, trait_list)
+        # If the trait is not all NaN then run clustering.
+        print(paste("PCA on", num_axis, "axes"))
+        print(paste("New axis", a))
         # Get the data upto this axis
         b_iter_df <- data_matrices$beta[, trait_df$label]
         se_iter_df <- data_matrices$se[, trait_df$label]
         pval_iter_df <- data_matrices$pval[, trait_df$label]
         # Cluster the data on these axes
-        pca_list   <- pca(b_iter_df, pval_iter_df, se_iter_df, nums$np, na_handling$narm)
+        pca_list   <- pca(b_iter_df, pval_iter_df, se_iter_df,
+                          nums$np, na_handling$narm)
         b_pc_mat    <- pca_list$beta
         p_pc_mat <- pca_list$pval
         t_mat       <- pca_list$transform
         # Store the matrices for result output
-        #df_list$b_list <- append(df_list$b_list, list(a = b_pc_mat))
         df_list$e_list <- append(df_list$e_list, list(a = t_mat))
         # Get column names for PCs
         pc_cols <- colnames(b_pc_mat)
@@ -91,9 +94,11 @@ clust_pca_compare <- function(data_matrices,
         c_nums <- unique(cluster_df$clust_num)
         # Score the clustered data based on affiliations with axes.
         # Find the score for each PC
-        c_score0 <- clust_score(cluster_df, beta_df = b_pc_mat, pval_df = p_pc_mat,
-                                bp_on = iter_traits$bp_on, 
-                                clust_prob_on = iter_traits$clust_prob_on, 
+        c_score0 <- clust_score(cluster_df,
+                                beta_df = b_pc_mat,
+                                pval_df = p_pc_mat,
+                                bp_on = iter_traits$bp_on,
+                                clust_prob_on = iter_traits$clust_prob_on,
                                 num_axis = num_axis)
         # Iterate through each cluster and compare across the others to find if
         # any pair have a distinct difference.
@@ -104,14 +109,14 @@ clust_pca_compare <- function(data_matrices,
                                   clust_norm = norm_typs$clust)
         diff_score_list <- diff_score_list[ !sapply(diff_score_list, is.null)]
         diff_scores <- Reduce(rbind, diff_score_list)
-        # Find the pair with maximum cluster score difference and store in max_df0
+        # Find the pair with maximum cluster score diff and store in max_df0
         row <- which.max(diff_scores$diff)
         max_df0 <- diff_scores[row,]
         max_df0["num_axis"] <- num_axis
-        df_list$max_diff <-rbind(df_list$max_diff, max_df0)
+        df_list$max_diff <- rbind(df_list$max_diff, max_df0)
         c_score0["num_axis"] <- num_axis
         df_list$c_scores <- rbind(df_list$c_scores, c_score0)
-        if (max(diff_scores$diff) > thresholds$diff & iter> 10) {
+        if (max(diff_scores$diff) > thresholds$diff && num_axis > 3) {
           print(paste("Threshold met on outcome", a))
           return(df_list)
         }
@@ -122,8 +127,20 @@ clust_pca_compare <- function(data_matrices,
   return(df_list)
 }
 
+na_col_check <- function (b_col, percent = 0.95) {
+  #' Check if the number of NaNs in a clolumn is more than 1-percent. 
+  n_accept <- length(b_col) * (1 - percent)
+  narows <- which(b_col %>% is.na())
+  if (length(narows) > n_accept) {
+    # All rows are NaN so trait will be removed from trait
+    return(1)
+  } else {
+    return(0)
+    }
+}
 
-compare_oneclust_tolist <- function(cn1, c_nums, c_score0, axis, clust_norm = "F") {
+compare_oneclust_tolist <- function(cn1, c_nums, c_score0, axis,
+                                    clust_norm = "F") {
   diff_score_list <- lapply(c_nums, clust_score_diff,
                             cn1 = cn1,
                             c_score0 = c_score0,
@@ -156,6 +173,7 @@ clust_score_diff <- function(cn1, cn2, c_score0, axis, norm_typ = "F") {
   }
   return(score_diff)
 }
+
 add_np_pca_cols <- function(df, np) {
   p_cols <- lapply(1:np, p_col_df)
   np_df <- Reduce(cbind, p_cols)
