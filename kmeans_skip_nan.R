@@ -1,9 +1,9 @@
 kmeans_skip_nan <- function(b_mat, centers = nr,
-                            iter.max = 300, clust_threshold = 1e-5,
+                            iter_max = 300, clust_threshold = 1e-5,
                             norm_typ = "F", na_rm = FALSE, prob_on = TRUE) {
   set.seed(123)
   snp_list <- rownames(b_mat)
-  # Generate data frame with max and min data. 
+  # Generate data frame with max and min data.
   # Min and Max are columns. Rows for each column of b_mat
   min_max_df <- data.frame(
     row.names = colnames(b_mat),
@@ -29,7 +29,7 @@ kmeans_skip_nan <- function(b_mat, centers = nr,
                           centroids = centroids, norm_typ = norm_typ)
   clust_dist_df <- Reduce(rbind, clust_dist_list)
   cluster_df <- cbind(cluster_df, clust_dist_df)
-  for (iter in 1:iter.max){
+  for (iter in 1:iter_max){
     # For each SNP find the cluster with the closest centre.
     snp_clust_list <- lapply(snp_list, snp_closest_clust,
                               b_mat = b_mat, cluster_df = cluster_df,
@@ -39,14 +39,15 @@ kmeans_skip_nan <- function(b_mat, centers = nr,
     cluster_df <- Reduce(rbind, snp_clust_list)
     # Recompute the centroids based on the average of the clusters.
     # Check if the previous centres differ from the cluster means.
+    #print(clust_threshold)
     thresh_list <- lapply(rownames(centroids), clust_cent_check,
                         iter = iter, cluster_df = cluster_df,
                         b_dfs = b_mat, centroids = centroids,
-                        na_rm = na_rm, norm_typ = norm_typ)#,
+                        na_rm = na_rm, norm_typ = norm_typ,
+                        clust_threshold = clust_threshold)#,
                         #axes_nonnan=axes_nonnan)
     thresh_check_df <- Reduce(rbind, thresh_list)
     # Are all the new centroids within the threshold of the previous
-    thresh_t <- sum(thresh_check_df$thresh_check == FALSE)
     if (all(thresh_check_df$thresh_check)) {
       print(paste("Clusters converged", iter))
       break
@@ -100,7 +101,8 @@ clust_prob_calc <- function(d) {
 }
 
 clust_cent_check <- function(c_num, iter, cluster_df, b_dfs, centroids,
-                            na_rm = TRUE, norm_typ = "F") {
+                            na_rm = TRUE, norm_typ = "F",
+                            clust_threshold = 1e-5) {
   sub_snp_list <- which(cluster_df$clust_num == c_num)
   snp_scores <- b_dfs[sub_snp_list, ]
   nterms <- length(sub_snp_list)
@@ -126,7 +128,7 @@ clust_cent_check <- function(c_num, iter, cluster_df, b_dfs, centroids,
   }
   centroid_df <- data.frame(
     row.names = c_num,
-    thresh_check = (centroidchange < clust_threshold & iter > 1)
+    thresh_check = (centroidchange < clust_threshold && iter > 1)
   )
   if (centroid_df[c_num, "thresh_check"]) {
     centroid_df <- cbind(centroid_df, centroids[c_num, ])
