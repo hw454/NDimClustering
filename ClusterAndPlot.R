@@ -1,4 +1,4 @@
-#- Main Program.
+# - Main Program.
 cluster_and_plot <- function(data_matrices,
                             out_pheno,
                             iter = 1,
