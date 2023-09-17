@@ -3,10 +3,10 @@
 # - Load the data to be clustered.
 
 #library(data.table)
-library(dplyr)
-#library(ggplot2)
+library(dplyr) # %>% into functions
+library(ggplot2) # For ggplot functions
 #library(ggrepel)
-#library(tidyr)
+library(tidyr) # Use gather function in reformatting tables
 #library(TwoSampleMR)
 #library(tidyverse)
 
@@ -17,10 +17,10 @@ library(dplyr)
 
 # variable set-up
 threshmul <- 5.0
-clust_threshold <- 1e-5
+clust_threshold <- 1e-3
 thresh_norm <- "F"
 clust_norm <- "F"
-nr <- 10 # Number of clusters
+nr <- 5 # Number of clusters
 np <- 2 # Number of PCs
 na_percent <- 0.25 # The percentage of a column that can acceptably be not NaN
 
@@ -36,9 +36,9 @@ fpaths_fil_dir <- paste0(data_dir, "fpaths_fil_nfil.txt")
 
 # Contain the variables into lists, threshold$diff and
 # nums$max_dist will both be updated later.
-thresholds <- list("diff_mul" = threshmul,
-                       "diff" = 1e-5,
-                       "clust" = clust_threshold)
+thresholds <- list("threshmul" = threshmul,
+                  "diff" = 1e-5,
+                  "clust" = clust_threshold)
 na_handling <- list("narm" = TRUE, "percent" = na_percent)
 nums <- list("nr" = nr, "np" = np, "max_dist" =  1.0)
 norm_typs <- list("clust" =  clust_norm, "thresh_norm" =  thresh_norm)
