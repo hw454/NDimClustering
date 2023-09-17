@@ -1,3 +1,4 @@
+#- Main Program.
 cluster_and_plot <- function(data_matrices,
                             out_pheno,
                             iter = 1,
@@ -6,19 +7,29 @@ cluster_and_plot <- function(data_matrices,
                                         "bp_on" = FALSE,
                                         "clust_prob_on" = FALSE,
                                         "clust_typ" = "basic"),
-                            thresholds = list("diff" = 1e-5, "clust" = 1e-5),
+                            thresholds = list("threshmul" = 5,
+                                              "diff" = 1e-5,
+                                              "clust" = 1e-5),
                             na_handling = list("narm" = TRUE, "percent" = 0.95),
                             norm_typs = list("clust" = "F", "thresh" = "F"),
                             nums = list("max_dist" = 1, "np" = 3, "nr" = 5)
 ) {
+#' Using the inuts the `cluster_and_plot` function will find
+#' the principal components then cluster on these. The clusters will
+#' then be scored on their association with the PCs (based on their)
+#' associations with the original traits. The cluster scores are then
+#' compared to determine if any two clusters are distinctly different.
+#' If yes then the computations are complete and the results are plotted.
+#' If no then another axis is added and the process repeated.
+#' --
+#' This function runs the computations in the `clust_pca_compare`
+#' function. Then plots the results.
   iter_traits <- iter_df[iter, ]
   res_dir <- set_directory(res_dir0, iter_traits)
   # Find the distances between all points to initialise the threshold
   # for cluster difference.
-  dist_df <- setup_dist(data_matrices$beta, norm_typs$clust)
-  thresholds$diff <- thresholds$diff_mul * var(dist_df$dist, na.rm = TRUE)
-  max_dist <- max(dist_df$dist, na.rm = na_handling$nam)
-  nums$max_dist <- max_dist
+  #FIXME
+  # This needs to be set after PCA since axis change
   print("Begining algorithm for inputs")
   print(iter_traits)
   out <- clust_pca_compare(data_matrices = data_matrices,
@@ -32,17 +43,27 @@ cluster_and_plot <- function(data_matrices,
   max_diff_df <- out$max_diff
   c_scores <- out$clust_scores
   print("Diff done")
-  c_scores %>% plot_trait_heatmap(iter_traits)
+  c_scores %>% plot_trait_heatmap(iter_traits, res_dir)
   print("Heatmap plot done")
-  max_diff_df %>% plot_max_diff(iter_traits)
+  max_diff_df %>% plot_max_diff(iter_traits, res_dir)
   print("Diff plot done")
   out <- list("iter_df" = iter_df,
               "c_scores" = c_scores,
               "max_df" = max_diff_df)
   return(out)
 }
+
+#- Matrix distance functions
+max_dist_calc <- function(score_mat, norm_typ = "F", na_rm = TRUE) {
+  # Find the max distance based on range on each axis.
+  max_p <- apply(score_mat, 2, max, na.rm = na_rm)
+  min_p <- apply(score_mat, 2, min, na.rm = na_rm)
+  max_dist <- norm(as.matrix(max_p - min_p), norm_typ)
+return(max_dist)
+}
+
 setup_dist <- function(score_df, norm_typ = "F") {
-  # Setup distances
+  # Find the distance between all pairs of points.
   dist_df <- data.frame(
     snp1 = character(),
     snp2 = character(),
@@ -77,6 +98,7 @@ pair_dist_calc <- function(score_df, snp1, snp2, norm_typ = "F") {
   return(dist_df)
 }
 
+# Directory function
 set_directory <- function(res_dir0, iter_traits) {
   #' Set the directory for the results using the base directory
   #' and the iteration parameters
@@ -87,7 +109,7 @@ set_directory <- function(res_dir0, iter_traits) {
   }
   return(res_dir)
 }
-
+#- String functions
 method_str <- function(iter_traits) {
   #' Create the string that describes the type of method for filenames
   if (iter_traits$bp_on) {
@@ -118,10 +140,11 @@ desc_str <- function(iter_traits) {
   return(paste(iter_traits$clust_typ_str, "and", bp_str, "and", clust_prob_str))
 }
 
+#- Iteration setup function.
 make_iter_df <- function(clust_typ_list, bp_on_list, clust_prob_on_list) {
   #' Create a dataframe whose rows correspond to iterations of the
   #' ClusterAndPlot programe. Each row indicates a different
-  #' set of input terms. 
+  #' set of input terms.
   iter_df_full <- data.frame(row.names = integer(),
                              "bp_on" = logical(),
                              "clust_prob_on" = logical(),
@@ -133,13 +156,14 @@ make_iter_df <- function(clust_typ_list, bp_on_list, clust_prob_on_list) {
           "bp_on" = bp_on,
           "clust_prob_on" = clust_prob_on,
           "clust_typ" = clust_typ_str)
-        iter_df_full <- rbind(iter_df_full,iter_traits)
+        iter_df_full <- rbind(iter_df_full, iter_traits)
       }
     }
   }
   return(iter_df_full)
 }
 
+#- Functions for cropping matrices.
 crop_mat_list <- function(mat_list, trait_df,
                         out_pheno, exp_pheno,
                         n_rows, n_col0, n_col1) {
@@ -189,4 +213,17 @@ crop_mat_colnums <- function(mat, num_rows, col0, col1) {
   #' Return the matrix with rows 1: num_rows and columns col0:col1
   mat_out <- mat[1:num_rows, col0:col1]
   return(mat_out)
+}
+
+#- Tesing functions
+
+test_all_na <- function(b_df, nan_col = "30600_irnt") {
+  #' Test whether the function for checking the NaNs in a column works.
+  test <- na_col_check(b_df[, nan_col])
+  print("test")
+  if (test) {
+    return(1)
+  } else {
+    return(0)
+  }
 }
