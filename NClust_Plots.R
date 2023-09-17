@@ -1,4 +1,4 @@
-plot_trait_heatmap <- function(c_scores, iter_traits) {
+plot_trait_heatmap <- function(c_scores, iter_traits, res_dir) {
   #' Plot a heatmap of the scores for each trait for each cluster.
   nm <- unique(c_scores$num_axis)
   ignore_cols <- c("clust_size", "id", "num_axis", "total_score")
@@ -110,7 +110,7 @@ max_diff_single_axis <- function(ni, ignore_cols, c_scores, trait_list,
   return(out_df)
 }
 
-plot_max_diff <- function(max_df, iter_traits, res_df) {
+plot_max_diff <- function(max_df, iter_traits, res_dir) {
   method_str <- method_str(iter_traits)
   d_str <- desc_str(iter_traits)
   plotname <- paste0(res_dir, "NumAxis_Vs_MaxScoreDiff", method_str, ".png")
@@ -129,7 +129,7 @@ plot_max_diff <- function(max_df, iter_traits, res_df) {
   return()
 }
 
-plot_max_diff_both <- function(max_df1, max_df2) {
+plot_max_diff_both <- function(max_df1, max_df2, res_dir) {
   plotname <- paste0(res_dir, "NumAxis_Vs_MaxScoreDiff_Compare.png")
   lineplot <- ggplot() +
     geom_line(data = max_df1,
@@ -174,7 +174,7 @@ plot_single_max_dff <- function(plot_iter, max_df_list, iter_df) {
   return(lineplot)
 }
 
-plot_max_diff_list <- function(max_df_list, iter_df) {
+plot_max_diff_list <- function(max_df_list, iter_df, res_dir) {
   n_sets <- unique(max_df_list$input_iter)
   plotname <- paste0(res_dir, "NumAxis_Vs_MaxScoreDiff_Compare.png")
   lineplot <- ggplot()
