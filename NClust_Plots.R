@@ -1,6 +1,5 @@
 plot_trait_heatmap <- function(c_scores, iter_traits, res_dir) {
   #' Plot a heatmap of the scores for each trait for each cluster.
-  nm <- unique(c_scores$num_axis)
   ignore_cols <- c("clust_size", "id", "num_axis", "total_score")
   full_trait_list <- colnames(c_scores)
   full_trait_list <- full_trait_list[!(full_trait_list %in% ignore_cols)]
@@ -15,7 +14,7 @@ plot_trait_heatmap <- function(c_scores, iter_traits, res_dir) {
   d_str <- desc_str(iter_traits)
   title_str <- paste("Association score for trait against cluster. 
   Cluster type", d_str)
-  for (i in nm){
+  for (i in unique(c_scores$num_axis)){
     # Get the traits for this iteration
     trait_list <- get_col_list(c_scores, "num_axis", i, ignore_cols)
     trait_list_no_cnum <- trait_list[trait_list != "clust_num"]
@@ -37,7 +36,7 @@ plot_trait_heatmap <- function(c_scores, iter_traits, res_dir) {
       #FIXME
       # Mark the two clusters with the highest difference at each step
       scale_fill_gradient2(low = "cyan", high = "blue", mid = "purple",
-                          # na.value = "grey50",
+                        na.value = "grey50",
                          midpoint = colmid,
                          breaks = seq(vmin, vmax, break_width),
                          limits = c(vmin, vmax)) +
@@ -186,13 +185,41 @@ plot_max_diff_list <- function(max_df_list, iter_df, res_dir) {
 }
 
 clust_scatter <- function(clusters, b_mat,
-                          se_mat, num_axis, method_str) {
-  pdf(file = paste0(res_dir, out_pheno, "clusters_",
-                    num_axis, method_str, ".pdf"),
-      width = 8, height = 6)  ###getting corrupt
-  p <- ggplot() +
-      geom_point(data = b_mat,
-                aes(x = P1, y = P2, col = clusters$clust_num))
-  dev.off()
+                          se_mat,
+                          iter_traits,
+                          res_dir,
+                          pw = 3,
+                          ph = 6) {
+  m_str <- method_str(iter_traits)
+  plotname <- paste0(res_dir, "clusters_", m_str, ".png")
+  c1 <- colnames(b_mat)[1]
+  c2 <- colnames(b_mat)[2]
+  bx <- b_mat[c1]
+  by <- b_mat[c2]
+  bxse <- se_mat[c1]
+  byse <- se_mat[c2]
+  print("clusters")
+  print(head(clusters))
+  snp_list <- row.names(b_mat)
+  res_df <- data.frame(
+    row.names = snp_list,
+    bx = bx,
+    by = by,
+    clust_num = clusters$clust_num[snp_list],
+    clust_prob = clusters$clust_prob[snp_list]
+  )
+  p <- ggplot(data = res_df, aes(bx, by)) +
+    geom_point(aes(colour = clust_num,
+                  size = clust_prob), shape = 21) +
+    geom_errorbarh(
+    aes(xmin = bx - 1.96 * bxse, xmax = bx + 1.96 * bxse,
+          color = clust_num), linetype = "solid") +
+    geom_errorbar(
+    aes(ymin = by - 1.96 * byse, ymax = by + 1.96 * byse,
+          color = clust_num), linetype = "solid") +
+    ylab("Association with PC2") +
+    xlab("Association with PC1") +
+    ggtitle("Clustered by principal components")
+  ggsave(filename = plotname, width = pw, height = ph)
   return()
 }
