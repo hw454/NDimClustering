@@ -3,12 +3,11 @@
 # - Load the data to be clustered.
 
 #library(data.table)
-library(dplyr) # %>% into functions
 library(ggplot2) # For ggplot functions
 #library(ggrepel)
 library(tidyr) # Use gather function in reformatting tables
 #library(TwoSampleMR)
-#library(tidyverse)
+library(tidyverse) # %>% into functions, and distinct()
 
 #' Data inputs needed: unstanderdised association matrix between IV and traits,
 #' SE matrix of association matrix, t-stat matrix of association matrix,
