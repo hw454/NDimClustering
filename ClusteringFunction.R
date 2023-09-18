@@ -131,10 +131,10 @@ cluster_kmeans_basic <- function(b_df,
   # Columns
   ax <- colnames(b_df)
   # Filter NaNs before clustering
-    if (space_typ == "angle") {
+  if (space_typ == "angle") {
     # For each point in b_df_comp convert the score to the angle
     # between the vectors to the origin and the unit vectors on the axis.
-    b_df <- mat_to_angle_mat(b_df)
+    b_df_clust <- mat_to_angle_mat(b_df)
   } else {
     b_df_clust <- b_df
   }
