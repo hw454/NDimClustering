@@ -1,6 +1,10 @@
-kmeans_skip_nan <- function(b_mat, centers = nr,
-                            iter_max = 300, clust_threshold = 1e-5,
-                            norm_typ = "F", na_rm = FALSE, prob_on = TRUE) {
+kmeans_skip_nan <- function(b_mat, 
+                            centers = nr,
+                            iter_max = 300,
+                            clust_threshold = 1e-5,
+                            norm_typ = "F",
+                            na_rm = FALSE,
+                            prob_on = TRUE) {
   set.seed(123)
   snp_list <- rownames(b_mat)
   # Generate data frame with max and min data.
@@ -16,7 +20,6 @@ kmeans_skip_nan <- function(b_mat, centers = nr,
                           n_cents = centers, min_max_df = min_max_df)
   centroids <- Reduce(cbind, centroid_list)
   # Randomly assign cluster to snps
-
   nsnps <- length(snp_list)
   clust_samp <- replicate(nsnps, sample(1:centers, 1))
   cluster_df <- data.frame(
@@ -32,14 +35,15 @@ kmeans_skip_nan <- function(b_mat, centers = nr,
   for (iter in 1:iter_max){
     # For each SNP find the cluster with the closest centre.
     snp_clust_list <- lapply(snp_list, snp_closest_clust,
-                              b_mat = b_mat, cluster_df = cluster_df,
-                             centroids = centroids, norm_typ = norm_typ)
+                            b_mat = b_mat,
+                            cluster_df = cluster_df,
+                            centroids = centroids,
+                            norm_typ = norm_typ)
     # Combine the list of dataframes into one dataframe.
     # Override Cluster_df with the new assignment
     cluster_df <- Reduce(rbind, snp_clust_list)
     # Recompute the centroids based on the average of the clusters.
     # Check if the previous centres differ from the cluster means.
-    #print(clust_threshold)
     thresh_list <- lapply(rownames(centroids), clust_cent_check,
                         iter = iter, cluster_df = cluster_df,
                         b_dfs = b_mat, centroids = centroids,
@@ -118,8 +122,7 @@ clust_cent_check <- function(c_num, iter, cluster_df, b_dfs, centroids,
       centroidscheck[c_num, ] <- colMeans(snp_scores, na.rm = na_rm)
     }
     # Calculate how much the centroid has moved.
-    centroiddiff <- data.matrix(
-                                na.omit(centroidscheck[c_num, ]
+    centroiddiff <- data.matrix(na.omit(centroidscheck[c_num, ]
                                 - centroids[c_num, ]))
     centroidchange <- norm(centroiddiff, norm_typ)
     # Check if the diff between new and old centres is below the threshold

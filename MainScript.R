@@ -28,7 +28,7 @@ source("./NClust_Plots.R")
 source("./kmeans_skip_nan.R")
 source("./ClusteringCompare.R")
 source("./PrincipalComponentAnalysis.R")
-source("./ClusterAndPlot.R")
+source("./MainFunction.R")
 
 # Location of the data directory
 data_dir <- "./working-example/data/"
@@ -39,8 +39,8 @@ if (!file.exists(res_dir0)) {
 
 # Versions to be iterated through.
 # - type of clustering
-clust_typ_str1 <- "basic"
-clust_typ_str2 <- "min"
+clust_typ_str1 <- "basic_angle"
+clust_typ_str2 <- "min_angle"
 clust_typ_list <- c(clust_typ_str2, clust_typ_str1)
 # - probability used from beta value
 bp_on1 <- TRUE
@@ -50,12 +50,17 @@ bp_on_list <- c(bp_on1, bp_on2)
 clust_prob_on1 <- TRUE
 clust_prob_on2 <- FALSE
 clust_prob_on_list <- c(clust_prob_on1, clust_prob_on2)
+# - Iterate through all change or increment
+ndim_typ <- "all"
 
 source("SetupNDimClust.R")
 
 
 # Initialise the dataframe for storing the run details of each iteration
-iter_df <- make_iter_df(clust_typ_list, bp_on_list, clust_prob_on_list)
+iter_df <- make_iter_df(clust_typ_list,
+                            bp_on_list,
+                            clust_prob_on_list,
+                            ndim_typ)
 
 niter <- dim(iter_df)[1]
 
