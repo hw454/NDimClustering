@@ -32,7 +32,26 @@ cluster_and_plot <- function(data_matrices,
   # This needs to be set after PCA since axis change
   print("Begining algorithm for inputs")
   print(iter_traits)
-  out <- clust_pca_compare(data_matrices = data_matrices,
+  if (iter_traits$ndim_typ == "all"){
+  out <- clust_pca_compare_all(data_matrices = data_matrices,
+                          out_pheno = out_pheno,
+                          na_handling = na_handling,
+                          iter_traits = iter_traits,
+                          norm_typs = norm_typs,
+                          nums = nums
+  )
+  print("Clust done")
+  #max_diff_df <- out$max_diff
+  c_scores <- out$clust_scores
+  c_scores %>% plot_trait_heatmap(iter_traits, res_dir)
+  print("Heatmap plot done")
+  # Only plot max diff when iterating through the axis
+  p <- clust_scatter(out$clust_items, out$b_pc, out$se_pc, iter_traits, res_dir)
+  # out <- list("iter_df" = iter_df,
+  #            "c_scores" = c_scores,
+  #            "max_df" = max_diff_df)
+  } else if (iter_traits$ndim_typ == "iterative") {
+  out <- clust_pca_compare_iterative(data_matrices = data_matrices,
                           out_pheno = out_pheno,
                           na_handling = na_handling,
                           iter_traits = iter_traits,
@@ -47,9 +66,7 @@ cluster_and_plot <- function(data_matrices,
   print("Heatmap plot done")
   max_diff_df %>% plot_max_diff(iter_traits, res_dir)
   print("Diff plot done")
-  out <- list("iter_df" = iter_df,
-              "c_scores" = c_scores,
-              "max_df" = max_diff_df)
+  }
   return(out)
 }
 
@@ -122,7 +139,7 @@ method_str <- function(iter_traits) {
   } else {
     clust_prob_str <- "_clustprobOFF"
   }
-  return(paste0(iter_traits$clust_typ_str, bp_str, clust_prob_str))
+  return(paste0(iter_traits$clust_typ, bp_str, clust_prob_str))
 }
 
 desc_str <- function(iter_traits) {
@@ -137,26 +154,33 @@ desc_str <- function(iter_traits) {
   } else {
     clust_prob_str <- "ClustProb off"
   }
-  return(paste(iter_traits$clust_typ_str, "and", bp_str, "and", clust_prob_str))
+  return(paste(iter_traits$clust_typ, "and", bp_str, "and", clust_prob_str))
 }
 
 #- Iteration setup function.
-make_iter_df <- function(clust_typ_list, bp_on_list, clust_prob_on_list) {
+make_iter_df <- function(clust_typ_list,
+                        bp_on_list,
+                        clust_prob_on_list,
+                        ndim_typ) {
   #' Create a dataframe whose rows correspond to iterations of the
   #' ClusterAndPlot programe. Each row indicates a different
   #' set of input terms.
   iter_df_full <- data.frame(row.names = integer(),
                              "bp_on" = logical(),
                              "clust_prob_on" = logical(),
-                             "clust_typ" = character())
+                             "clust_typ" = character(),
+                             "ndim_typ" = character())
   for (clust_typ_str in clust_typ_list) {
     for (bp_on in bp_on_list) {
       for (clust_prob_on in clust_prob_on_list) {
-        iter_traits <- data.frame(
-          "bp_on" = bp_on,
-          "clust_prob_on" = clust_prob_on,
-          "clust_typ" = clust_typ_str)
-        iter_df_full <- rbind(iter_df_full, iter_traits)
+        for (ndim in ndim_typ) {
+          iter_traits <- data.frame(
+            "bp_on" = bp_on,
+            "clust_prob_on" = clust_prob_on,
+            "clust_typ" = clust_typ_str,
+            "ndim_typ" = ndim)
+          iter_df_full <- rbind(iter_df_full, iter_traits)
+        }
       }
     }
   }
