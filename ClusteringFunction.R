@@ -117,40 +117,72 @@ trait_df_add_a <- function(trait_df, a, axes) {
 
 #- Main clustering functions
 
-cluster_kmeans_basic <- function(b_df, nr, max_dist, clust_prob_on = TRUE,
-norm_typ = "F", threshold = 1e-5, narm = TRUE) {
+cluster_kmeans_basic <- function(b_df,
+                                nr = 10,
+                                max_dist = 10.0,
+                                space_typ = "regular",
+                                clust_prob_on = TRUE,
+                                norm_typ = "F",
+                                threshold = 1e-5,
+                                narm = TRUE) {
   #' Using the association scores for each SNP accross traits cluster the traits
   #' using kmeans. Return the cluster setup which minimises AIC.
 
   # Columns
   ax <- colnames(b_df)
   # Filter NaNs before clustering
-  b_df_comp <- b_df[complete.cases(b_df), ]
+    if (space_typ == "angle") {
+    # For each point in b_df_comp convert the score to the angle
+    # between the vectors to the origin and the unit vectors on the axis.
+    b_df <- mat_to_angle_mat(b_df)
+  } else {
+    b_df_clust <- b_df
+  }
+
+  b_df_comp <- b_df_clust[complete.cases(b_df_clust), ]
+
   # Initial cluster dataframe
   clust_re <- kmeans_skip_nan(b_df_comp,
                               centers = nr,
-                              clust_threshold = threshold, norm_typ = norm_typ,
-                              prob_on = clust_prob_on, na_rm = narm)
+                              clust_threshold = threshold,
+                              norm_typ = norm_typ,
+                              prob_on = clust_prob_on,
+                              na_rm = narm)
   # cluster number identification for each observation
-  snp_cluster_list <- lapply(setdiff(names(b_df), names(b_df_comp)),
-                            closest_clust, b_df = b_df, clust_re = clust_re,
-                            max_dist = max_dist, norm_typ = norm_typ)
+  snp_cluster_list <- lapply(setdiff(names(b_df_clust), names(b_df_comp)),
+                            closest_clust,
+                            b_df = b_df_clust,
+                            clust_re = clust_re,
+                            max_dist = max_dist,
+                            norm_typ = norm_typ)
   nan_cluster_df <- Reduce(rbind, snp_cluster_list)
   if (clust_prob_on) {
     nan_cluster_df$clust_prob <- nan_cluster_df$clust_dist %>% clust_prob_calc()
   }
   clust_re <- rbind(clust_re, nan_cluster_df)
+  print(head(clust_re))
   return(clust_re)
 }
 
 cluster_kmeans_min <- function(b_df,
-                              nr = 10, max_dist = 10.0, clust_prob_on = TRUE,
+                              nr = 10,
+                              max_dist = 10.0,
+                              space_typ = "regular",
+                              clust_prob_on = TRUE,
                               norm_typ = "F", threshold = 1e-5, narm = TRUE) {
   #' Using the association scores for each SNP accross traits cluster the traits
   #' using kmeans. Return the cluster setup which minimises AIC.
 
+  if (space_typ == "angle") {
+    # For each point in b_df_comp convert the score to the angle
+    # between the vectors to the origin and the unit vectors on the axis.
+    b_df_clust <- mat_to_angle_mat(b_df)
+  } else {
+    b_df_clust <- b_df
+  }
+
   # Filter complete cases
-  b_df_comp <- b_df[complete.cases(b_df), ]
+  b_df_comp <- b_df_clust[complete.cases(b_df_clust), ]
 
   # Initial cluster dataframe
   ic_list <- lapply(2:(nr + 1), kmeans_ic,
@@ -166,9 +198,9 @@ cluster_kmeans_min <- function(b_df,
   # maybe variations due to machine precision in the aic values.
   clust_re_min_aic <- ic_df[which(ic_df$ncents == min_cents), ]
   # Assign terms with NaNs to nearest cluster
-  nan_clusts <- lapply(setdiff(rownames(b_df), rownames(b_df_comp)),
+  nan_clusts <- lapply(setdiff(rownames(b_df_clust), rownames(b_df_comp)),
                        closest_clust,
-                       b_df = b_df,
+                       b_df = b_df_clust,
                        clust_re = clust_re_min_aic,
                        max_dist = max_dist,
                        norm_typ = norm_typ)
@@ -177,5 +209,43 @@ cluster_kmeans_min <- function(b_df,
   if (clust_prob_on) {
     clust_out$clust_prob <- clust_out$clust_dist %>% clust_prob_calc()
   }
+  print(head(clust_out))
   return(clust_out)
+}
+
+mat_to_angle_mat <- function(mat) {
+  nc <- ncol(mat)
+  nr <- nrow(mat)
+  unit_mat <- diag(nc)
+  p_list <- lapply(1:nr, point_to_angles,
+                  mat = mat,
+                  unit_mat = unit_mat)
+  out_mat <- Reduce(rbind, p_list)
+  out_mat <- as.matrix(out_mat)
+  row.names(out_mat) <- row.names(mat)
+  colnames(out_mat) <- colnames(mat)
+  return(out_mat)
+}
+
+make_unit_vec <- function(i, tot_n) {
+  u <- integer(tot_n)
+  u[i] <- 1
+  return(u)
+}
+point_to_angles <- function(p, mat, unit_mat) {
+  vec <- as.matrix(mat[p, ])
+  nc <- ncol(mat)
+  ang_list <- lapply(1:nc, point_to_angle,
+                    unit_mat = unit_mat,
+                    p = vec)
+  ang_row <- Reduce(cbind, ang_list)
+  return(ang_row)
+}
+point_to_angle <- function(col, unit_mat, p) {
+  unit_vec <- as.matrix(unit_mat[col, ])
+  dot_prod <- t(p) %*% unit_vec
+  norm_x <- norm(p, type = "F")
+  norm_y <- norm(unit_vec, type = "F")
+  theta <- acos(dot_prod / (norm_x * norm_y))
+  return(as.numeric(theta))
 }
