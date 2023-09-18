@@ -18,9 +18,9 @@ pca <- function(b_df, pval_df, se_df,
   # represented by np largest Eigen values.
   b_pc_mat   <- transform_coords(b_df, e_mat)
   pval_pc_mat <- transform_coords(pval_df, e_mat)
-  se_pc_mat <- transform_coords(se_df,e_mat)
-  out_list   <- list("transform" = e_mat, 
-                     "beta" = b_pc_mat, 
+  se_pc_mat <- transform_coords(se_df, e_mat)
+  out_list   <- list("transform" = e_mat,
+                     "beta" = b_pc_mat,
                      "pval" = pval_pc_mat,
                      "se" = se_pc_mat)
   return(out_list)
@@ -38,10 +38,12 @@ transform_coords <- function(p_mat, t_mat) {
 trans_vec <- function(p_mat, r, t_mat) {
   #' Transform the vector p_mat[r] to out_vec
   #' on a co-ordinate system whose basis is
-  #' the columns of t_mat
-  out_vec <- p_mat[r,] %*% t_mat
+  #' the columns of t_mat.
+  q <- p_mat[r, ]
+  q[is.na(q)] <- 0.0
+  out_vec <- q %*% t_mat
   rownames(out_vec) <- c(r)
-  colnames(out_vec) <- lapply(1:dim(t_mat)[2],pc_name)
+  colnames(out_vec) <- lapply(1:dim(t_mat)[2], pc_name)
   return(out_vec)
 }
 
