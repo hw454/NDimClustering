@@ -31,8 +31,8 @@ source("./PrincipalComponentAnalysis.R")
 source("./MainFunction.R")
 
 # Location of the data directory
-data_dir <- "./working-example/data/"
-res_dir0 <- "../NDimClustResults/working-example/"
+data_dir <- "../NDimClustInputs/BP_Cancer/"
+res_dir0 <- "../NDimClustResults/BP_BreastCancer/"
 if (!file.exists(res_dir0)) {
   dir.create(file.path(getwd(), res_dir0))
 }
@@ -51,7 +51,7 @@ clust_prob_on1 <- TRUE
 clust_prob_on2 <- FALSE
 clust_prob_on_list <- c(clust_prob_on1, clust_prob_on2)
 # - Iterate through all change or increment
-ndim_typ <- "all"
+ndim_typ <- "iterative"
 
 source("SetupNDimClust.R")
 
