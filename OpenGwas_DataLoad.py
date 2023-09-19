@@ -12,7 +12,7 @@ logging.basicConfig(filename='OpenGwas_DataLoad.log',
                     datefmt='%Y-%m-%d %H:%M:%S',
                     filemode='w')
 
-input_dir='../NDimClustInputs/'
+input_dir='../NDimClustInputs/BP/'
 trait_input_csv = "TraitsData.csv"
 trait_df=pd.read_csv(input_dir+trait_input_csv,sep=',',header=0)
 i=0
