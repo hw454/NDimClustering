@@ -90,14 +90,12 @@ clust_pca_compare_iterative <- function(data_matrices,
       thresholds$diff <- thresholds$threshmul * var(dist_mat$dist,
                                                     na.rm = na_handling$narm)
       # Cluster the data on these axes
-      if (grepl(iter_traits$clust_typ,"angle")){
+      if (grepl("angle", iter_traits$clust_typ)){
           st <- "angle"
-        } else {
+      } else {
           st <- "regular"
-        }
-      print("space type")
-      print(st)
-      if (grepl(iter_traits$clust_typ, "min")) {
+       }
+      if (grepl("min", iter_traits$clust_typ)) {
         cluster_df <- cluster_kmeans_min(b_pc_mat,
                                          nums$nr,
                                          nums$max_dist,
@@ -106,7 +104,7 @@ clust_pca_compare_iterative <- function(data_matrices,
                                          norm_typ = norm_typs$clust,
                                          threshold = thresholds$clust,
                                          narm = na_handling$narm)
-      } else if (grepl(iter_traits$clust_typ, "basic")) {
+      } else if (grepl("basic", iter_traits$clust_typ)) {
         cluster_df <- cluster_kmeans_basic(b_pc_mat,
                                            nums$nr,
                                            nums$max_dist,
@@ -149,6 +147,15 @@ clust_pca_compare_iterative <- function(data_matrices,
       df_list$max_diff <- rbind(df_list$max_diff, max_df0)
       c_score0["num_axis"] <- num_axis
       df_list$clust_scores <- rbind(df_list$clust_scores, c_score0)
+      # Plot the scatter for this iteraion
+      clust_scatter(cluster_df, b_pc_mat,
+                    pca_list$se,
+                    iter_traits,
+                    num_axis)
+      print("scatter plot done")
+      # Plot the transform heatmap.
+      pca_list$transform %>% plot_transform_heatmap(iter_traits,
+                                      num_axis)
       if (max_df0$diff > thresholds$diff && num_axis > 3) {
         print(paste("Threshold met on outcome", a))
         return(df_list)
@@ -267,8 +274,6 @@ clust_pca_compare_all <- function(data_matrices,
   cluster_df$num_axis <- num_axis
 
   df_list$clust_items <- rbind(df_list$clust_items, cluster_df)
-  print("clust_items")
-  print(df_list$clust_items)
   # Find the set of cluster numbers
   c_nums <- unique(cluster_df$clust_num)
   # Score the clustered data based on affiliations with axes.
@@ -394,4 +399,15 @@ p_col_df <- function(i) {
   out <- data.frame(col = numeric())
   colnames(out) <- c(cname)
   return(out)
+}
+
+pc_name_list <- function(np) {
+  p_cols <- lapply(1:np, p_name)
+  return(p_cols)
+}
+
+p_name <- function(i) {
+  #' Create a dataframe with column Pi
+  cname <- paste0("P", i)
+  return(c_name)
 }
