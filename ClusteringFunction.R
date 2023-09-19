@@ -160,7 +160,6 @@ cluster_kmeans_basic <- function(b_df,
     nan_cluster_df$clust_prob <- nan_cluster_df$clust_dist %>% clust_prob_calc()
   }
   clust_re <- rbind(clust_re, nan_cluster_df)
-  print(head(clust_re))
   return(clust_re)
 }
 
@@ -209,7 +208,6 @@ cluster_kmeans_min <- function(b_df,
   if (clust_prob_on) {
     clust_out$clust_prob <- clust_out$clust_dist %>% clust_prob_calc()
   }
-  print(head(clust_out))
   return(clust_out)
 }
 
