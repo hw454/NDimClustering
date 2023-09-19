@@ -14,6 +14,10 @@ pca <- function(b_df, pval_df, se_df,
   c_mat <- cor(std_b_df, method = "pearson", use = "pairwise.complete.obs")
   # Find Eigen Vectors and Eigen Values
   e_mat <- find_np_eigen_mat(c_mat, np = np)
+  #p_list <- pc_name_list(np)
+  #print(p_list)
+  row.names(e_mat) <- colnames(b_df)
+  #colnames(e_mat) <- pc_name_list(np)
   # Map Scores onto the space of the components
   # represented by np largest Eigen values.
   b_pc_mat   <- transform_coords(b_df, e_mat)
