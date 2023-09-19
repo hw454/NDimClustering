@@ -26,6 +26,7 @@ cluster_and_plot <- function(data_matrices,
 #' function. Then plots the results.
   iter_traits <- iter_df[iter, ]
   res_dir <- set_directory(res_dir0, iter_traits)
+  iter_traits["res_dir"] <- res_dir
   # Find the distances between all points to initialise the threshold
   # for cluster difference.
   #FIXME
@@ -43,13 +44,16 @@ cluster_and_plot <- function(data_matrices,
   print("Clust done")
   #max_diff_df <- out$max_diff
   c_scores <- out$clust_scores
-  c_scores %>% plot_trait_heatmap(iter_traits, res_dir)
+  c_scores %>% plot_trait_heatmap(iter_traits)
   print("Heatmap plot done")
   # Only plot max diff when iterating through the axis
-  p <- clust_scatter(out$clust_items, out$b_pc, out$se_pc, iter_traits, res_dir)
-  # out <- list("iter_df" = iter_df,
-  #            "c_scores" = c_scores,
-  #            "max_df" = max_diff_df)
+  p <- clust_scatter(out$clust_items, out$b_pc, out$se_pc, iter_traits)
+  print("scatter plot done")
+  # Plot the transform heatmap.
+  out$e_mat %>% plot_transform_heatmap(iter_traits)
+  out <- list("iter_df" = iter_df,
+              "c_scores" = c_scores,
+              "max_df" = max_diff_df)
   } else if (iter_traits$ndim_typ == "iterative") {
   out <- clust_pca_compare_iterative(data_matrices = data_matrices,
                           out_pheno = out_pheno,
@@ -62,10 +66,13 @@ cluster_and_plot <- function(data_matrices,
   max_diff_df <- out$max_diff
   c_scores <- out$clust_scores
   print("Diff done")
-  c_scores %>% plot_trait_heatmap(iter_traits, res_dir)
+  c_scores %>% plot_trait_heatmap(iter_traits)
   print("Heatmap plot done")
-  max_diff_df %>% plot_max_diff(iter_traits, res_dir)
+  max_diff_df %>% plot_max_diff(iter_traits)
   print("Diff plot done")
+  out <- list("iter_df" = iter_df,
+              "c_scores" = c_scores,
+              "max_df" = max_diff_df)
   }
   return(out)
 }
