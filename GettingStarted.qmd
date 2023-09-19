@@ -142,7 +142,7 @@ thresh_norm <- "F" # The type of norm you'd like to use for defining the metric 
 clust_norm <- "F" # The type of norm you'd like to use for defining the metric between points. Default is Froebenius if not set. 
 bp_on = TRUE # If TRUE then the snp beta contributions to clust scores will be weighted by their p-values.
 clust_prob_on = TRUE # If TRUE then the snp contribution to the cluster score is weighted by the probability the snp is correctly allocated to that cluster.
-clust_typ_str = "basic" # The type of clustering approach you want to use. basic will find nr clusters. Min will find the number of clusters which minimise the AIC between 1 and nr. 
+clust_typ_str = "basic_angle" # The type of clustering approach you want to use. basic will find nr clusters. Min will find the number of clusters which minimise the AIC between 1 and nr. The angle n suffix will transform the data before clustering to the angle to the unit axes.  
 ```
 ### Passing through optional inputs
 There are a lot of variables that can be adjusted. To contain them within the function call group similar terms into lists. To ensure the correct values are used later name the terms instead of using positioning.
