@@ -1,0 +1,171 @@
+---
+title: "Getting Started"
+author: "Hayley Wragg"
+toc: true
+number-sections: true
+format:
+  html: 
+    code-fold: true
+    html-math-method: katex
+  pdf: 
+    geometry: 
+      - top=30mm
+      - left=20mm
+---
+# Setup
+### R-Packages
+Load the packages needed starting with the standard R packages
+
+```{R}
+#library(data.table)
+library(dplyr) # To use %>%
+#library(ggplot2)
+#library(ggrepel)
+#library(tidyr)
+#library(TwoSampleMR)
+#library(tidyverse)
+```
+
+### Source functions
+Load the functions from the files in this director.
+
+```{R}
+source("./ClusteringFunction.R")
+source("./ClustScores.R")
+source("./NClust_Plots.R")
+source("./kmeans_skip_nan.R")
+source("./ClusteringCompare.R")
+source("./PrincipalComponentAnalysis.R")
+source("./ClusterAndPlot.R")
+```
+
+### Set directory
+Before you can use any of the functions you must first load the data. To do this you must set the relative directory the data is saved in and where you would like to save results.
+```{R}
+# Location of the data directory
+data_dir <- "./working-example/data/"
+# Location of the directory to save results
+res_dir0 <- "../NDimClustResults/working-example/"
+# If directory does not exist create it
+if (!file.exists(res_dir0)) {
+  dir.create(file.path(getwd(), res_dir0))
+}
+
+# Files containing data
+hail_gcorr_dir <- paste0(data_dir, "Hail_AllxAll.csv")
+fpaths_fil_dir <- paste0(data_dir, "fpaths_fil_nfil.txt")
+```
+
+### Load the data
+Now you know where the data is saved you can load the data. You need a matrix for the association scores between SNPs and traits, a matrix for the standard error association with these scores, a matrix for the p-value associated with these scores and a matrix for the t-statistic associated with these scores. 
+```{R}
+#' read in data as matrices.
+#' rows labeled by SNP_id and columns labelled by trait info.
+#' The entries at each position correspond to the values for beta, se, t, and p
+unstd_beta_df <- as.matrix(data.table::fread(
+                        paste0(data_dir, "unstdBeta_df.csv")),
+                        rownames = 1)
+unstd_se_df   <- as.matrix(data.table::fread(
+                        paste0(data_dir, "unstdSE_df.csv")),
+                        rownames = 1)
+tstat_df     <- as.matrix(data.table::fread(
+                        paste0(data_dir, "tstat_df.csv")),
+                        rownames = 1)
+pval_df      <- as.matrix(data.table::fread(
+                        paste0(data_dir, "pval_df.csv")),
+                        rownames = 1)
+```
+In addition to the data matrices you need to load the information for the traits. 
+```{R}
+trait_info   <- data.table::fread(paste0(data_dir, "trait_info_nfil.csv"))
+print(trait_info %>% head())
+```
+You need to set the outcome and expoure variables as a minimum for the traits axes. The rest of the rest are additional to these. 
+```{R}
+# Find the label for the Outcome trait and the first Exposure trait
+row <- which(trait_info$pheno_category == "Outcome")
+out_pheno <- trait_info$phenotype[row]
+row <- which(trait_info$pheno_category == "Exposure")[1]
+exp_pheno <- trait_info$phenotype[row]
+```
+
+### Setup testing
+It's a good idea to build and test your code on a subset of the data. You can do this by setting the test variables and cropping the matrices. 
+
+```{R}
+# Testing dimensions
+test <- 0 # testing switch
+num_trait0 <- 1
+num_trait1 <- 410
+num_rows <- 50
+## Crop data for testing
+if (test) {
+data_matrics <- crop_data(mat_list = list("beta" = unstd_beta_df,
+                               "pval" = pval_df,
+                               "se" = unstd_se_df,
+                               "tstat" = tstat_df),
+                          trait_df = trait_info,
+                          out_pheno = out_pheno,
+                          exp_pheno = exp_pheno,
+                          n_rows = num_rows,
+                          n_col0 = num_trait0,
+                          n_col1 = num_trait1)
+} else{
+  # Collect the matrices into one object
+  data_matrices <- list("beta" = unstd_beta_df,
+                        "pval" = pval_df,
+                        "se" = unstd_se_df,
+                        "trait_info" = trait_info)
+}
+```
+# Running the program
+The program will run with only data inputs and use default values for all others.
+```{R}
+data_matrices %>% cluster_and_plot(out_pheno)
+```
+## Adjusting the inputs
+Set the variables for the main program. If they are not set here then the default values from the full-program will be used. 
+
+Start with the numerics terms.
+```{R}
+# variable set-up
+threshmul <- 5.0 # The multiplier for the threshold of cluster difference. This is multiplied by the variance of the distance between points then used to determine with any two clusters are distinctly different
+clust_threshold <- 1e-5 # The threshold the cluster centres must we within for the algorithm to consider the centres as convered. Default is 1e-5
+nr <- 10 # Number of clusters if this is not set the main program will default to 10
+np <- 2 # Number of PCs if this is not set the main program will default to 2. 
+na_percent <- 0.25 # The percentage of a column that can acceptably be not NaN
+```
+The next variables we will look at are those that vary the type of clustering. 
+```{R}
+# Types of clusting
+thresh_norm <- "F" # The type of norm you'd like to use for defining the metric between points. Default is Froebenius if not set. 
+clust_norm <- "F" # The type of norm you'd like to use for defining the metric between points. Default is Froebenius if not set. 
+bp_on = TRUE # If TRUE then the snp beta contributions to clust scores will be weighted by their p-values.
+clust_prob_on = TRUE # If TRUE then the snp contribution to the cluster score is weighted by the probability the snp is correctly allocated to that cluster.
+clust_typ_str = "basic_angle" # The type of clustering approach you want to use. basic will find nr clusters. Min will find the number of clusters which minimise the AIC between 1 and nr. The angle n suffix will transform the data before clustering to the angle to the unit axes.  
+```
+### Passing through optional inputs
+There are a lot of variables that can be adjusted. To contain them within the function call group similar terms into lists. To ensure the correct values are used later name the terms instead of using positioning.
+```{R}
+# Contain the variables into lists, threshold$diff and nums$max_dist will both be updated later.
+thresholds <- list("diff_mul" = threshmul, "diff" = 1e-5, "clust" = clust_threshold)
+na_handling <- list("narm" = TRUE, "percent" = na_percent)
+nums <- list("nr" = nr, "np" = np, "max_dist"=  1.0)
+norm_typs <- list("clust" =  clust_norm, "thresh_norm" =  thresh_norm)
+clust_vars <- data.frame(
+          "iter" = 0,
+          "bp_on" = bp_on,
+          "clust_prob_on" = clust_prob_on,
+          "clust_typ" = clust_typ_str)
+```
+### Running with optional inputs
+Now run your program with the varied inputs. 
+```{R}
+data_matrices %>% clust_and_plot(out_pheno, 
+                                iter=1,
+                                iter_df = clust_vars,
+                                threshold = thresholds,
+                                na_handling = na_handling,
+                                norm_typs = norm_typs,
+                                nums = nums)
+```

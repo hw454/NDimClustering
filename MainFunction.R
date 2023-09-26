@@ -1,0 +1,260 @@
+# - Main Program.
+cluster_and_plot <- function(data_matrices,
+                            out_pheno,
+                            iter = 1,
+                            iter_df = data.frame(
+                                        "iter" = 0,
+                                        "bp_on" = FALSE,
+                                        "clust_prob_on" = FALSE,
+                                        "clust_typ" = "basic"),
+                            thresholds = list("threshmul" = 5,
+                                              "diff" = 1e-5,
+                                              "clust" = 1e-5),
+                            na_handling = list("narm" = TRUE, "percent" = 0.95),
+                            norm_typs = list("clust" = "F", "thresh" = "F"),
+                            nums = list("max_dist" = 1, "np" = 3, "nr" = 5)
+) {
+#' Using the inuts the `cluster_and_plot` function will find
+#' the principal components then cluster on these. The clusters will
+#' then be scored on their association with the PCs (based on their)
+#' associations with the original traits. The cluster scores are then
+#' compared to determine if any two clusters are distinctly different.
+#' If yes then the computations are complete and the results are plotted.
+#' If no then another axis is added and the process repeated.
+#' --
+#' This function runs the computations in the `clust_pca_compare`
+#' function. Then plots the results.
+  iter_traits <- iter_df[iter, ]
+  res_dir <- set_directory(res_dir0, iter_traits)
+  iter_traits["res_dir"] <- res_dir
+  # Find the distances between all points to initialise the threshold
+  # for cluster difference.
+  #FIXME
+  # This needs to be set after PCA since axis change
+  print("Begining algorithm for inputs")
+  print(iter_traits)
+  if (iter_traits$ndim_typ == "all"){
+  out <- clust_pca_compare_all(data_matrices = data_matrices,
+                          out_pheno = out_pheno,
+                          na_handling = na_handling,
+                          iter_traits = iter_traits,
+                          norm_typs = norm_typs,
+                          nums = nums
+  )
+  print("Clust done")
+  #max_diff_df <- out$max_diff
+  c_scores <- out$clust_scores
+  c_scores %>% plot_trait_heatmap(iter_traits)
+  print("Heatmap plot done")
+  # Only plot max diff when iterating through the axis
+  p <- clust_scatter(out$clust_items, out$b_pc, out$se_pc, iter_traits)
+  print("scatter plot done")
+  # Plot the transform heatmap.
+  out$e_mat %>% plot_transform_heatmap(iter_traits)
+  out <- list("iter_df" = iter_df,
+              "c_scores" = c_scores,
+              "max_df" = max_diff_df)
+  } else if (iter_traits$ndim_typ == "iterative") {
+  out <- clust_pca_compare_iterative(data_matrices = data_matrices,
+                          out_pheno = out_pheno,
+                          na_handling = na_handling,
+                          iter_traits = iter_traits,
+                          norm_typs = norm_typs,
+                          nums = nums
+  )
+  print("Clust done")
+  max_diff_df <- out$max_diff
+  c_scores <- out$clust_scores
+  print("Diff done")
+  c_scores %>% plot_trait_heatmap(iter_traits)
+  print("Heatmap plot done")
+  max_diff_df %>% plot_max_diff(iter_traits)
+  print("Diff plot done")
+  out <- list("iter_df" = iter_df,
+              "c_scores" = c_scores,
+              "max_df" = max_diff_df)
+  }
+  return(out)
+}
+
+#- Matrix distance functions
+max_dist_calc <- function(score_mat, norm_typ = "F", na_rm = TRUE) {
+  # Find the max distance based on range on each axis.
+  max_p <- apply(score_mat, 2, max, na.rm = na_rm)
+  min_p <- apply(score_mat, 2, min, na.rm = na_rm)
+  max_dist <- norm(as.matrix(max_p - min_p), norm_typ)
+return(max_dist)
+}
+
+setup_dist <- function(score_df, norm_typ = "F") {
+  # Find the distance between all pairs of points.
+  dist_df <- data.frame(
+    snp1 = character(),
+    snp2 = character(),
+    dist = numeric()
+  )
+  dist_list <- lapply(rownames(score_df), dist_col_calc,
+                      score_df = score_df,
+                      norm_typ = norm_typ)
+  dist_df <- Reduce(rbind, dist_list)
+return(dist_df)
+}
+
+dist_col_calc <- function(score_df, snp1, norm_typ = "F") {
+  dist_list <- lapply(rownames(score_df), pair_dist_calc,
+                      score_df = score_df,
+                      snp1 = snp1,
+                      norm_typ = norm_typ)
+  dist_df <- Reduce(rbind, dist_list)
+  return(dist_df)
+}
+
+pair_dist_calc <- function(score_df, snp1, snp2, norm_typ = "F") {
+  #' Find the metric distance between the points given by snp1
+  #' and snp2 in score_df using the norm_typ metric.
+  x1 <- score_df[rownames(score_df) == snp1]
+  x2 <- score_df[rownames(score_df) == snp2]
+  xp <- data.matrix(na.omit(x1 - x2))
+  d <- norm(xp, norm_typ)
+  dist_df <- data.frame(snp1 = snp1,
+                      snp2 = snp2,
+                      dist = d)
+  return(dist_df)
+}
+
+# Directory function
+set_directory <- function(res_dir0, iter_traits) {
+  #' Set the directory for the results using the base directory
+  #' and the iteration parameters
+  res_dir <- paste0(res_dir0, method_str(iter_traits), "/")
+  # Create results directory if it doesn't exist
+  if (!dir.exists(res_dir)) {
+    dir.create(res_dir)
+  }
+  return(res_dir)
+}
+#- String functions
+method_str <- function(iter_traits) {
+  #' Create the string that describes the type of method for filenames
+  if (iter_traits$bp_on) {
+    bp_str <- "_bpON"
+  } else {
+    bp_str <- "_bpOFF"
+  }
+  if (iter_traits$clust_prob_on) {
+    clust_prob_str <- "_clustprobON"
+  } else {
+    clust_prob_str <- "_clustprobOFF"
+  }
+  return(paste0(iter_traits$clust_typ, bp_str, clust_prob_str))
+}
+
+desc_str <- function(iter_traits) {
+  #' Create the string that describes the type of method for titles and captions
+  if (iter_traits$bp_on) {
+    bp_str <- "bp on"
+  } else {
+    bp_str <- "bp off"
+  }
+  if (iter_traits$clust_prob_on) {
+    clust_prob_str <- "ClustProb on"
+  } else {
+    clust_prob_str <- "ClustProb off"
+  }
+  return(paste(iter_traits$clust_typ, "and", bp_str, "and", clust_prob_str))
+}
+
+#- Iteration setup function.
+make_iter_df <- function(clust_typ_list,
+                        bp_on_list,
+                        clust_prob_on_list,
+                        ndim_typ) {
+  #' Create a dataframe whose rows correspond to iterations of the
+  #' ClusterAndPlot programe. Each row indicates a different
+  #' set of input terms.
+  iter_df_full <- data.frame(row.names = integer(),
+                             "bp_on" = logical(),
+                             "clust_prob_on" = logical(),
+                             "clust_typ" = character(),
+                             "ndim_typ" = character())
+  for (clust_typ_str in clust_typ_list) {
+    for (bp_on in bp_on_list) {
+      for (clust_prob_on in clust_prob_on_list) {
+        for (ndim in ndim_typ) {
+          iter_traits <- data.frame(
+            "bp_on" = bp_on,
+            "clust_prob_on" = clust_prob_on,
+            "clust_typ" = clust_typ_str,
+            "ndim_typ" = ndim)
+          iter_df_full <- rbind(iter_df_full, iter_traits)
+        }
+      }
+    }
+  }
+  return(iter_df_full)
+}
+
+#- Functions for cropping matrices.
+crop_mat_list <- function(mat_list, trait_df,
+                        out_pheno, exp_pheno,
+                        n_rows, n_col0, n_col1) {
+  #' Crop all of the matrices in mat_list to include only the
+  #' first n_rows and columns between n_col0 and n_col1,
+  #' ensure that out_pheno and exp_pheno are included.
+  mat_out <- lapply(mat_list, crop_mat_colnames,
+                    num_rows = n_rows,
+                    col_names = c(out_pheno, exp_pheno))
+  names(mat_out) <- names(mat_list)
+  trait_out <- trait_info[trait_info$phenotype %in% c(out_pheno, exp_pheno)]
+
+  mat_crop <- lapply(mat_list, crop_mat_colnums,
+                          num_rows = n_rows,
+                          col0 = n_col0,
+                          col1 = n_col1)
+  names(mat_crop) <- names(mat_list)
+
+  filt_mat_list <- lapply(names(mat_list),
+                          join_out_mat_on_name,
+                          mat_out_list = mat_out,
+                          mat_crop_list = mat_crop
+  )
+  names(filt_mat_list) <- names(mat_list)
+
+ trait_info   <- rbind(trait_info[n_col0:n_col1], trait_out)
+
+  # Collect the matrices into one object
+  data_matrices <- append(filt_mat_list, list("trait_info" = trait_info))
+  return(data_matrices)
+}
+
+join_out_mat_on_name <- function(name, mat_out_list, mat_crop_list) {
+  #' Take the matrices with matching label name from each list
+  #' and column bind them
+  out <- cbind(mat_out_list[name], mat_crop_list[name])
+  return(out)
+}
+
+crop_mat_colnames <- function(mat, num_rows, col_names) {
+  #' Return the matrix with row 1:num_rows and column names in col_names
+  mat_out <- mat[1:num_rows,
+                 which(colnames(mat) %in% col_names)]
+  return(mat_out)
+}
+crop_mat_colnums <- function(mat, num_rows, col0, col1) {
+  #' Return the matrix with rows 1: num_rows and columns col0:col1
+  mat_out <- mat[1:num_rows, col0:col1]
+  return(mat_out)
+}
+
+#- Tesing functions
+
+test_all_na <- function(b_df, nan_col = "30600_irnt") {
+  #' Test whether the function for checking the NaNs in a column works.
+  test <- na_col_check(b_df[, nan_col])
+  print("test")
+  if (test) {
+    return(1)
+  } else {
+    return(0)
+  }
+}

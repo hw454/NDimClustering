@@ -1,39 +1,53 @@
-clust_score <- function(clusters_df,beta_df,b_lab){
-  Km <- length(unique(clusters_df$clusters))-1
-  SM <- length(clusters_df$clusters)
-  clust_scores <- data.frame(
-    clust_num=1:Km,
-    clust_size=0,
-    NA_Count=0,
-    b_lab=0.0
-  )
-  for (i in 1:SM) {
-    # Extract the data from the clustering for each snp
-    nc  <- clusters_df$cluster[clusters_df$cluster==i] # Cluster Number
-    # No probability output for prob in cluster 
-    # psnp <- row$probability # Probability of snp in cluster nc
-    # Get the pathway colocization score from the input data for the SNP
-    snp_assoc<-beta_df[ beta_df$SNP==i,b_lab]
-    # ? How to deal with multiple SNP entries in data input.
-    # Retrieve non-NAN values. 
-    na_l <- length(snp_assoc[is.na(snp_assoc)])
-    snp_path1 <- snp_assoc[!is.na(snp_assoc)]
-    # Check length of remaining values-> n=1, store, -> n>1, store average, -> n=0 pass.
-    l1 <- length(snp_assoc)
-    # Track the number of terms in each cluster.
-    clust_scores[clust_scores$clust_num==nc,'clust_size'] <- clust_scores[clust_scores$clust_num==nc,'clust_size']+l1
-    clust_scores[clust_scores$clust_num==nc,'NA_Count']   <- clust_scores[clust_scores$clust_num==nc,'NA_Count']+na_l
-    
-    if (l1==0 ){# Do nothing and pass to the next snp
-    }
-    else if(l1==1){
-      # Add the association score to the cluster pathway score. Weight by the probability.
-      clust_scores[clust_scores$clust_num==nc,b_lab] <- clust_scores[ clust_scores$clust_num==nc,b_lab]+snp_assoc
-    }
-    else{
-      # Average remaining values
-      # Add the pathway1 coloc score to the cluster pathway score. Weight by the probability.
-      clust_scores[clust_scores$clust_num==nc,b_lab]<-clust_scores[clust_scores$clust_num==nc,p1_lab]+sum(snp_assoc)}
-  }
+clust_score <- function(clusters_df, beta_mat, pval_mat,
+                        bp_on = TRUE,
+                        clust_prob_on = TRUE,
+                        num_axis = ncol(beta_df)) {
+  #' The dataframe of clusters is used alongside the beta and pvalue
+  #' for each SNP to score the clusters on their association with
+  #' each trait. Information for the traits is stored in aim_df
+  clust_nums <- unique(clusters_df$clust_num)
+  clust_scores_list <- lapply(clust_nums, score_cluster,
+    beta_mat = beta_mat, clusters_df = clusters_df,
+    pval_mat = pval_mat, bp_on = bp_on, num_axis = num_axis)
+  clust_scores <- Reduce(rbind, clust_scores_list)
   return(clust_scores)
+}
+score_cluster <- function(c_num, beta_mat, clusters_df, num_axis,
+                          pval_mat, bp_on) {
+  traits <- colnames(beta_mat)
+  c_id <- paste0("na", num_axis, "_cn", c_num)
+  snp_list <- rownames(clusters_df[clusters_df$clust_num == c_num, ])
+  clust_probs <- clusters_df[snp_list, "clust_prob"]
+  trait_score_df_list <- lapply(traits, trait_score,
+                                c_id = c_id,
+                                snp_list = snp_list,
+                                beta_mat = beta_mat,
+                                pval_mat = pval_mat,
+                                clust_probs = clust_probs,
+                                bp_on = bp_on)
+  c_score0 <- Reduce(cbind, trait_score_df_list)
+  c_score0["clust_num"] <- c_num
+  return(c_score0)
+}
+
+trait_score <- function(beta_mat, pval_mat, snp_list, a, c_id,
+                        clust_probs = TRUE, bp_on = TRUE) {
+  #' Get the score for all points in the cluster weighting by the
+  #' pvalues of the association and their weighting within the cluster
+  # Get the row indices for the traits in the cluster
+  b_sub <- na.omit(subset(beta_mat, row.names = snp_list, select = a))
+  c_sub <- na.omit(clust_probs)
+  if (bp_on) {
+    p_sub <- na.omit(subset(pval_mat, row.names = snp_list, select = a))
+    snp_assoc <- abs(b_sub * p_sub * c_sub)
+    total_probs <- sum(p_sub * c_sub)
+  } else {
+    snp_assoc <- abs(b_sub * c_sub)
+    total_probs <- sum(c_sub)
+  }
+  axis_snp_assoc <- sum(snp_assoc) / total_probs
+  trait_score_df <- data.frame(row.names =  c_id,
+                               a = axis_snp_assoc)
+  colnames(trait_score_df) <- c(a)
+  return(trait_score_df)
 }
