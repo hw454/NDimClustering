@@ -25,7 +25,7 @@ cluster_and_plot <- function(data_matrices,
 #' This function runs the computations in the `clust_pca_compare`
 #' function. Then plots the results.
   iter_traits <- iter_df[iter, ]
-  res_dir <- set_directory(res_dir0, iter_traits)
+  res_dir <- str_funcs::set_directory(iter_traits$res_dir0, iter_traits)
   iter_traits["res_dir"] <- res_dir
   # Find the distances between all points to initialise the threshold
   # for cluster difference.
@@ -33,8 +33,8 @@ cluster_and_plot <- function(data_matrices,
   # This needs to be set after PCA since axis change
   print("Begining algorithm for inputs")
   print(iter_traits)
-  if (iter_traits$ndim_typ == "all"){
-  out <- clust_pca_compare_all(data_matrices = data_matrices,
+  if (iter_traits$ndim_typ == "all") {
+  out <- ClustComp::clust_pca_compare_all(data_matrices = data_matrices,
                           out_pheno = out_pheno,
                           na_handling = na_handling,
                           iter_traits = iter_traits,
@@ -42,20 +42,19 @@ cluster_and_plot <- function(data_matrices,
                           nums = nums
   )
   print("Clust done")
-  #max_diff_df <- out$max_diff
   c_scores <- out$clust_scores
-  c_scores %>% plot_trait_heatmap(iter_traits)
+  ClustPlots::plot_trait_heatmap(c_scores, iter_traits)
   print("Heatmap plot done")
   # Only plot max diff when iterating through the axis
-  p <- clust_scatter(out$clust_items, out$b_pc, out$se_pc, iter_traits)
+  ClustPlots::clust_scatter(out$clust_items, out$b_pc, out$se_pc, iter_traits)
   print("scatter plot done")
   # Plot the transform heatmap.
-  out$e_mat %>% plot_transform_heatmap(iter_traits)
+  ClustPlots::plot_transform_heatmap(out$e_mat, iter_traits)
   out <- list("iter_df" = iter_df,
               "c_scores" = c_scores,
               "max_df" = max_diff_df)
   } else if (iter_traits$ndim_typ == "iterative") {
-  out <- clust_pca_compare_iterative(data_matrices = data_matrices,
+  out <- ClustComp::clust_pca_compare_iterative(data_matrices = data_matrices,
                           out_pheno = out_pheno,
                           na_handling = na_handling,
                           iter_traits = iter_traits,
@@ -66,9 +65,9 @@ cluster_and_plot <- function(data_matrices,
   max_diff_df <- out$max_diff
   c_scores <- out$clust_scores
   print("Diff done")
-  c_scores %>% plot_trait_heatmap(iter_traits)
+  ClustPlots::plot_trait_heatmap(c_scores, iter_traits)
   print("Heatmap plot done")
-  max_diff_df %>% plot_max_diff(iter_traits)
+  ClustPlots::plot_max_diff(max_diff_df, iter_traits)
   print("Diff plot done")
   out <- list("iter_df" = iter_df,
               "c_scores" = c_scores,
@@ -120,48 +119,6 @@ pair_dist_calc <- function(score_df, snp1, snp2, norm_typ = "F") {
                       snp2 = snp2,
                       dist = d)
   return(dist_df)
-}
-
-# Directory function
-set_directory <- function(res_dir0, iter_traits) {
-  #' Set the directory for the results using the base directory
-  #' and the iteration parameters
-  res_dir <- paste0(res_dir0, method_str(iter_traits), "/")
-  # Create results directory if it doesn't exist
-  if (!dir.exists(res_dir)) {
-    dir.create(res_dir)
-  }
-  return(res_dir)
-}
-#- String functions
-method_str <- function(iter_traits) {
-  #' Create the string that describes the type of method for filenames
-  if (iter_traits$bp_on) {
-    bp_str <- "_bpON"
-  } else {
-    bp_str <- "_bpOFF"
-  }
-  if (iter_traits$clust_prob_on) {
-    clust_prob_str <- "_clustprobON"
-  } else {
-    clust_prob_str <- "_clustprobOFF"
-  }
-  return(paste0(iter_traits$clust_typ, bp_str, clust_prob_str))
-}
-
-desc_str <- function(iter_traits) {
-  #' Create the string that describes the type of method for titles and captions
-  if (iter_traits$bp_on) {
-    bp_str <- "bp on"
-  } else {
-    bp_str <- "bp off"
-  }
-  if (iter_traits$clust_prob_on) {
-    clust_prob_str <- "ClustProb on"
-  } else {
-    clust_prob_str <- "ClustProb off"
-  }
-  return(paste(iter_traits$clust_typ, "and", bp_str, "and", clust_prob_str))
 }
 
 #- Iteration setup function.
@@ -250,7 +207,7 @@ crop_mat_colnums <- function(mat, num_rows, col0, col1) {
 
 test_all_na <- function(b_df, nan_col = "30600_irnt") {
   #' Test whether the function for checking the NaNs in a column works.
-  test <- na_col_check(b_df[, nan_col])
+  test <- checks::na_col_check(b_df[, nan_col])
   print("test")
   if (test) {
     return(1)
