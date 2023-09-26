@@ -40,7 +40,7 @@ kmeans_ic <- function(cents, data_mat,
                       na_rm = TRUE,
                       clust_prob_on = TRUE) {
   set.seed(240) # setting seed
-  clust_re <- kmeans_skip_nan(data_mat,
+  clust_re <- km_nan::kmeans_skip_nan(data_mat,
                               centers = cents,
                               clust_threshold = clust_thres,
                               norm_typ = "F",
@@ -50,9 +50,9 @@ kmeans_ic <- function(cents, data_mat,
                 group_col = "clust_num",
                 dist_c = "clust_dist",
                 num_axis = ncol(data_mat))
-  clust_re <- clust_re %>% mutate("aic" = ic$aic)
-  clust_re <- clust_re %>% mutate("bic" = ic$bic)
-  clust_re <- clust_re %>% mutate("ncents" = cents)
+  clust_re <- dplyr::mutate(clust_re, "aic" = ic$aic)
+  clust_re <- dplyr::mutate(clust_re, "bic" = ic$bic)
+  clust_re <- dplyr::mutate(clust_re, "ncents" = cents)
   return(clust_re)
 }
 closest_clust <- function(snp_id, b_df, clust_re,
@@ -62,7 +62,7 @@ closest_clust <- function(snp_id, b_df, clust_re,
   #' initial clustering algorithm
   snp_dist <- max_dist
   clust_num <- clust_re$clusters[snp_id]
-  c_nums <- clust_re$cluster %>% unique()
+  c_nums <- dplyr::unique(clust_re$cluster)
   for (c_num in c_nums){
     cent <- clust_re$centers[c_num]
     snp_clust_dist <- norm(cent - b_df[snp_id, ], norm_typ)
@@ -80,23 +80,6 @@ closest_clust <- function(snp_id, b_df, clust_re,
     clust_prob = 1.0
   )
   return(out_df)
-}
-
-clust_metric <- function(cs1, cs2, norm_typ) {
-  if (length(cs1) <= 1) {
-    return(abs(cs1 - cs2))
-  } else {
-    clustid_1 <- which(!is.na(cs1))
-    clustid_2 <- which(!is.na(cs2))
-    clust_ids <- intersect(clustid_1, clustid_2)
-    if (length(clust_ids) == 0) {
-      return(NaN)
-      } else if (length(clust_ids) == 1) {
-        return(abs(cs1[clust_ids] - cs2[clust_ids]))
-        } else {
-      return(norm(as.matrix(cs1[clust_ids] - cs2[clust_ids]), norm_typ))
-    }
-  }
 }
 
 
@@ -128,8 +111,6 @@ cluster_kmeans_basic <- function(b_df,
   #' Using the association scores for each SNP accross traits cluster the traits
   #' using kmeans. Return the cluster setup which minimises AIC.
 
-  # Columns
-  ax <- colnames(b_df)
   # Filter NaNs before clustering
   if (space_typ == "angle") {
     # For each point in b_df_comp convert the score to the angle
@@ -142,7 +123,7 @@ cluster_kmeans_basic <- function(b_df,
   b_df_comp <- b_df_clust[complete.cases(b_df_clust), ]
 
   # Initial cluster dataframe
-  clust_re <- kmeans_skip_nan(b_df_comp,
+  clust_re <- km_nan::kmeans_skip_nan(b_df_comp,
                               centers = nr,
                               clust_threshold = threshold,
                               norm_typ = norm_typ,
@@ -157,7 +138,7 @@ cluster_kmeans_basic <- function(b_df,
                             norm_typ = norm_typ)
   nan_cluster_df <- Reduce(rbind, snp_cluster_list)
   if (clust_prob_on) {
-    nan_cluster_df$clust_prob <- nan_cluster_df$clust_dist %>% clust_prob_calc()
+    nan_cluster_df$clust_prob <- clust_prob_calc(nan_cluster_df$clust_dist)
   }
   clust_re <- rbind(clust_re, nan_cluster_df)
   return(clust_re)
@@ -206,7 +187,7 @@ cluster_kmeans_min <- function(b_df,
   nan_clusts_df <- Reduce(rbind, nan_clusts)
   clust_out <- rbind(clust_re_min_aic, nan_clusts_df)
   if (clust_prob_on) {
-    clust_out$clust_prob <- clust_out$clust_dist %>% clust_prob_calc()
+    clust_out$clust_prob <- clust_prob_calc(clust_out$clust_dist)
   }
   return(clust_out)
 }
@@ -239,11 +220,19 @@ point_to_angles <- function(p, mat, unit_mat) {
   ang_row <- Reduce(cbind, ang_list)
   return(ang_row)
 }
+
 point_to_angle <- function(col, unit_mat, p) {
+  #' Convert the scores on the axis for the point
+  #' p to the angle to the unit vec at unit_mat[col,]
   unit_vec <- as.matrix(unit_mat[col, ])
   dot_prod <- t(p) %*% unit_vec
   norm_x <- norm(p, type = "F")
   norm_y <- norm(unit_vec, type = "F")
   theta <- acos(dot_prod / (norm_x * norm_y))
   return(as.numeric(theta))
+}
+
+clust_prob_calc <- function(d) {
+  dist <- 1.0 / (1.0 + d)
+  return(dist)
 }
