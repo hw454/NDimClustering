@@ -22,14 +22,6 @@
 # -> Fail - Return to 1 with extra dimension
 # -> Pass - Exit with results.
 
-source("./ClusteringFunction.R")
-source("./ClustScores.R")
-source("./NClust_Plots.R")
-source("./kmeans_skip_nan.R")
-source("./ClusteringCompare.R")
-source("./PrincipalComponentAnalysis.R")
-source("./MainFunction.R")
-
 # Location of the data directory
 data_dir <- "../NDimClustInputs/BP_Cancer/"
 res_dir0 <- "../NDimClustResults/BP_BreastCancer/"
