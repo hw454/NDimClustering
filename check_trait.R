@@ -1,15 +1,15 @@
-na_col_check <- function(b_col, percent = 0.95) {
-  #' Check if the number of NaNs in a clolumn is more than 1-percent.
-  n_accept <- length(b_col) * (1 - percent)
-  narows <- which(is.na(b_col))
-  if (length(narows) > n_accept) {
-    # All rows are NaN so trait will be removed from trait
-    return(1)
-  } else {
-    return(0)
-    }
-}
-
+#' Check is a trait is valid
+#' @ param a - The label for the trait.
+#' @ param pheno_list - The list of all traits.
+#' @ param data_mat - The matrix containing the data of interest.
+#' With columns labelled by trait labels.
+#' @ param na_percent - percentage of a column which is required to be NOT NaN.
+#' if trait passes \link{na_col_check}:
+#'    trait_single_df = data.frame(label = a,
+#'                              axes_ind = position in pheno_list)
+#' else: trait_single_df = data.frame()
+#' @ return trait_single_df
+#' @ export
 check_trait <- function(a, pheno_list, data_mat, na_percent) {
     # Add the trait to the trait dataframe
     allna <- na_col_check(data_mat[, a], na_percent)
@@ -25,15 +25,4 @@ check_trait <- function(a, pheno_list, data_mat, na_percent) {
                                     )
     }
     return(trait_single_df)
-}
-
-test_all_na <- function(b_df, nan_col = "30600_irnt") {
-  #' Test whether the function for checking the NaNs in a column works.
-  test <- na_col_check(b_df[, nan_col])
-  print("test")
-  if (test) {
-    return(1)
-  } else {
-    return(0)
-  }
 }
