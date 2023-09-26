@@ -1,4 +1,4 @@
-kmeans_skip_nan <- function(b_mat, 
+kmeans_skip_nan <- function(b_mat,
                             centers = nr,
                             iter_max = 300,
                             clust_threshold = 1e-5,
@@ -14,7 +14,7 @@ kmeans_skip_nan <- function(b_mat,
     min = apply(b_mat, 2, min, na.rm = na_rm),
     max = apply(b_mat, 2, max, na.rm = na_rm)
   )
-  min_max_df <- min_max_df %>% na.omit()
+  min_max_df <- na.omit(min_max_df)
   # Randomly assign central coords per cluster.
   centroid_list <- lapply(rownames(min_max_df), rand_cent,
                           n_cents = centers, min_max_df = min_max_df)
@@ -61,7 +61,7 @@ kmeans_skip_nan <- function(b_mat,
     # Are all the new centroids within the threshold of the previous
   }
   if (prob_on) {
-    cluster_df$clust_prob <- cluster_df$clust_dist %>% clust_prob_calc()
+    cluster_df$clust_prob <- ClustFuncs::clust_prob_calc(cluster_df$clust_dist)
   }
  return(cluster_df)
 }
@@ -99,10 +99,6 @@ cent_dist_calc <- function(snp_id, b_mat, cluster_df, centroids, norm_typ) {
   return(clust_df)
 }
 
-clust_prob_calc <- function(d) {
-  dist <- 1.0 / (1.0 + d)
-  return(dist)
-}
 
 clust_cent_check <- function(c_num, iter, cluster_df, b_dfs, centroids,
                             na_rm = TRUE, norm_typ = "F",
