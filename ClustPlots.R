@@ -199,7 +199,7 @@ plot_sngl_mxdf <- function(plot_iter, max_df_list, iter_df, pw = 4, ph = 4) {
 }
 
 plot_mxdf_list <- function(max_df, iter_traits, pw = 4, ph = 4) {
-  #' Plot the maximum difference at each iteration for the 
+  #' Plot the maximum difference at each iteration for the
   #' different input variables.
   pnme <- paste0(iter_traits$res_dir, "NumAxis_Vs_MaxScoreDiff_Compare.png")
   lineplot <- ggplot2::ggplot()
@@ -248,7 +248,7 @@ clust_scatter <- function(clusters, b_mat,
     clust_prob = clusters[snp_list, "clust_prob"]
   )
   ggplot2::ggplot(data = res_df,
-                  ggplot2::aes("bx", "by")) +
+                  ggplot2::aes(x = "bx", y = "by")) +
   ggplot2::geom_point(aes(colour = "clust_num",
                   size = "clust_prob"), shape = 21) +
   ggplot2::geom_errorbarh(

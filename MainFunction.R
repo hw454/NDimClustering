@@ -25,7 +25,7 @@ cluster_and_plot <- function(data_matrices,
 #' This function runs the computations in the `clust_pca_compare`
 #' function. Then plots the results.
   iter_traits <- iter_df[iter, ]
-  res_dir <- set_directory(iter_traits$res_dir0, iter_traits)
+  res_dir <- str_funcs::set_directory(iter_traits$res_dir0, iter_traits)
   iter_traits["res_dir"] <- res_dir
   # Find the distances between all points to initialise the threshold
   # for cluster difference.
@@ -33,7 +33,7 @@ cluster_and_plot <- function(data_matrices,
   # This needs to be set after PCA since axis change
   print("Begining algorithm for inputs")
   print(iter_traits)
-  if (iter_traits$ndim_typ == "all"){
+  if (iter_traits$ndim_typ == "all") {
   out <- ClustComp::clust_pca_compare_all(data_matrices = data_matrices,
                           out_pheno = out_pheno,
                           na_handling = na_handling,
@@ -42,7 +42,6 @@ cluster_and_plot <- function(data_matrices,
                           nums = nums
   )
   print("Clust done")
-  #max_diff_df <- out$max_diff
   c_scores <- out$clust_scores
   ClustPlots::plot_trait_heatmap(c_scores, iter_traits)
   print("Heatmap plot done")
@@ -50,7 +49,7 @@ cluster_and_plot <- function(data_matrices,
   ClustPlots::clust_scatter(out$clust_items, out$b_pc, out$se_pc, iter_traits)
   print("scatter plot done")
   # Plot the transform heatmap.
-  ClustPlots::plot_transform_heatmap(out$e_mat,iter_traits)
+  ClustPlots::plot_transform_heatmap(out$e_mat, iter_traits)
   out <- list("iter_df" = iter_df,
               "c_scores" = c_scores,
               "max_df" = max_diff_df)
@@ -66,9 +65,9 @@ cluster_and_plot <- function(data_matrices,
   max_diff_df <- out$max_diff
   c_scores <- out$clust_scores
   print("Diff done")
-  ClustPlots::plot_trait_heatmap(c_scores,iter_traits)
+  ClustPlots::plot_trait_heatmap(c_scores, iter_traits)
   print("Heatmap plot done")
-  ClustPlots::plot_max_diff(max_diff_df,iter_traits)
+  ClustPlots::plot_max_diff(max_diff_df, iter_traits)
   print("Diff plot done")
   out <- list("iter_df" = iter_df,
               "c_scores" = c_scores,
