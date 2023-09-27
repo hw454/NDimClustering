@@ -4,6 +4,7 @@
 #' @param num_axis the number of axis.
 #' @param pw the width of the plot. default\:16
 #' @param ph the height of the plot. default\:4
+#' @export
 plot_transform_heatmap <- function(e_mat, iter_traits,
                                   num_axis = 0, pw = 16, ph = 4) {
   #' Plot a heatmap of the scores for each trait for each principal component

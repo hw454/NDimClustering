@@ -27,7 +27,7 @@
 #'   * "max_dist" - Maximum distance between points, default=1
 #'   * "np" - Number of principal components
 #'   * "nc" - Number of clusters.
-#' @details 
+#' @details
 #' df_list is the list of of the clusters, the principal component matrices,
 #' cluster scores, and the maximum difference between clusters.
 #' Generated using \link{clust_pca_compare_single}
@@ -52,7 +52,7 @@ clust_pca_all <- function(data_matrices,
     clust_num = integer()
   )
   # Add np columns for each PC
-  c_scores <- add_np_pca_cols(c_scores, nums$np)
+  c_scores <- add_np_cols(c_scores, nums$np)
   # Initialise with outcome
   trait_df <- data.frame(
                        num_axis = 1,
@@ -68,7 +68,7 @@ clust_pca_all <- function(data_matrices,
                           "clust_prob" = numeric(),
                           "clust_dist" = numeric(),
                           "num_axis" = integer())
-  cluster_df <- add_np_pca_cols(cluster_df, nums$np)
+  cluster_df <- add_np_cols(cluster_df, nums$np)
   df_list <- list("clust_scores" = c_scores,
                   "max_diff" = max_df,
                   "e_list" = list(),

@@ -1,19 +1,17 @@
 #' Function for scoring clusters
-#' @ param cluster_df dataframe of snps and their cluster numbers, 
-#' cluster distance and cluster probability.
-#' @ param beta_mat matrix with coloumns corrsponding to components and rows
+#' @param cluster_df dataframe of snps and their cluster numbers,
+#'   cluster distance and cluster probability.
+#' @param beta_mat matrix with coloumns corrsponding to components and rows
+#'   corresponding to snps/ items.
+#' @param pval_mat matrix with coloumns corrsponding to components and rows
 #' corresponding to snps/ items.
-#' @ param pval_mat matrix with coloumns corrsponding to components and rows
-#' corresponding to snps/ items.
-#' -----------------------------------------------------------------------------
-#' Score each cluster with \link{score_cluster}
+#' @description Score each cluster with \link{score_cluster}
 #' Score each trait within each cluster with \link{score_trait}
 #' Combine all the scores into a data frame with rows given by the cluster id
 #' and columns are the trait, the values are the score.
 #' There is also an additional column for the cluster number and number of axis.
-#' -----------------------------------------------------------------------------
-#' @ return score dataframe
-#' @ export
+#' @return score dataframe
+#' @export
 score_all_clusters <- function(clusters_df, beta_mat, pval_mat,
                         bp_on = TRUE,
                         clust_prob_on = TRUE,

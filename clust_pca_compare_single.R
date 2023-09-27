@@ -60,14 +60,6 @@ clust_pca_compare_single <- function(df_list, iter_traits,
   df_list$se_pc <- pca_list$se
   # Get column names for PCs
   pc_cols <- colnames(b_pc_mat)
-  # Before clustering find the maximum distance and
-  # distance variance on the transformed axes.
-  nums$max_dist <- dist_funcs::max_dist_calc(b_pc_mat,
-                                  norm_typ = norm_typs$clust,
-                                  na_rm = na_handling$narm)
-  dist_mat <- dist_funcs::setup_dist(b_pc_mat, norm_typ = norm_typs$clust)
-  thresholds$diff <- thresholds$threshmul * var(dist_mat$dist,
-                                                na.rm = na_handling$narm)
   # Cluster the data on these axes
   if (grepl("angle", iter_traits$clust_typ, fixed = TRUE)) {
     st <- "angle"
@@ -77,7 +69,6 @@ clust_pca_compare_single <- function(df_list, iter_traits,
   if (grepl("min", iter_traits$clust_typ)) {
     cluster_df <- cluster_kmeans_min(b_pc_mat,
                                       nums$nr,
-                                      nums$max_dist,
                                       space_typ = st,
                                       clust_prob_on = iter_traits$clust_prob_on, # nolint
                                       norm_typ = norm_typs$clust,

@@ -1,12 +1,13 @@
 #' Set the directory using the base directory and iteration vairables
-#' @ param res_dir0 - string for the base directory.
-#' @ param iter_traits - The dataframe containing the iteration variables.
+#' @param res_dir0 - string for the base directory.
+#' @param iter_traits - The dataframe containing the iteration variables.
+#' @description
 #' Create the string for the directory from the iteration variables using
 #' the function \link{method_str}.
 #' Combine the base directory and iteration directory.
 #' Create the directory if it doesn't exist.
-#' @ return the directory path as a string
-#' @ export
+#' @return the directory path as a string
+#' @export
 set_directory <- function(res_dir0, iter_traits) {
   #' Set the directory for the results using the base directory
   #' and the iteration parameters

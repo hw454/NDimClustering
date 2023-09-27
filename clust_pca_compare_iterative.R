@@ -1,38 +1,39 @@
 #' Cluster data on the principal components and score the clusters on
 #' association. Compare the cluster scores and iteratively add a
 #' trait each time.
-#' @ param data_matrices - A list containing the "beta" matrices
-#' corresponding to the data, "pval" the matrix of probabilities
-#' associated with each score. The "se" matrix, of standard errors
-#' associated with each score. The "trait_info" which is the data
-#' frame of all the traits.
-#' @ param out_pheno - Label for the outcome phenotype
-#' @ param thresholds - List for the three threshold related variables.
-#' "threshmul" is multiplied by the data variance for cluster
-#' difference threshold.
-#' "diff" is the the cluster difference threshold once found.
-#' "clust" is the required distance between cluster centres for a
-#' cluster to be considered converged.
-#' @ param na_handling - List of the terms related to handling NaNs
-#' "narm" - TRUE (default) if NaNs are to be removed in calculations.
-#' "percent" - The percentage of a column which must be not NaN. default =0.95
-#' @ param iter_traits - list of terms indicating the type of program.
-#' "iter" - integer, (default 0)
-#' "bp_on" - TRUE (default) if probability of scores is to be used.
-#' "clust_prob_on" - TRUE (default) if prob of being in cluster is to be used.
-#' "clust_typ" - default="basic", the clustering method to use.
-#' @ param norm_typs - List of norm types
-#' "clust" - default="F"
-#' "thresh" - default="F"
-#' @ param nums - List of important numbers.
-#' "max_dist" - Maximum distance between points, default=1
-#' "np" - Number of principal components
-#' "nc" - Number of clusters.
+#' @param data_matrices - A list containing the matrices
+#'   * "beta" matrix corresponding to the data.
+#'   * "pval" the matrix of probabilities associated with each score.
+#'   * "se" matrix of standard errors associated with each score.
+#'   * "trait_info" which is the dataframe of all the traits.
+#' @param out_pheno - Label for the outcome phenotype
+#' @param thresholds - List for the three threshold related variables.
+#'   * "threshmul" is multiplied by the data variance for cluster
+#'   difference threshold.
+#'   * "diff" is the the cluster difference threshold once found.
+#'   * "clust" is the required distance between cluster centres for a
+#'   cluster to be considered converged.
+#' @param na_handling - List of the terms related to handling NaNs
+#'   * "narm" - TRUE (default) if NaNs are to be removed in calculations.
+#'   * "percent" - percentage of a column which must be not NaN. default\:0.95
+#' @param iter_traits - list of terms indicating the type of program.
+#'   * "iter" - integer, (default 0)
+#'   * "bp_on" - TRUE (default) if probability of scores is to be used.
+#'   * "clust_prob_on" - TRUE (default) if prob of being in cluster to be used.
+#'   * "clust_typ" - default="basic", the clustering method to use.
+#' @param norm_typs - List of norm types
+#'   * "clust" - default="F"
+#'   * "thresh" - default="F"
+#' @param nums - List of important numbers.
+#'   * "max_dist" - Maximum distance between points, default=1
+#'   * "np" - Number of principal components
+#'   * "nc" - Number of clusters.
+#' @description
 #' df_list is the list of of the clusters, the principal component matrices,
 #' cluster scores, and the maximum difference between clusters.
 #' Each iteration generated using \link{clust_pca_compare_single}
-#' @ return df_list
-#' @ export
+#' @return df_list
+#' @export
 clust_pca_compare_iterative <- function(data_matrices,
                          out_pheno,
                          thresholds = list("threshmul" = 5,
@@ -63,7 +64,7 @@ clust_pca_compare_iterative <- function(data_matrices,
     clust_num = integer()
   )
   # Add np columns for each PC
-  c_scores <- add_np_pca_cols(c_scores, nums$np)
+  c_scores <- add_np_cols(c_scores, nums$np)
   # Initialise with outcome
   trait_df <- data.frame(label = out_pheno,
                        axes_ind = which(data_matrices$trait_info$phenotype == out_pheno)[1] #nolint
@@ -77,7 +78,7 @@ clust_pca_compare_iterative <- function(data_matrices,
                           "clust_prob" = numeric(),
                           "clust_dist" = numeric(),
                           "num_axis" = integer())
-  cluster_df <- add_np_pca_cols(cluster_df, nums$np)
+  cluster_df <- add_np_cols(cluster_df, nums$np)
   df_list <- list("clust_scores" = c_scores,
                   "max_diff" = max_df,
                   "e_list" = list(),
@@ -90,7 +91,7 @@ clust_pca_compare_iterative <- function(data_matrices,
     # Add the trait to the trait dataframe
     a <- pheno_list[ai]
     covered <- (a %in% trait_df$label)
-    allna <- nchecks::na_col_check(data_matrices$b_df[, a], na_handling$percent)
+    allna <- check_col_na(data_matrices$beta[, a], na_handling$percent)
     if (!covered && !allna) {
       # Add trait to trait dataframe
       a_ind <- which(pheno_list == a)[1]
