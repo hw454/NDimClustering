@@ -12,17 +12,7 @@
 
 # 0 Setup the packages and programs
 
-source("./ClustComp.R")
-source("./checks.R")
-source("./ClustFuncs.R")
-source("./ClustPlots.R")
-source("./ClustScores.R")
-source("./dist_funcs.R")
-source("./km_nan.R")
-source("./MainFunction.R")
-source("./PCA.R")
-source("./setup_funcs.R")
-source("./str_funcs.R")
+library('ndimclustering')
 # 1 Load csv
 
 # 2 Compute principal components
