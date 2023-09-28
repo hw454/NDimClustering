@@ -5,7 +5,7 @@
 #' The x and y axis are the assocation with the principal component
 #' The width and height of the errorbars are given by the standard error.
 #'
-#' @param clusters_df The dataframe of cluster_df membership
+#' @param cluster_df The dataframe of cluster_df membership
 #' @param b_mat The matrix of the score data
 #' @param se_mat The matrix of the standarad errors associated with the scores.
 #' @param iter_traits The iteration variables for the type of iteration.

@@ -15,6 +15,8 @@ plot_clust_scatter(
 )
 }
 \arguments{
+\item{cluster_df}{The dataframe of cluster_df membership}
+
 \item{b_mat}{The matrix of the score data}
 
 \item{se_mat}{The matrix of the standarad errors associated with the scores.}
@@ -26,8 +28,6 @@ plot_clust_scatter(
 \item{pw}{The plot width, default\:8}
 
 \item{ph}{The plot heigh, default\:4}
-
-\item{clusters_df}{The dataframe of cluster_df membership}
 }
 \description{
 Colour by cluster number.
