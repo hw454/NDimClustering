@@ -8,7 +8,7 @@
 #' @return p
 #'
 #' @export
-clust_prob_calc <- function(d) {
+calc_clust_prob <- function(d) {
   dist <- 1.0 / (1.0 + d)
   return(dist)
 }
