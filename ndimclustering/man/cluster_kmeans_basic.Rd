@@ -20,10 +20,10 @@ cluster_kmeans_basic(
 \item{nclust}{Number of clusters to allocate}
 
 \item{space_typ}{Whether to uses angles of spatial co-ordinates.
-If "angle" use angles found using \link{convert_point_mat_to_angle}}
+If "angle" use angles found using [convert_point_mat_to_angle]}
 
 \item{clust_prob_on}{Bool switch. If TRUE then calculate the snps
-probability of being in the cluster using \link{calc_clust_prob}}
+probability of being in the cluster using [calc_clust_prob]}
 
 \item{norm_typ}{The type of norm to use in distance calculations.
 The default is the Froebenius norm "F".}

@@ -3,9 +3,9 @@
 #' @param b_mat Matrix of data. Rows correspond to snps.
 #' @param nclust Number of clusters to allocate
 #' @param space_typ Whether to uses angles of spatial co-ordinates.
-#'   If "angle" use angles found using \link{convert_point_mat_to_angle}
+#'   If "angle" use angles found using [convert_point_mat_to_angle]
 #' @param clust_prob_on Bool switch. If TRUE then calculate the snps
-#'   probability of being in the cluster using \link{calc_clust_prob}
+#'   probability of being in the cluster using [calc_clust_prob]
 #' @param norm_typ The type of norm to use in distance calculations.
 #'   The default is the Froebenius norm "F".
 #' @param threshold The threshold with which clusters centres must differ
