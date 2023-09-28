@@ -31,7 +31,7 @@ crop_mat_list <- function(mat_list, trait_df,
   names(mat_crop) <- names(mat_list)
 
   filt_mat_list <- lapply(names(mat_list),
-                          join_out_mat_on_name,
+                          join_mat_on_name,
                           mat_out_list = mat_out,
                           mat_crop_list = mat_crop
   )

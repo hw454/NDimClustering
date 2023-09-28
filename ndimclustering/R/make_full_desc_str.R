@@ -13,7 +13,7 @@
 #' @return description_str
 #'
 #' @export
-create_full_desc_str <- function(iter_traits) {
+make_full_desc_str <- function(iter_traits) {
   # Create the string that describes the type of method for titles and captions
   if (iter_traits$bp_on) {
     bp_str <- "bp on"

@@ -103,7 +103,7 @@ km_nan <- function(b_mat,
     # Are all the new centroids within the threshold of the previous
   }
   if (prob_on) {
-    cluster_df$clust_prob <- clust_prob_calc(cluster_df$clust_dist)
+    cluster_df$clust_prob <- calc_clust_prob(cluster_df$clust_dist)
   }
  clust_out <- list("clusters" = cluster_df, "centres" = centroids_df)
  return(clust_out)

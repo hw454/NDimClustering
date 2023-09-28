@@ -12,7 +12,7 @@
 #' @return the directory path as a string
 #'
 #' @export
-set_directory <- function(res_dir0, iter_traits) {
+set_dir <- function(res_dir0, iter_traits) {
   # Set the directory for the results using the base directory
   # and the iteration parameters
   res_dir <- paste0(res_dir0, make_path_label_str(iter_traits), "/")
