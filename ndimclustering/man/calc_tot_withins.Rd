@@ -21,5 +21,5 @@ The sum of the clusters sum of squares/ divided by the variance
 }
 \description{
 Calculate the sum of the squares for each cluster group using
-  \link{calc_sum_sq_clusts}
+  [calc_sum_sq_clusts]
 }

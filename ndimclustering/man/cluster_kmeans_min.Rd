@@ -44,13 +44,13 @@ clusters_df
 \description{
 If space_typ == "angle" then data is converted to angles.
   for i=1:(nr+1)
-     The points are clustered using \link{km_nan} and i clusters
-     find the aic for each cluster using \link{find_ic}
+     The points are clustered using [km_nan] and i clusters
+     find the aic for each cluster using [find_ic].
   The set of clusters which minimises the aic is chosen.
   The "clusters_df" dataframe of the cluster membership with columns\:
     * "clust_num" the number of clusters
     * "clust_dist" the distance from the snp to the cluster centre
       (or distance between angles)
     * "clust_prob" probability the snp is in the cluster. Calculated
-      using \link{calc_clust_prob}.
+      using [calc_clust_prob].
 }

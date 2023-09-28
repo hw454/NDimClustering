@@ -21,7 +21,7 @@ Convert a point vector to a vector of values corresponding
   to the angles to the unit axis.
 }
 \details{
-Calculate the angles using \link{convert_point_to_angle} for
+Calculate the angles using [convert_point_to_angle] for
   each column in unit_mat.
   Combine the angles into a vector "ang_vec"
 }

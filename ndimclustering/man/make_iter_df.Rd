@@ -24,7 +24,7 @@ iter_df
 }
 \description{
 Create a dataframe whose rows correspond to iterations of the
-\link{full_cluster_and_plot} function. Each row indicates a different
+[full_cluster_and_plot] function. Each row indicates a different
 set of input terms.
 }
 \details{

@@ -14,7 +14,7 @@ convert_point_to_angle(col, unit_mat, p)
 \item{p}{The point to find the angle for.}
 }
 \value{
-\theta
+\eqn{\theta}
 }
 \description{
 Convert the point co-ordinates to values corresponding

@@ -33,7 +33,7 @@
 #'   based on iter_traits\:ndim_typ call the comparison and cluster function.
 #'   If iter_trais\:ndim_typ=="all"{
 #'     * run [clust_pca_all]
-#'     * Plot the trait heatmap using [plot_trait_heatmap}]
+#'     * Plot the trait heatmap using [plot_trait_heatmap]
 #'     * Plot the scatter plot using [plot_clust_scatter]
 #'     * Plot the transform heatmap using [plot_transform_heatmap]
 #'     } else{

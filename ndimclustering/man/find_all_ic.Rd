@@ -7,20 +7,20 @@
 find_all_ic(clust_re, num_axis)
 }
 \arguments{
-\item{clust_re}{cluster results dataframe found using \link{km_nan}}
+\item{clust_re}{cluster results dataframe found using [km_nan]}
 
 \item{num_axis}{the number of axis}
 }
 \value{
-clust_re$clusters
+clust_re\$clusters
 }
 \description{
-Using \link{calc_clust_ic}
+Using [calc_clust_ic]
   for each cluster find the aic and bic and add this to the
   cluster results dataframe.
 }
 \details{
-The aic and bic are found for each cluster using \link{calc_clust_ic}
-  this is added to clust_re$clusters and clust_re$clusters is output.
-  Ncents is also added as an axis to clust_re$clusters.
+The aic and bic are found for each cluster using [calc_clust_ic]
+  this is added to clust_re\$clusters and clust_re\$clusters is output.
+  Ncents is also added as an axis to clust_re\$clusters.
 }

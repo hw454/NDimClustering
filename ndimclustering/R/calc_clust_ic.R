@@ -6,7 +6,7 @@
 #' @param num_axis The number of axis i.e the dimensionality
 #'
 #' @description
-#'   Calculate the sum of squares using [calc_tot_withins}]
+#'   Calculate the sum of squares using [calc_tot_withins]
 #'   and [calc_sum_sq_clusts], this is "l".
 #'   "k" is the number of cluster groups.
 #'   "d" is the dimensionality = num_axis

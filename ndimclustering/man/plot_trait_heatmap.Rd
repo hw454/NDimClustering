@@ -11,8 +11,8 @@ plot_trait_heatmap(c_scores, iter_traits, pw = 16, ph = 4)
 Columns for dataframe are the traits and "clust_num". Rows each cluster
 number and number of axis variation. Represented by nai_cnj, where i is
 the number of axis and j is the cluster number.
-More details in \link{score_trait}, \link{score_cluster}
-and \link{score_all_clusters}}
+More details in [score_trait], [score_cluster]
+and [score_all_clusters].}
 
 \item{iter_traits}{- The properties of the iteration. List containing\:
 * "bp_on",
@@ -20,7 +20,7 @@ and \link{score_all_clusters}}
 * "resdir",
 * "clust_typ",
 * "ndim_typ"
-Destriptions for these terms in \link{make_trait_df}}
+Destriptions for these terms in [make_trait_df]}
 
 \item{pw}{Plot width, default\:16}
 

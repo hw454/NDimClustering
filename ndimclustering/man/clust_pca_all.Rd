@@ -60,5 +60,5 @@ Scores the clusters on the PCs
 \details{
 df_list is the list of of the clusters, the principal component matrices,
   cluster scores, and the maximum difference between clusters.
-  Generated using \link{clust_pca_compare_single}
+  Generated using [clust_pca_compare_single].
 }

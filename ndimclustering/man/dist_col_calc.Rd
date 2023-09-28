@@ -18,7 +18,7 @@ default is the Froebenius norm "F".}
 dist_df
 }
 \description{
-Use \link{calc_pair_dist_df} to find the distance between pairs of snps.
+Use [calc_pair_dist_df] to find the distance between pairs of snps.
   The results from this for each pair is bound on the rows using
-  \link[SparkR]{rbind} into the datframe "dist_df".
+  [SparkR::rbind] into the datframe "dist_df".
 }

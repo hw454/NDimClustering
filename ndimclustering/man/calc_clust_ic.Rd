@@ -19,14 +19,5 @@ calc_clust_ic(clust, group_col, dist_col, num_axis)
 out
 }
 \description{
-Calculate the sum of squares using \link{calc_tot_withins}
-  and \link{calc_sum_sq_clusts}, this is "l".
-  "k" is the number of cluster groups.
-  "d" is the dimensionality = num_axis
-  "n" is the number of points
-  \deqn{
-  aic = d + 2*k*l}
-  \deqn{
-  bic = d+log(n)*k*l}
-  out = list("aic" = aic, "bic" = bic).
+
 }

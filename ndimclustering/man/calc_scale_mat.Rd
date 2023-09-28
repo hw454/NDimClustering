@@ -20,6 +20,6 @@ Rescale the columns of the matrix `mat` so that the values lie
   between -1 and 1 with the with the same distribution.
 }
 \details{
-Rescale of each column is found using \link{calc_col_scale} then
+Rescale of each column is found using [calc_col_scale] then
   column binding the results using \link[SparkR]{cbind} into "out_mat".
 }

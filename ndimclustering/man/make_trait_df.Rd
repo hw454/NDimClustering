@@ -23,8 +23,8 @@ position for the trait. Only include traits whose column
 in data_mat meets the na_percent threshold.
 }
 \details{
-Check traits using the function \link{check_trait}.
-trait_df is the \link{rbind} of all the valid traits.
+Check traits using the function [check_trait].
+trait_df is the \link[SparkR]{rbind} of all the valid traits.
 trait_df has columns:
 * "label" - The labels for the traits.
 Also the column names of the data matrix.

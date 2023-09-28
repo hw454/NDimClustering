@@ -2,7 +2,7 @@
 % Please edit documentation in R/crop_mat_colnums.R
 \name{crop_mat_colnums}
 \alias{crop_mat_colnums}
-\title{Return the matrix with rows 1: num_rows and columns col0:col1}
+\title{Return the matrix with rows 1\:num_rows and columns col0\:col1}
 \usage{
 crop_mat_colnums(mat, num_rows, col0, col1)
 }
@@ -19,5 +19,5 @@ crop_mat_colnums(mat, num_rows, col0, col1)
 cropped matrix
 }
 \description{
-Return the matrix with rows 1: num_rows and columns col0:col1
+Return the matrix with rows 1\:num_rows and columns col0\:col1
 }

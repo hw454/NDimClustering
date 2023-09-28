@@ -17,5 +17,5 @@ df
 \description{
 Representing the principal components a column for the PC score
   is added for each PC.
-  The label for each column is given by the function \link{p_col_df}.
+  The label for each column is given by the function [make_p_cols].
 }

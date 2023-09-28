@@ -20,6 +20,6 @@ Take the np largest eigen values and their corresponding eigen vectors.
   therefore set their correlation to 0.
 }
 \details{
-"em_mat" is the matrix formed by column binding the eigen 
+"em_mat" is the matrix formed by column binding the eigen
   vectors with "np" largest eigen values.
 }

@@ -17,7 +17,7 @@ when comparig the snps. Default is the Froebenius norm "F".}
 dist_df
 }
 \description{
-Using \link{calc_col_dist} and \link{calc_pair_dist}
+Using [calc_col_dist] and [calc_pair_dist]
   find the distance between each snp and every other snp.
 }
 \details{

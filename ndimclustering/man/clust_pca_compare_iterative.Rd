@@ -57,5 +57,5 @@ df_list
 \description{
 df_list is the list of of the clusters, the principal component matrices,
   cluster scores, and the maximum difference between clusters.
-  Each iteration generated using \link{clust_pca_compare_single}
+  Each iteration generated using [clust_pca_compare_single].
 }

@@ -16,7 +16,7 @@ the directory path as a string
 }
 \description{
 Create the string for the directory from the iteration variables using
-the function \link{method_str}.
+the function [method_str].
 Combine the base directory and iteration directory.
 Create the directory if it doesn't exist.
 }

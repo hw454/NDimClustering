@@ -25,6 +25,9 @@ If "angle" use angles found using \link{convert_point_mat_to_angle}}
 \item{clust_prob_on}{Bool switch. If TRUE then calculate the snps
 probability of being in the cluster using \link{calc_clust_prob}}
 
+\item{norm_typ}{The type of norm to use in distance calculations.
+The default is the Froebenius norm "F".}
+
 \item{threshold}{The threshold with which clusters centres must differ
 by for clusters to be considered converged.}
 
@@ -35,12 +38,12 @@ clusters_df
 }
 \description{
 If space_typ == "angle" then data is converted to angles.
-  The points are clustered using \link{km_nan} and "nclust" clusters.
+  The points are clustered using [km_nan] and "nclust" clusters.
   The "cluster_df" dataframe labelled
     "clusters" of the cluster membership with columns\:
     * "clust_num" the number of clusters
     * "clust_dist" the distance from the snp to the cluster centre
       (or distance between angles)
     * "clust_prob" probability the snp is in the cluster. Calculated
-      using \link{calc_clust_prob}.
+      using [calc_clust_prob].
 }

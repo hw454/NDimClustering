@@ -20,7 +20,7 @@ With columns labelled by trait labels.}
 trait_single_df
 }
 \description{
-if trait passes \link{na_col_check}:
+if trait passes [na_col_check]:
     trait_single_df = data.frame(label = a,
                              axes_ind = position in pheno_list)
   else: trait_single_df = data.frame()
