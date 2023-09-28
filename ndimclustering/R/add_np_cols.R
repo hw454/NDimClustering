@@ -1,4 +1,4 @@
-#' Add `np` columns to a dataframe.
+#' Add "np" columns to a dataframe.
 #'
 #' @description Representing the principal components a column for the PC score
 #'   is added for each PC.
