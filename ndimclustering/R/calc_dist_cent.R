@@ -22,7 +22,7 @@
 #' @return snp_clust_df
 #'
 #' @export
-cent_dist_calc <- function(snp_id, b_mat, cluster_df, centroids_df,
+calc_dist_cent <- function(snp_id, b_mat, cluster_df, centroids_df,
                            norm_typ = "F") {
    snp_score <- b_mat[snp_id, ]
    c_num <- cluster_df[snp_id, "clust_num"]

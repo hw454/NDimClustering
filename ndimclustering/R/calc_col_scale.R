@@ -15,7 +15,7 @@
 #' @return data_out
 #'
 #' @export
-scale_nan_col <- function(col, data, mu, se) {
+calc_col_scale <- function(col, data, mu, se) {
   if (se == 0) {
     return(data[, col] - data[, col])
   } else{
