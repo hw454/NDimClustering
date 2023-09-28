@@ -25,6 +25,15 @@ full_cluster_and_plot(
 
 \item{out_pheno}{- Label for the outcome phenotype}
 
+\item{iter}{The iteratio number}
+
+\item{iter_df}{- list of terms indicating the type of program.
+* "iter" - default\:0
+* "bp_on" - default\:TRUE switch if pval scores is to be used.
+* "clust_prob_on" - default\:TRUE switch to use prob of being in cluster
+* "clust_typ" - default="basic", the clustering method to use.
+* "ndim_typ" - Whether to use all the traits or iterate through.}
+
 \item{thresholds}{- List for the  threshold related variables.
 * "threshmul" is multiplied by the data variance for cluster
 difference threshold.
@@ -44,13 +53,6 @@ cluster to be considered converged.}
 * "max_dist" - Maximum distance between points, default=1
 * "np" - Number of principal components
 * "nc" - Number of clusters.}
-
-\item{iter_traits}{- list of terms indicating the type of program.
-* "iter" - default\:0
-* "bp_on" - default\:TRUE switch if pval scores is to be used.
-* "clust_prob_on" - default\:TRUE switch to use prob of being in cluster
-* "clust_typ" - default="basic", the clustering method to use.
-* "ndim_typ" - Whether to use all the traits or iterate through.}
 }
 \value{
 df_list

@@ -15,7 +15,8 @@
 #' @param na_handling - List of the terms related to handling NaNs
 #'   * "narm" - TRUE (default) if NaNs are to be removed in calculations.
 #'   * "percent" - percentage of a column which must be not NaN. default\:0.95
-#' @param iter_traits - list of terms indicating the type of program.
+#' @param iter The iteratio number
+#' @param iter_df - list of terms indicating the type of program.
 #'   * "iter" - default\:0
 #'   * "bp_on" - default\:TRUE switch if pval scores is to be used.
 #'   * "clust_prob_on" - default\:TRUE switch to use prob of being in cluster
@@ -94,7 +95,7 @@ full_cluster_and_plot <- function(data_matrices,
   plot_trait_heatmap(c_scores, iter_traits)
   print("Heatmap plot done")
   # Only plot max diff when iterating through the axis
-  plot_clust_scatter(out$clust_items, out$b_pc, out$se_pc, iter_traits)
+  clust_scatter(out$clust_items, out$b_pc, out$se_pc, iter_traits)
   print("scatter plot done")
   # Plot the transform heatmap.
   plot_transform_heatmap(out$e_mat, iter_traits)
