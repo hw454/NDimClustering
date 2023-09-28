@@ -2,7 +2,7 @@
 % Please edit documentation in R/add_np_cols.R
 \name{add_np_cols}
 \alias{add_np_cols}
-\title{Add `np` columns to a dataframe.}
+\title{Add "np" columns to a dataframe.}
 \usage{
 add_np_cols(df, np)
 }
