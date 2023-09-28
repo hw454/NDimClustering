@@ -15,7 +15,7 @@
 #' random values created using \link[stats]{runif}.
 #'
 #' @return cent_df
-#' 
+#'
 #' @importFrom stats runif
 #'
 #' @export

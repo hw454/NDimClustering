@@ -59,5 +59,17 @@ df_list
 Function to run clustering, scoring and plot the results.
 }
 \details{
-
+based on iter_traits\:ndim_typ call the comparison and cluster function.
+  If iter_trais\:ndim_typ=="all"{
+    * run [clust_pca_all]
+    * Plot the trait heatmap using [plot_trait_heatmap]
+    * Plot the scatter plot using [plot_clust_scatter]
+    * Plot the transform heatmap using [plot_transform_heatmap]
+    } else{
+    * run [clust_pca_compare_iterative]
+    * Plot the heatmap for each iteration using [plot_trait_heatmap]
+    * Plot the max difference through the iterations using
+      [plot_max_diff]
+    }
+  df_list contains the results from all the iterations.
 }

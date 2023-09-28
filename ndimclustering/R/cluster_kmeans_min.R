@@ -56,8 +56,8 @@ cluster_kmeans_min <- function(b_mat,
   # b_mat_comp <- b_mat_clust[complete.cases(b_mat_clust), ]
 
   # Initial cluster dataframe
-  clust_re_list <- lapply(1:(nclust+1), km_nan,
-                    data_mat = b_mat,
+  clust_re_list <- lapply(1:(nclust + 1), km_nan,
+                    data_mat = b_mat_clust,
                     clust_threshold = threshold,
                     norm_typ = norm_typ,
                     na_rm = narm,

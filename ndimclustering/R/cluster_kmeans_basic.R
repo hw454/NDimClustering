@@ -50,7 +50,7 @@ cluster_kmeans_basic <- function(b_mat,
   # b_mat_comp <- b_mat_clust[complete.cases(b_mat_clust), ]
 
   # Initial cluster dataframe
-  clust_out <- km_nan(b_mat,
+  clust_out <- km_nan(b_mat_clust,
                     nclust = nclust,
                     clust_threshold = threshold,
                     norm_typ = norm_typ,

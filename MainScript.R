@@ -12,7 +12,7 @@
 
 # 0 Setup the packages and programs
 
-library('ndimclustering')
+library("ndimclustering")
 # 1 Load csv
 
 # 2 Compute principal components
@@ -27,7 +27,7 @@ library('ndimclustering')
 data_dir <- "../NDimClustInputs/BP_Cancer/"
 res_dir0 <- "../NDimClustResults/BP_BreastCancer/"
 if (!file.exists(res_dir0)) {
-  dir.create(file.path( res_dir0))
+  dir.create(file.path(res_dir0))
 }
 
 # Versions to be iterated through.

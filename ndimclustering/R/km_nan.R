@@ -44,7 +44,7 @@ km_nan <- function(b_mat,
                   clust_threshold = 1e-5,
                   norm_typ = "F",
                   na_rm = TRUE,
-                  prob_on = TRUE){
+                  prob_on = TRUE) {
   set.seed(123)
   snp_list <- rownames(b_mat)
   # Generate data frame with max and min data.

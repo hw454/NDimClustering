@@ -95,7 +95,7 @@ clust_pca_compare_single <- function(df_list, iter_traits,
   c_nums <- unique(cluster_df$clust_num)
   # Score the clustered data based on affiliations with axes.
   # Find the score for each PC
-  c_score0 <- clust_score(cluster_df,
+  c_score0 <- score_all_clusters(cluster_df,
                                 beta_mat = b_pc_mat,
                                 pval_mat = p_pc_mat,
                                 bp_on = iter_traits$bp_on,

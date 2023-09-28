@@ -40,6 +40,7 @@ plot_trait_heatmap <- function(c_scores, iter_traits, pw = 16, ph = 4) {
   Cluster type", d_str)
   for (i in unique(c_scores$num_axis)){
     # Get the traits for this iteration
+    # FIXME revive get_col_list
     trait_list <- get_col_list(c_scores, "num_axis", i, ignore_cols)
     # FIXME calculate total score for each cluster an add as trait.
     # Extract the association scores for each clust trait pair.

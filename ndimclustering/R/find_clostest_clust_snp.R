@@ -34,7 +34,7 @@ find_closest_clust_snp <- function(snp_id, b_mat, cluster_df,
                               norm_typ = "F",
                               max_dist = 10.0) {
   snp_score <- b_mat[snp_id, ]
-  if (!(snp_id %in% row.names(cluster_df))){
+  if (!(snp_id %in% row.names(cluster_df))) {
     snp_dist <- max_dist
     snp_clust_num <- 0
   } else {

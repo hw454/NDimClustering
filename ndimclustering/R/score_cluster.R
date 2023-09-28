@@ -25,7 +25,8 @@ score_cluster <- function(c_num, beta_mat, clusters_df, num_axis,
   traits <- colnames(beta_mat)
   c_id <- paste0("na", num_axis, "_cn", c_num)
   snp_list <- rownames(clusters_df[clusters_df$clust_num == c_num, ])
-  cprob_mat <- data.matrix(clusters_df[snp_list, "clust_prob"], rownames.force = TRUE)
+  cprob_mat <- data.matrix(clusters_df[snp_list, "clust_prob"],
+                          rownames.force = TRUE)
   trait_score_df_list <- lapply(traits, score_trait,
                                 c_id = c_id,
                                 snp_list = snp_list,

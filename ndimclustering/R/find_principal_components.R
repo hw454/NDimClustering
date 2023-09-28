@@ -26,9 +26,11 @@
 find_principal_components <- function(b_mat, pval_mat, se_mat,
                 np = 3, narm = TRUE) {
   # Normalise each Column
-  std_b_mat <- scale_mat(b_mat, narm)
+  std_b_mat <- calc_scale_mat(b_mat, narm)
   # Compute Correlation Matrix
-  c_mat <- stats::cor(std_b_mat, method = "pearson", use = "pairwise.complete.obs")
+  c_mat <- stats::cor(std_b_mat,
+                     method = "pearson",
+                     use = "pairwise.complete.obs")
   # Find Eigen Vectors and Eigen Values
   e_mat <- find_np_eigen_mat(c_mat, np = np)
   # Ensure the transform rownames correspond to the axes in the original data.
