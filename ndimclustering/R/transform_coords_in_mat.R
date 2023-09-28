@@ -7,7 +7,7 @@
 #'
 #' @description
 #' For each row in p_mat multiply by t_mat. Bind the output vectors into
-#' "vec_mat" using \link[SparkR]{rbind}
+#' "vec_mat" using "rbind".
 #'
 #' @return vec_mat
 #'

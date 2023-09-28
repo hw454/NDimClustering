@@ -12,7 +12,7 @@
   #'
   #' @details
   #' Check traits using the function [check_trait].
-  #' trait_df is the \link[SparkR]{rbind} of all the valid traits.
+  #' trait_df is the "rbind" of all the valid traits.
   #' trait_df has columns:
   #' * "label" - The labels for the traits.
   #' Also the column names of the data matrix.

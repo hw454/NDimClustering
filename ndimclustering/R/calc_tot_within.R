@@ -14,7 +14,7 @@
 #'   of the distance data.
 #'
 #' @export
-calc_tot_withins <- function(data,
+calc_tot_within <- function(data,
                           group_col = "clust_num",
                           dist_col = "clust_dist") {
   ll <- lapply(unique(data[group_col]),

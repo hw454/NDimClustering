@@ -7,7 +7,7 @@
 #'   The angles are calculated for each point (row) in mat
 #'   using [convert_point_to_angles_all] which uses
 #'   [convert_point_to_angle] for each column.
-#'   The angles for each point are then row bound using \link[SparkR]{rbind}
+#'   The angles for each point are then row bound using "rbind".
 #'   into "ang_mat".
 #'
 #' @return ang_mat

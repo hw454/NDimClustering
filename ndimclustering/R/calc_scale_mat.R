@@ -9,7 +9,7 @@
 #'   default \: TRUE
 #'
 #' @details Rescale of each column is found using [calc_col_scale] then
-#'   column binding the results using \link[SparkR]{cbind} into "out_mat".
+#'   column binding the results using cbind into "out_mat".
 #'
 #' @return out_mat
 #'
