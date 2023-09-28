@@ -35,13 +35,13 @@ plot_clust_scatter <- function(cluster_df, b_mat,
   )
   ggplot2::ggplot(data = res_df,
                   ggplot2::aes(x = "bx", y = "by")) +
-  ggplot2::geom_point(aes(colour = "clust_num",
+  ggplot2::geom_point(ggplot2::aes(colour = "clust_num",
                   size = "clust_prob"), shape = 21) +
   ggplot2::geom_errorbarh(
-    aes(xmin = "bx" - 1.96 * "bxse", xmax = "bx" + 1.96 * "bxse",
+    ggplot2::aes(xmin = "bx" - 1.96 * "bxse", xmax = "bx" + 1.96 * "bxse",
           color = "clust_num"), linetype = "solid") +
   ggplot2::geom_errorbar(
-    aes(ymin = "by" - 1.96 * "byse", ymax = "by" + 1.96 * "byse",
+    ggplot2::aes(ymin = "by" - 1.96 * "byse", ymax = "by" + 1.96 * "byse",
           color = "clust_num"), linetype = "solid") +
   ggplot2::ylab("Association with PC2") +
   ggplot2::xlab("Association with PC1") +
