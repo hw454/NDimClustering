@@ -11,17 +11,20 @@
 # tstat = nxm array of t-stat for b
 
 # 0 Setup the packages and programs
+# 1 Setup the directory and algorithm variables
+# 2 Setup the data matrices loaded from the defined directory
+# 3 For each set of traits run the following\:
+# 3a Find the principal components.
+# 3b If requrired convert data to angles.
+# 3c Cluster the data.
+# 3d Score the clusters on their association with PCs.
+# 3e Plot the clusters
+# 3f Plot the cluster scores
+# 3g Plot the PC trait scores
 
+devtools::install('ndimclustering')
 library("ndimclustering")
-# 1 Load csv
 
-# 2 Compute principal components
-# 3 Cluster based on results.
-# This will move into loop
-
-# 3 Test clustering on threshold
-# -> Fail - Return to 1 with extra dimension
-# -> Pass - Exit with results.
 
 # Location of the data directory
 data_dir <- "../NDimClustInputs/BP_Cancer/"
@@ -58,7 +61,7 @@ iter_df <- make_iter_df(clust_typ_list,
 niter <- dim(iter_df)[1]
 
 # For each each set of input parameters run the full clustering program
-res_out <- lapply(1:niter, cluster_and_plot,
+res_out <- lapply(1:niter, full_cluster_and_plot,
                   data_matrices = data_matrices,
                   iter_df = iter_df,
                   out_pheno = out_pheno,
@@ -66,3 +69,4 @@ res_out <- lapply(1:niter, cluster_and_plot,
                   na_handling = na_handling,
                   norm_typs = norm_typs,
                   nums = nums)
+q()

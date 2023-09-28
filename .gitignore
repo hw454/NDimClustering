@@ -42,3 +42,4 @@ rsconnect/
 # Log and cache
 *.pycache
 *.log
+ndimclustering/PackageBuildScript.R
