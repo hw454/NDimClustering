@@ -8,12 +8,12 @@
 #' @description
 #'   Use [calc_pair_dist_df] to find the distance between pairs of snps.
 #'   The results from this for each pair is bound on the rows using
-#'   [SparkR::rbind] into the datframe "dist_df".
+#'   "rbind" into the datframe "dist_df".
 #'
 #' @return dist_df
 #'
 #' @export
-dist_col_calc <- function(score_mat, snp1, norm_typ = "F") {
+calc_col_dist <- function(score_mat, snp1, norm_typ = "F") {
   dist_list <- lapply(rownames(score_mat), calc_pair_dist_df,
                       score_mat = score_mat,
                       snp1 = snp1,

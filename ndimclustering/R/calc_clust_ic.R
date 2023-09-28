@@ -28,7 +28,7 @@ calc_clust_ic <- function(clust, group_col, dist_col, num_axis) {
   # Dimension of each data point
   d <- num_axis
   # Log-Likelihood term
-  l <- calc_tot_withins(clust, group_col, dist_col)
+  l <- calc_tot_within(clust, group_col = group_col, dist_col = dist_col)
   aic_n <- d + 2 * k * l
   bic_n <- d + log(n) * k * l
   ic_out <- list("aic" = aic_n, "bic" = bic_n)
