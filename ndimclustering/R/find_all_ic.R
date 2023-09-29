@@ -18,12 +18,12 @@
 find_all_ic <- function(clust_re, num_axis) {
   set.seed(240) # setting seed
   ncents <- length(unique(clust_re$clusters$clust_num))
-  ic <- calc_clust_ic(clust_re,
+  ic <- calc_clust_ic(clust_re$clusters,
                 group_col = "clust_num",
                 dist_col = "clust_dist",
                 num_axis = num_axis)
-  clust_re$clusters <- dplyr::mutate(clust_re, "aic" = ic$aic)
-  clust_re$clusters <- dplyr::mutate(clust_re, "bic" = ic$bic)
-  clust_re$clusters <- dplyr::mutate(clust_re, "ncents" = ncents)
+  clust_re$clusters <- dplyr::mutate(clust_re$clusters, "aic" = ic$aic)
+  clust_re$clusters <- dplyr::mutate(clust_re$clusters, "bic" = ic$bic)
+  clust_re$clusters <- dplyr::mutate(clust_re$clusters, "ncents" = ncents)
   return(clust_re$clusters)
 }

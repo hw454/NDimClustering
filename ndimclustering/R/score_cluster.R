@@ -22,7 +22,7 @@
 #' @export
 score_cluster <- function(c_num, beta_mat, clusters_df, num_axis,
                           pval_mat, bp_on = TRUE) {
-  traits <- colnames(beta_mat)
+  traits <- names(beta_mat)
   c_id <- paste0("na", num_axis, "_cn", c_num)
   snp_list <- rownames(clusters_df[clusters_df$clust_num == c_num, ])
   cprob_mat <- data.matrix(clusters_df[snp_list, "clust_prob"],
