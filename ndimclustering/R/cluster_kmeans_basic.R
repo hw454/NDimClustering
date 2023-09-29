@@ -71,5 +71,5 @@ cluster_kmeans_basic <- function(b_mat,
   #  nan_cluster_df$clust_prob <- calc_clust_prob(nan_cluster_df$clust_dist)
   # }
   # clust_out <- rbind(clust_out, nan_cluster_df)
-  return(clust_out$clusters)
+  return(clust_out)
 }

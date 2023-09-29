@@ -69,11 +69,13 @@ cluster_kmeans_min <- function(b_mat,
   ic_df <- Reduce(rbind, ic_list)
   # Find the number of centres that minimizes the AIC
   min_cents <- ic_df$ncents[which.min(ic_df$aic)]
+  centroids_df <- clust_re_list[min_cents]$centres
   # Use the number of centres to locate corresponding clusters since there
   # maybe variations due to machine precision in the aic values.
-  clust_out <- ic_df[which(ic_df$ncents == min_cents), ]
+  cluster_df <- ic_df[which(ic_df$ncents == min_cents), ]
   if (clust_prob_on) {
-    clust_out$clust_prob <- calc_clust_prob(clust_out$clust_dist)
+    cluster_df$clust_prob <- calc_clust_prob(cluster_df$clust_dist)
   }
+  clust_out <- list("clusters" = cluster_df, "centres" = centroids_df)
   return(clust_out)
 }
