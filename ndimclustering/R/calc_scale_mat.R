@@ -13,12 +13,16 @@
 #'
 #' @return out_mat
 #'
+#' @family pca_functions
+#'
 #' @export
 calc_scale_mat <- function(mat, narm = TRUE) {
   # Compute the Sample Mean with na_rm
   xbar <- apply(mat, 2, mean, na.rm = narm)
   # Compute the Sample SE with na_rm
   se <- apply(mat, 2, stats::sd, na.rm = narm)
+  print(xbar)
+  print(se)
   out_list <- lapply(colnames(mat), calc_col_scale,
   data = mat, mu = xbar, se = se)
   out_mat <- Reduce(cbind, out_list)

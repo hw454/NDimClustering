@@ -16,6 +16,8 @@
 #'
 #' @return max_dist
 #'
+#' @family distance_functions
+#'
 #' @export
 max_dist_calc <- function(score_mat, norm_typ = "F", na_rm = TRUE) {
   # Find the max distance based on range on each axis.

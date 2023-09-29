@@ -14,6 +14,8 @@
 #'
 #' @return trait_single_df
 #'
+#' @family checking_functions
+#'
 #' @export
 check_trait <- function(a, pheno_list, data_mat, na_percent) {
     # Add the trait to the trait dataframe

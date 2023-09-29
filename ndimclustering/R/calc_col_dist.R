@@ -12,6 +12,8 @@
 #'
 #' @return dist_df
 #'
+#' @family distance_functions
+#'
 #' @export
 calc_col_dist <- function(score_mat, snp1, norm_typ = "F") {
   dist_list <- lapply(rownames(score_mat), calc_pair_dist_df,

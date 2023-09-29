@@ -19,6 +19,9 @@
 #'
 #' @return out
 #'
+#' @family ic
+#' @family cluster_properties
+#'
 #' @export
 calc_clust_ic <- function(clust, group_col, dist_col, num_axis) {
   # Number of estimated parameters

@@ -13,6 +13,9 @@
 #' @return The sum of the clusters sum of squares/ divided by the variance
 #'   of the distance data.
 #'
+#' @family cluster_properties
+#' @family ic_functions
+#'
 #' @export
 calc_tot_within <- function(data,
                           group_col = "clust_num",

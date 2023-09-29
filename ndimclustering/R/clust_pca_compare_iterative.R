@@ -30,6 +30,8 @@
 #'   * "np" - Number of principal components
 #'   * "nc" - Number of clusters.
 #'
+#' @family cluster_wrappers
+#'
 #' @description
 #'   df_list is the list of of the clusters, the principal component matrices,
 #'   cluster scores, and the maximum difference between clusters.
@@ -92,19 +94,15 @@ clust_pca_compare_iterative <- function(data_matrices,
     # Update the traits forming the axis
     # Add the trait to the trait dataframe
     a <- pheno_list[ai]
-    print(paste("New trait on axis",a))
+    print(paste("New trait on axis", a))
     covered <- (a %in% trait_df$label)
     allna <- check_col_na(data_matrices$beta[, a], na_handling$percent)
     if (!covered && !allna) {
       # Add trait to trait dataframe
       a_ind <- which(pheno_list == a)[1]
       trait_row <- data.frame(label = a,
-                              num_axis = ai,
                               axes_ind = a_ind)
-      print(trait_df)
-      print(trait_row)
       trait_df <- rbind(trait_df, trait_row)
-      print(df_list$trait)
       df_list$trait <- rbind(df_list$trait, trait_df)
       df_list <- clust_pca_compare_single(df_list,
                                     iter_traits = iter_traits,

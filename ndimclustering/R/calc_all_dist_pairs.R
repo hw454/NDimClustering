@@ -15,6 +15,8 @@
 #'
 #' @return dist_df
 #'
+#' @family distance_functions
+#'
 #' @export
 calc_all_dist_pairs <- function(score_mat, norm_typ = "F") {
   # Find the distance between all pairs of points.

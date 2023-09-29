@@ -18,6 +18,8 @@
 #'
 #' @return dist_df
 #'
+#' @family distance_functions
+#'
 #' @export
 calc_pair_dist_df <- function(score_mat, snp1, snp2, norm_typ = "F") {
   # Find the metric distance between the points given by snp1

@@ -34,6 +34,8 @@
 #'   cluster scores, and the maximum difference between clusters.
 #'   Generated using [clust_pca_compare_single].
 #'
+#' @family cluster_wrappers
+#'
 #' @return df_list
 #'
 #' @export

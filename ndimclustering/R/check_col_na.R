@@ -5,6 +5,8 @@
 #'
 #' @return 0 or 1 - 1 if `b_col` has an acceptable number of non_NaN, else 0.
 #'
+#' @family checking_functions
+#'
 #' @export
 check_col_na <- function(b_col, percent = 0.95) {
   n_accept <- length(b_col) * (1 - percent)

@@ -28,6 +28,9 @@
 #'
 #' @return out_centroid_df
 #'
+#' @family clustering_components
+#' @family centroid_functions
+#'
 #' @export
 check_clust_cent <- function(c_num, clustnum_df, b_mat, centroids_df,
                             na_rm = TRUE, norm_typ = "F",

@@ -34,6 +34,8 @@
 #'   cluster scores, and the maximum difference between clusters.
 #'   Each iteration generated using [clust_pca_compare_single].
 #'
+#' @family cluster_wrappers
+#'
 #' @return df_list
 #'
 #' @export
@@ -45,16 +47,16 @@ clust_pca_compare_single <- function(df_list, iter_traits,
                                             norm_typs,
                                             nums) {
   # Extract the trait_df dataframe from df_list
-  rows <- which(trait_df$num_axis == num_axis)
-  trait_df <- df_list$trait[rows, ]
+  # rows <- which(df_list$trait$num_axis == num_axis)
+  trait_df <- df_list$trait # [rows, ]
   # If the trait is not all NaN then run clustering.
   print(paste("PCA on", num_axis, "axes"))
   # Get the data upto this axis
-  b_iter_df <- data_matrices$beta[, trait_df$label]
-  se_iter_df <- data_matrices$se[, trait_df$label]
-  pval_iter_df <- data_matrices$pval[, trait_df$label]
+  b_iter_mat <- data_matrices$beta[, trait_df$label]
+  se_iter_mat <- data_matrices$se[, trait_df$label]
+  pval_iter_mat <- data_matrices$pval[, trait_df$label]
   # Cluster the data on these axes
-  pca_list   <- find_principal_components(b_iter_df, pval_iter_df, se_iter_df,
+  pca_list <- find_principal_components(b_iter_mat, pval_iter_mat, se_iter_mat,
                           nums$np, na_handling$narm)
   b_pc_mat    <- pca_list$beta
   p_pc_mat <- pca_list$pval

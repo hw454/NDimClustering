@@ -25,6 +25,8 @@
 #'
 #' @return clusters_df
 #'
+#' @family clustering_functions
+#'
 #' @export
 cluster_kmeans_basic <- function(b_mat,
                                 nclust = 10,

@@ -9,6 +9,8 @@
 #'
 #' @return df
 #'
+#' @family dataframe_editors
+#'
 #' @export
 add_np_cols <- function(df, np) {
   # Create dataframe with columns with labels Pi

@@ -21,6 +21,10 @@
 #'
 #' @return snp_clust_df
 #'
+#' @family distance_functions
+#' @family centroid functions
+#' @family clustering_components
+#'
 #' @export
 calc_dist_cent <- function(snp_id, b_mat, cluster_df, centroids_df,
                            norm_typ = "F") {

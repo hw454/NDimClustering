@@ -7,6 +7,9 @@
 #'
 #' @return p
 #'
+#' @family probability_functions
+#' @family cluster_properties
+#'
 #' @export
 calc_clust_prob <- function(d) {
   dist <- 1.0 / (1.0 + d)
