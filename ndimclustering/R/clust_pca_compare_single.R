@@ -74,7 +74,7 @@ clust_pca_compare_single <- function(df_list, iter_traits,
     st <- "regular"
   }
   if (grepl("min", iter_traits$clust_typ)) {
-    cluster_df <- cluster_kmeans_min(b_pc_mat,
+    cluster_out <- cluster_kmeans_min(b_pc_mat,
                                       nums$nr,
                                       space_typ = st,
                                       clust_prob_on = iter_traits$clust_prob_on, # nolint
@@ -82,7 +82,7 @@ clust_pca_compare_single <- function(df_list, iter_traits,
                                       threshold = thresholds$clust,
                                       narm = na_handling$narm)
   } else if (grepl("basic", iter_traits$clust_typ)) {
-    cluster_df <- cluster_kmeans_basic(b_pc_mat,
+    cluster_out <- cluster_kmeans_basic(b_pc_mat,
                                         nums$nr,
                                         space_typ = st,
                                         clust_prob_on = iter_traits$clust_prob_on, # nolint
@@ -90,6 +90,8 @@ clust_pca_compare_single <- function(df_list, iter_traits,
                                         norm_typ = norm_typs$clust,
                                         narm = na_handling$narm)
   }
+  cluster_df <- cluster_out$clusters
+  centroids_df <-cluster_out$centres
   cluster_df$num_axis <- num_axis
 
   df_list$clust_items <- rbind(df_list$clust_items, cluster_df)
@@ -119,6 +121,8 @@ clust_pca_compare_single <- function(df_list, iter_traits,
   max_df0["num_axis"] <- num_axis
   df_list$max_diff <- rbind(df_list$max_diff, max_df0)
   c_score0["num_axis"] <- num_axis
+  print("c_score0")
+  print(c_score0)
   df_list$clust_scores <- rbind(df_list$clust_scores, c_score0)
   print("None of the outcomes clustering met the thresholding test. ")
   return(df_list)
