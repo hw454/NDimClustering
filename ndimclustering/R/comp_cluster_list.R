@@ -17,6 +17,8 @@
 #'
 #' @return diff_df
 #'
+#' @family cluster_analysis_functions
+#'
 #' @export
 compare_oneclust_tolist <- function(cn1, c_nums, c_score0, axis,
                                     clust_norm = "F") {

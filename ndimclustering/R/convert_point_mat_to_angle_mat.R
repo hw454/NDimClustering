@@ -12,6 +12,8 @@
 #'
 #' @return ang_mat
 #'
+#' @family clustering_components
+#'
 #' @export
 mat_to_angle_mat <- function(mat) {
   nc <- ncol(mat)
