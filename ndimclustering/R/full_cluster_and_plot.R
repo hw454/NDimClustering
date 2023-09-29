@@ -46,6 +46,8 @@
 #'   df_list contains the results from all the iterations.
 #'
 #' @return df_list
+#' 
+#' @family cluster_wrappers
 #'
 #' @export
 full_cluster_and_plot <- function(data_matrices,
