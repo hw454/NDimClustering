@@ -30,6 +30,8 @@
 #'
 #' @return clusters_df
 #'
+#' @family cluster_functions
+#'
 #' @export
 cluster_kmeans_min <- function(b_mat,
                               nclust = 10,
@@ -57,7 +59,7 @@ cluster_kmeans_min <- function(b_mat,
 
   # Initial cluster dataframe
   clust_re_list <- lapply(1:(nclust + 1), km_nan,
-                    data_mat = b_mat_clust,
+                    b_mat = b_mat_clust,
                     clust_threshold = threshold,
                     norm_typ = norm_typ,
                     na_rm = narm,
