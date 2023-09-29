@@ -11,9 +11,12 @@
 #'
 #' @return sum of the squares
 #'
+#' @family cluster_properties
+#' @family ic_functions
+#'
 #' @export
 calc_sum_sq_clusts <- function(num, data, dist_col, group_col) {
-  sq <- data[data[group_col] == num, dist_col]**2
+  sq <- data[data[, group_col] == num, dist_col]**2
   s <- sum(sq)
   return(s)
 }
