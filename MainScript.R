@@ -22,7 +22,7 @@
 # 3f Plot the cluster scores
 # 3g Plot the PC trait scores
 
-devtools::install('ndimclustering')
+devtools::install("ndimclustering")
 library("ndimclustering")
 
 
@@ -62,6 +62,7 @@ niter <- dim(iter_df)[1]
 
 # For each each set of input parameters run the full clustering program
 res_out <- lapply(1:niter, full_cluster_and_plot,
+                  res_dir0 = res_dir0,
                   data_matrices = data_matrices,
                   iter_df = iter_df,
                   out_pheno = out_pheno,
@@ -69,4 +70,3 @@ res_out <- lapply(1:niter, full_cluster_and_plot,
                   na_handling = na_handling,
                   norm_typs = norm_typs,
                   nums = nums)
-q()
