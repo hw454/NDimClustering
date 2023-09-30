@@ -105,6 +105,7 @@ km_nan <- function(b_mat,
   if (prob_on) {
     cluster_df$clust_prob <- calc_clust_prob(cluster_df$clust_dist)
   }
+ cluster_df <- dplyr::mutate(cluster_df, "ncents" = nclust)
  clust_out <- list("clusters" = cluster_df, "centres" = centroids_df)
  return(clust_out)
 }
