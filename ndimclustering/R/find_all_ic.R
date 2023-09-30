@@ -14,16 +14,20 @@
 #'
 #' @return clust_re\$clusters
 #'
+#' @family ic_functions
+#'
 #' @export
 find_all_ic <- function(clust_re, num_axis) {
   set.seed(240) # setting seed
-  ncents <- length(unique(clust_re$clusters$clust_num))
+  # The row names will get overridden in rbind so assign rownames to column
+  # then reassign when ncents has been chosen.
+  clust_re$clusters["snp_id"] <- rownames(clust_re$clusters)
+  row.names(clust_re$clusters) <- 1:nrow(clust_re$clusters)
   ic <- calc_clust_ic(clust_re$clusters,
                 group_col = "clust_num",
                 dist_col = "clust_dist",
                 num_axis = num_axis)
   clust_re$clusters <- dplyr::mutate(clust_re$clusters, "aic" = ic$aic)
   clust_re$clusters <- dplyr::mutate(clust_re$clusters, "bic" = ic$bic)
-  clust_re$clusters <- dplyr::mutate(clust_re$clusters, "ncents" = ncents)
   return(clust_re$clusters)
 }
