@@ -33,3 +33,9 @@ Create a dataframe of the score for each trait using
 \link{score_trait}. Column bind together into cscore
 Add cluster number to column in cscore.
 }
+\seealso{
+Other scoring_functions: 
+\code{\link{score_all_clusters}()},
+\code{\link{score_trait}()}
+}
+\concept{scoring_functions}

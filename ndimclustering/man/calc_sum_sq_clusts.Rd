@@ -22,3 +22,15 @@ sum of the squares
 for all the terms in group_col with value num sum the
   square of the dist_col values
 }
+\seealso{
+Other cluster_properties: 
+\code{\link{calc_clust_ic}()},
+\code{\link{calc_clust_prob}()},
+\code{\link{calc_tot_within}()}
+
+Other ic_functions: 
+\code{\link{calc_tot_within}()},
+\code{\link{find_all_ic}()}
+}
+\concept{cluster_properties}
+\concept{ic_functions}

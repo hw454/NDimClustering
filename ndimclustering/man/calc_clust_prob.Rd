@@ -15,3 +15,11 @@ p
 \description{
 \deqn{p=\frac{1.0}{1.0+d}}
 }
+\seealso{
+Other cluster_properties: 
+\code{\link{calc_clust_ic}()},
+\code{\link{calc_sum_sq_clusts}()},
+\code{\link{calc_tot_within}()}
+}
+\concept{cluster_properties}
+\concept{probability_functions}

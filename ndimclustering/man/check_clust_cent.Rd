@@ -53,3 +53,10 @@ The check can only be made if there are snps which are members of the
   else create a dataframe "out_centroid_df" of the new centroids and
     the column "thresh_check" with FALSE in it.
 }
+\seealso{
+Other clustering_components: 
+\code{\link{calc_dist_cent}()},
+\code{\link{mat_to_angle_mat}()}
+}
+\concept{centroid_functions}
+\concept{clustering_components}

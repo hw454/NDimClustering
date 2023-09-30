@@ -62,3 +62,10 @@ df_list is the list of of the clusters, the principal component matrices,
   cluster scores, and the maximum difference between clusters.
   Generated using [clust_pca_compare_single].
 }
+\seealso{
+Other cluster_wrappers: 
+\code{\link{clust_pca_compare_iterative}()},
+\code{\link{clust_pca_compare_single}()},
+\code{\link{full_cluster_and_plot}()}
+}
+\concept{cluster_wrappers}

@@ -7,6 +7,7 @@
 full_cluster_and_plot(
   data_matrices,
   out_pheno,
+  res_dir0 = "",
   iter = 1,
   iter_df = data.frame(iter = 0, bp_on = FALSE, clust_prob_on = FALSE, clust_typ =
     "basic"),
@@ -75,3 +76,10 @@ based on iter_traits\:ndim_typ call the comparison and cluster function.
     }
   df_list contains the results from all the iterations.
 }
+\seealso{
+Other cluster_wrappers: 
+\code{\link{clust_pca_all}()},
+\code{\link{clust_pca_compare_iterative}()},
+\code{\link{clust_pca_compare_single}()}
+}
+\concept{cluster_wrappers}

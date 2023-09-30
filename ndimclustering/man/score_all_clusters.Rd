@@ -40,3 +40,9 @@ Combine all the scores into a data frame with rows given by the cluster id
 and columns are the trait, the values are the score.
 There is also an additional column for the cluster number and number of axis.
 }
+\seealso{
+Other scoring_functions: 
+\code{\link{score_cluster}()},
+\code{\link{score_trait}()}
+}
+\concept{scoring_functions}

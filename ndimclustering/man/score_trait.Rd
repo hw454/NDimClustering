@@ -35,3 +35,9 @@ if bp_on:
 else:
  out = b_sub * c_sub / (sum(c_sub))
 }
+\seealso{
+Other scoring_functions: 
+\code{\link{score_all_clusters}()},
+\code{\link{score_cluster}()}
+}
+\concept{scoring_functions}

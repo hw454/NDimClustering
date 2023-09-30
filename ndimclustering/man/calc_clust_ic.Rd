@@ -30,3 +30,11 @@ Calculate the sum of squares using [calc_tot_withins]
   bic = d+log(n)*k*l}
   out = list("aic" = aic, "bic" = bic).
 }
+\seealso{
+Other cluster_properties: 
+\code{\link{calc_clust_prob}()},
+\code{\link{calc_sum_sq_clusts}()},
+\code{\link{calc_tot_within}()}
+}
+\concept{cluster_properties}
+\concept{ic}

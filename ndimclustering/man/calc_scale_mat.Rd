@@ -23,3 +23,8 @@ Rescale the columns of the matrix `mat` so that the values lie
 Rescale of each column is found using [calc_col_scale] then
   column binding the results using cbind into "out_mat".
 }
+\seealso{
+Other pca_functions: 
+\code{\link{calc_col_scale}()}
+}
+\concept{pca_functions}

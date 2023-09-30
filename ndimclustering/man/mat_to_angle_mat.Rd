@@ -21,3 +21,9 @@ The angles correspond to the angles to the unit vector
   The angles for each point are then row bound using "rbind".
   into "ang_mat".
 }
+\seealso{
+Other clustering_components: 
+\code{\link{calc_dist_cent}()},
+\code{\link{check_clust_cent}()}
+}
+\concept{clustering_components}

@@ -34,3 +34,17 @@ Calculate the distance between the point in "b_mat"
   This is stored in a dataframe "snp_clust_df" which has rowname "snp_id",
   and column "clust_dist", with the calculated distance.
 }
+\seealso{
+Other distance_functions: 
+\code{\link{calc_all_dist_pairs}()},
+\code{\link{calc_col_dist}()},
+\code{\link{calc_pair_dist_df}()},
+\code{\link{max_dist_calc}()}
+
+Other clustering_components: 
+\code{\link{check_clust_cent}()},
+\code{\link{mat_to_angle_mat}()}
+}
+\concept{centroid functions}
+\concept{clustering_components}
+\concept{distance_functions}

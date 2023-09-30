@@ -25,3 +25,8 @@ if trait passes [na_col_check]:
                              axes_ind = position in pheno_list)
   else: trait_single_df = data.frame()
 }
+\seealso{
+Other checking_functions: 
+\code{\link{check_col_na}()}
+}
+\concept{checking_functions}

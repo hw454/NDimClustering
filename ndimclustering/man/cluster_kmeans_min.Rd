@@ -54,3 +54,4 @@ If space_typ == "angle" then data is converted to angles.
     * "clust_prob" probability the snp is in the cluster. Calculated
       using [calc_clust_prob].
 }
+\concept{cluster_functions}

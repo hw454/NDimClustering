@@ -17,3 +17,8 @@ check_col_na(b_col, percent = 0.95)
 \description{
 Check the percentage of NaNs in column
 }
+\seealso{
+Other checking_functions: 
+\code{\link{check_trait}()}
+}
+\concept{checking_functions}

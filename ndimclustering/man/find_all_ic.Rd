@@ -24,3 +24,9 @@ The aic and bic are found for each cluster using [calc_clust_ic]
   this is added to clust_re\$clusters and clust_re\$clusters is output.
   Ncents is also added as an axis to clust_re\$clusters.
 }
+\seealso{
+Other ic_functions: 
+\code{\link{calc_sum_sq_clusts}()},
+\code{\link{calc_tot_within}()}
+}
+\concept{ic_functions}

@@ -22,3 +22,11 @@ Use [calc_pair_dist_df] to find the distance between pairs of snps.
   The results from this for each pair is bound on the rows using
   "rbind" into the datframe "dist_df".
 }
+\seealso{
+Other distance_functions: 
+\code{\link{calc_all_dist_pairs}()},
+\code{\link{calc_dist_cent}()},
+\code{\link{calc_pair_dist_df}()},
+\code{\link{max_dist_calc}()}
+}
+\concept{distance_functions}

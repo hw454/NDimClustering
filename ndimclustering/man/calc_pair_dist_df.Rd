@@ -29,3 +29,11 @@ The distance between the snps is given by the norm of the difference
     * "snp2" the name of the second snp
     * "dist" the distance between the snps.
 }
+\seealso{
+Other distance_functions: 
+\code{\link{calc_all_dist_pairs}()},
+\code{\link{calc_col_dist}()},
+\code{\link{calc_dist_cent}()},
+\code{\link{max_dist_calc}()}
+}
+\concept{distance_functions}

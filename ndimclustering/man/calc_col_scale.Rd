@@ -26,3 +26,8 @@ Check if SE is 0, if 0 then all points are set to 0.
 if (se==0){data_out = 0}
   else{ data_out = (data[,col]-mu)/se}
 }
+\seealso{
+Other pca_functions: 
+\code{\link{calc_scale_mat}()}
+}
+\concept{pca_functions}

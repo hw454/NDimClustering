@@ -30,3 +30,4 @@ Output data frame of the difference in cluster
 As each difference is found the pair is added to the dataframe `diff_df`.
   This dataframe has columns "c_num1", "c_num2", "diff"
 }
+\concept{cluster_analysis_functions}

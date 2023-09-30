@@ -23,3 +23,15 @@ The sum of the clusters sum of squares/ divided by the variance
 Calculate the sum of the squares for each cluster group using
   [calc_sum_sq_clusts]
 }
+\seealso{
+Other cluster_properties: 
+\code{\link{calc_clust_ic}()},
+\code{\link{calc_clust_prob}()},
+\code{\link{calc_sum_sq_clusts}()}
+
+Other ic_functions: 
+\code{\link{calc_sum_sq_clusts}()},
+\code{\link{find_all_ic}()}
+}
+\concept{cluster_properties}
+\concept{ic_functions}

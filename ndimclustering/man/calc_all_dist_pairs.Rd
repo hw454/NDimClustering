@@ -26,3 +26,11 @@ Using [calc_col_dist] and [calc_pair_dist]
   * "snp2" snp label for the compared snp
   * "dist" the distance between snp1 and snp2
 }
+\seealso{
+Other distance_functions: 
+\code{\link{calc_col_dist}()},
+\code{\link{calc_dist_cent}()},
+\code{\link{calc_pair_dist_df}()},
+\code{\link{max_dist_calc}()}
+}
+\concept{distance_functions}

@@ -26,3 +26,11 @@ To get an upper and lower bound for the points find the max in each column
   and the min in each column. The distance between these is an upper bound
   for the maximum distance between the points in the matrix
 }
+\seealso{
+Other distance_functions: 
+\code{\link{calc_all_dist_pairs}()},
+\code{\link{calc_col_dist}()},
+\code{\link{calc_dist_cent}()},
+\code{\link{calc_pair_dist_df}()}
+}
+\concept{distance_functions}
