@@ -81,7 +81,8 @@ clust_pca_compare_iterative <- function(data_matrices,
                           "clust_num" = integer(),
                           "clust_prob" = numeric(),
                           "clust_dist" = numeric(),
-                          "num_axis" = integer())
+                          "num_axis" = integer(),
+                          "ncents" = integer())
   cluster_df <- add_np_cols(cluster_df, nums$np)
   df_list <- list("clust_scores" = c_scores,
                   "max_diff" = max_df,
