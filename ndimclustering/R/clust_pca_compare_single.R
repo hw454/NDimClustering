@@ -122,6 +122,6 @@ clust_pca_compare_single <- function(df_list, iter_traits,
   df_list$max_diff <- rbind(df_list$max_diff, max_df0)
   c_score0["num_axis"] <- num_axis
   df_list$clust_scores <- rbind(df_list$clust_scores, c_score0)
-  print("None of the outcomes clustering met the thresholding test. ")
+  # print("None of the outcomes clustering met the thresholding test. ")
   return(df_list)
 }
