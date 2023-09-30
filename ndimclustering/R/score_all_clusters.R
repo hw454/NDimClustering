@@ -19,6 +19,8 @@
 #'
 #' @return score dataframe
 #'
+#' @family scoring_functions
+#'
 #' @export
 score_all_clusters <- function(clusters_df, beta_mat, pval_mat,
                         bp_on = TRUE,

@@ -21,13 +21,15 @@
 #'
 #' @return out
 #'
+#' @family scoring_functions
+#'
 #' @export
 score_trait <- function(beta_mat, pval_mat, snp_list, a, c_id,
                         cprob_mat, bp_on = TRUE) {
-  b_sub <- stats::na.omit(subset(beta_mat, row.names = snp_list, select = a))
-  c_sub <- stats::na.omit(subset(cprob_mat, row.names = snp_list, select = a))
+  b_sub <- stats::na.omit(beta_mat[snp_list, a])
+  c_sub <- stats::na.omit(cprob_mat[snp_list, ])
   if (bp_on) {
-    p_sub <- stats::na.omit(subset(pval_mat, row.names = snp_list, select = a))
+    p_sub <- stats::na.omit(pval_mat[snp_list, a])
     snp_assoc <- abs(b_sub * p_sub * c_sub)
     total_probs <- sum(p_sub * c_sub)
   } else {
