@@ -52,6 +52,7 @@
 #' @export
 full_cluster_and_plot <- function(data_matrices,
                             out_pheno,
+                            res_dir0 = "",
                             iter = 1,
                             iter_df = data.frame(
                                         "iter" = 0,
@@ -76,7 +77,7 @@ full_cluster_and_plot <- function(data_matrices,
 # This function runs the computations in the `clust_pca_compare`
 # function. Then plots the results.
   iter_traits <- iter_df[iter, ]
-  res_dir <- set_dir(iter_traits$res_dir0, iter_traits)
+  res_dir <- set_dir(res_dir0, iter_traits)
   iter_traits["res_dir"] <- res_dir
   # Find the distances between all points to initialise the threshold
   # for cluster difference.
@@ -115,7 +116,6 @@ full_cluster_and_plot <- function(data_matrices,
   print("Clust done")
   max_diff_df <- out$max_diff
   c_scores <- out$clust_scores
-  print("Diff done")
   plot_trait_heatmap(c_scores, iter_traits)
   print("Heatmap plot done")
   plot_max_diff(max_diff_df, iter_traits)
