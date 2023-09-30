@@ -20,7 +20,7 @@
 calc_tot_within <- function(data,
                           group_col = "clust_num",
                           dist_col = "clust_dist") {
-  ll <- lapply(unique(data[group_col]),
+  ll <- lapply(unique(data[, group_col]),
                     calc_sum_sq_clusts,
                     data = data,
                     group_col = group_col,
