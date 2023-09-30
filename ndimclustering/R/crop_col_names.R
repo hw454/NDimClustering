@@ -15,7 +15,7 @@
 #'
 #' @export
 crop_col_names <- function(c_scores, filter_col, filter_val, ignore_cols) {
-    c_term <- c_scores[filter_col == filter_val, ]
+    c_term <- c_scores[c_scores[filter_col] == filter_val, ]
     c_term <- c_term[, colSums(!is.na(c_term)) != 0]
     col_list <- colnames(c_term[!(colnames(c_term) %in% ignore_cols)])
     return(col_list)
