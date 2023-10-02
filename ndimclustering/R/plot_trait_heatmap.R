@@ -30,8 +30,8 @@ plot_trait_heatmap <- function(c_scores, iter_traits, pw = 16, ph = 4) {
   full_trait_list <- full_trait_list[full_trait_list != "clust_num"]
   vmin <- min(log(abs(c_scores[full_trait_list])), na.rm = TRUE)
   vmax <- max(log(abs(c_scores[full_trait_list])), na.rm = TRUE)
-  break_width <- (vmax - vmin) / 4
-  colmid <- (vmax + vmin) / 2
+  break_width <- (vmax - vmin) / 4.0
+  colmid <- (vmax + vmin) / 2.0
   print(paste("vmin", vmin))
   print(paste("vmax", vmax))
   print(paste("break_width", break_width))
@@ -51,10 +51,11 @@ plot_trait_heatmap <- function(c_scores, iter_traits, pw = 16, ph = 4) {
     # Plot the scores against the traits.
     pnme <- paste0(iter_traits$res_dir, "trait_vs_ClustScores_iter", i, ".png")
     title_iter <- paste0(title_str, ". \n Iteration number ", i)
+    print(long_form_df)
     p <- ggplot2::ggplot(long_form_df,
-                      ggplot2::aes(x = "trait",
-                                  y = "clust_num",
-                                  fill = "score")) +
+                      ggplot2::aes(x = trait,
+                                  y = clust_num,
+                                  fill = score)) +
       ggplot2::theme(axis.text.x =
                     ggplot2::element_text(angle = 90, vjust = 0.5)) +
       ggplot2::geom_tile() +
@@ -62,10 +63,9 @@ plot_trait_heatmap <- function(c_scores, iter_traits, pw = 16, ph = 4) {
       # FIXME
       # Mark the two clusters with the highest difference at each step
       ggplot2::scale_fill_gradient2(low = "cyan", high = "blue", mid = "purple",
-                        na.value = "grey50",
-                         midpoint = colmid,
-                         breaks = seq(vmin, vmax, break_width),
-                         limits = c(vmin, vmax)) +
+                      midpoint = colmid,
+                      breaks = seq(vmin, vmax, break_width),
+                      limits = c(vmin, vmax)) +
       ggplot2::ggtitle(title_iter)
     ggplot2::ggsave(filename = pnme, width = pw, height = ph)
   }
