@@ -22,7 +22,9 @@ plot_transform_heatmap <- function(e_mat, iter_traits,
   e_long_df <- tidyr::pivot_longer(e_df, -c("trait"),
                             names_to = "PC", values_to = "association")
   ggplot2::ggplot(data = e_long_df,
-                ggplot2::aes(x = "PC", y = "trait", fill = "association")) +
+                ggplot2::aes(x = PC,
+                             y = trait,
+                             fill = association)) +
       ggplot2::geom_raster() +
       ggplot2::scale_fill_viridis_c() +
       ggplot2::ggtitle(title_iter)

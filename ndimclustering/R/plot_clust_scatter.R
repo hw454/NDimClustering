@@ -34,18 +34,20 @@ plot_clust_scatter <- function(cluster_df, b_mat,
     clust_prob = cluster_df[snp_list, "clust_prob"]
   )
   ggplot2::ggplot(data = res_df,
-                  ggplot2::aes(x = "bx", y = "by")) +
-  ggplot2::geom_point(ggplot2::aes(colour = "clust_num",
-                  size = "clust_prob"), shape = 21) +
+                  ggplot2::aes(x = bx, y = by)) +
+  ggplot2::geom_point(ggplot2::aes(colour = clust_num,
+                  size = clust_prob), shape = 21) +
   ggplot2::geom_errorbarh(
-    ggplot2::aes(xmin = "bx" - 1.96 * "bxse", xmax = "bx" + 1.96 * "bxse",
-          color = "clust_num"), linetype = "solid") +
+    ggplot2::aes(xmin = res_df$bx - 1.96 * res_df$byse,
+                 xmax = res_df$bx + 1.96 * res_df$bxse,
+                 color = clust_num), linetype = "solid") +
   ggplot2::geom_errorbar(
-    ggplot2::aes(ymin = "by" - 1.96 * "byse", ymax = "by" + 1.96 * "byse",
-          color = "clust_num"), linetype = "solid") +
+    ggplot2::aes(ymin = res_df$by - 1.96 * res_df$byse,
+                 ymax = res_df$by + 1.96 * res_df$byse,
+                 color = clust_num), linetype = "solid") +
   ggplot2::ylab("Association with PC2") +
   ggplot2::xlab("Association with PC1") +
-  ggplot2::ggtitle("Clustered by principal components") +
+  ggplot2::ggtitle("Clustered by principal components") 
   ggplot2::ggsave(filename = pnme, width = pw, height = ph)
   return()
 }
