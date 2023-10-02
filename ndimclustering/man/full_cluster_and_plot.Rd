@@ -9,8 +9,8 @@ full_cluster_and_plot(
   out_pheno,
   res_dir0 = "",
   iter = 1,
-  iter_df = data.frame(iter = 0, bp_on = FALSE, clust_prob_on = FALSE, clust_typ =
-    "basic"),
+  iter_df = data.frame(iter = 1, bp_on = FALSE, clust_prob_on = FALSE, clust_typ =
+    "basic", ndim_typ = "all"),
   thresholds = list(threshmul = 5, diff = 1e-05, clust = 1e-05),
   na_handling = list(narm = TRUE, percent = 0.95),
   norm_typs = list(clust = "F", thresh = "F"),
