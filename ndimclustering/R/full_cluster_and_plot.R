@@ -55,10 +55,11 @@ full_cluster_and_plot <- function(data_matrices,
                             res_dir0 = "",
                             iter = 1,
                             iter_df = data.frame(
-                                        "iter" = 0,
+                                        "iter" = 1,
                                         "bp_on" = FALSE,
                                         "clust_prob_on" = FALSE,
-                                        "clust_typ" = "basic"),
+                                        "clust_typ" = "basic",
+                                        "ndim_typ" = "all"),
                             thresholds = list("threshmul" = 5,
                                               "diff" = 1e-5,
                                               "clust" = 1e-5),
@@ -104,7 +105,7 @@ full_cluster_and_plot <- function(data_matrices,
   plot_transform_heatmap(out$e_mat, iter_traits)
   out <- list("iter_df" = iter_df,
               "c_scores" = c_scores,
-              "max_df" = max_diff_df)
+              "max_df" = out$max_diff)
   } else if (iter_traits$ndim_typ == "iterative") {
   out <- clust_pca_compare_iterative(data_matrices = data_matrices,
                           out_pheno = out_pheno,
@@ -120,9 +121,9 @@ full_cluster_and_plot <- function(data_matrices,
   print("Heatmap plot done")
   plot_max_diff(max_diff_df, iter_traits)
   print("Diff plot done")
-  out <- list("iter_df" = iter_df,
-              "c_scores" = c_scores,
-              "max_df" = max_diff_df)
+  #out <- list("iter_df" = iter_df,
+  #            "c_scores" = c_scores,
+  #            "max_df" = max_diff_df)
   }
   return(out)
 }
