@@ -1,12 +1,12 @@
 #' Dataset pval_df
 #'
 #' @description 
-#' This is a dataset containing the pvalues corresponding to the scores in
+#' This is a dataset containing the standard errors corresponding to the scores in
 #' "unstdBeta_df.csv"
 #'
-#' @name pval_df
+#' @name unstdSE_df
 #'
-#' @section pval_df.csv:
+#' @section unstdSE_df.csv:
 #'
 #' @details This data is used when in "data" is set at the directory.
 NULL
