@@ -38,7 +38,7 @@ plot_clust_scatter <- function(cluster_df, b_mat,
   ggplot2::geom_point(ggplot2::aes(colour = clust_num,
                   size = clust_prob), shape = 21) +
   ggplot2::geom_errorbarh(
-    ggplot2::aes(xmin = res_df$bx - 1.96 * res_df$byse,
+    ggplot2::aes(xmin = res_df$bx - 1.96 * res_df$bxse,
                  xmax = res_df$bx + 1.96 * res_df$bxse,
                  color = clust_num), linetype = "solid") +
   ggplot2::geom_errorbar(
