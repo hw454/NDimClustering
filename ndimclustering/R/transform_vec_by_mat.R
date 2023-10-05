@@ -27,6 +27,5 @@ transform_vec_by_mat <- function(p_mat, r, t_mat) {
   q[is.na(q)] <- 0.0
   out_vec <- q %*% t_mat
   rownames(out_vec) <- c(r)
-  # colnames(out_vec) <- lapply(1:dim(t_mat)[2], pc_name)
   return(out_vec)
 }
