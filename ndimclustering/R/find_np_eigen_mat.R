@@ -18,6 +18,6 @@ find_np_eigen_mat <- function(mat, np) {
   ev <- eigen(mat)
   # The vectors matrix contains the unit eigen vectors in the columns
   nend <- min(np, dim(mat)[1])
-  vecs <- ev$vectors[, 1:nend]
+  vecs <- ev$vectors[, seq_len(nend)]
   return(vecs)
 }
