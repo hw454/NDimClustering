@@ -18,10 +18,6 @@ num_trait0 <- 380
 num_trait1 <- 410
 num_rows <- 50
 
-# Files containing data
-hail_gcorr_dir <- paste0(data_dir, "Hail_AllxAll.csv")
-fpaths_fil_dir <- paste0(data_dir, "fpaths_fil_nfil.txt")
-
 # Create the data variables from the inputs
 setup_algorithm_data(threshmul = threshmul,
                     clust_threshold = clust_threshold,
