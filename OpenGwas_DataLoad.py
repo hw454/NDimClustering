@@ -12,13 +12,15 @@ logging.basicConfig(filename = "OpenGwas_DataLoad.log",
                     datefmt= "%Y-%m-%d %H:%M:%S",
                     filemode="w")
 # Set the input location and datafile.
-input_dir="../NDimClustInputs/BMI_SBP/"
+input_dir="../NDimClustInputs/BMI_CAD/"
 trait_input_csv = "TraitsData.csv"
 # Read in the desired traits.
-trait_df=pd.read_csv(input_dir+trait_input_csv,sep=",",header=0)
+trait_df = pd.read_csv(input_dir + trait_input_csv,
+                        sep = ",",
+                        header = 0)
 
 # Set the column names for the trait dataframe
-cols=["pheno_category","phenotype","n_complete_samples","description",
+cols = ["pheno_category","phenotype","n_complete_samples","description",
       "variable_type","source","n_non_missing","n_missing",
       "n_controls","n_cases","n_eff","open_gwas_id",
       "keywords","nsnp"]
@@ -28,21 +30,24 @@ trait_info_df=pd.DataFrame(columns=cols)
 gwas_data = igd.gwasinfo()
 gwas_df = pd.DataFrame.from_dict(gwas_data, orient="index")
 # Find the outcome snps
-i=0
-outcome_trait_row=trait_df[trait_df.Type=="Outcome"].index
-outcome_description=trait_df.at[i,"Description"].replace(';',' ')
-outcome_studies = gwas_df[gwas_df["trait"].str.contains(outcome_description, case=False)]
+outcome_trait_row = trait_df[trait_df.Type == "Outcome"].index[0]
+outcome_description = trait_df.at[outcome_trait_row,
+                                  "Description"].replace(';',' ')
+outcome_studies = gwas_df[gwas_df["trait"].str.contains(outcome_description, case = False)]
 # Choose the outcome study with the most SNPs
-max_nsnp=max(outcome_studies["nsnp"])
-outcome_entry_row=outcome_studies[outcome_studies.nsnp==max_nsnp].index[0]
-outcome_id=outcome_studies.at[outcome_entry_row,"id"]
-init_study=pd.DataFrame.from_dict(igd.tophits([outcome_id], 
-                                              pval=5e-15, clump=1, r2=0.1, 
-                                              kb=10000, force_server=False, 
-                                              access_token="NULL")).sort_values(by="p",
-                                                                                 ascending=True)
+max_nsnp = max(outcome_studies["nsnp"])
+outcome_entry_row = outcome_studies[outcome_studies.nsnp == max_nsnp].index[0]
+outcome_id = outcome_studies.at[outcome_entry_row,"id"]
+init_study = pd.DataFrame.from_dict(igd.tophits([outcome_id], 
+                                              pval = 5e-5,
+                                              clump = 0,
+                                              r2 = 5.0, 
+                                              force_server = True, 
+                                              access_token = "NULL")).sort_values(by = "p",
+                                                                                 ascending = True)
 # Initial SNP list is the SNPS in outcome study.
-init_snp_list=init_study.rsid
+init_snp_list = init_study.rsid
+print("Number of snps in initial study", len(init_snp_list))
 # Loop through each trait and locate the associations between the trait, outcome and the snp_list. 
 for i in trait_df.index:
     if (trait_df.at[i,"Type"] == "Outcome"): 
@@ -52,8 +57,8 @@ for i in trait_df.index:
     tl = str(trait_df.at[i,"Phenotype"])
     t_entry = trait_df[trait_df.Phenotype==tl]
     trait_description = t_entry.at[i,"Description"].replace(';',' ')
-    trait_studies = gwas_df[gwas_df["trait"].str.contains(trait_description, case=False)]
-    if len(trait_studies)==0: 
+    trait_studies = gwas_df[gwas_df["trait"].str.contains(trait_description, case = False)]
+    if len(trait_studies) == 0: 
         print("No matching studies found for trait ",tl)
         continue
     max_nsnp=0
@@ -62,11 +67,11 @@ for i in trait_df.index:
     for study_id in trait_studies.id:
         assocs = pd.DataFrame.from_dict(igd.associations(init_snp_list,
                                                  [study_id], 
-                                                 proxies=1, 
-                                                 r2=0.8, 
-                                                 align_alleles=1, 
-                                                 palindromes=1, 
-                                                 maf_threshold=0.3)
+                                                 proxies = 1, 
+                                                 r2 = 0.8, 
+                                                 align_alleles = 1, 
+                                                 palindromes = 1, 
+                                                 maf_threshold = 0.3)
                                                 )
         assoc_snps=len(assocs)
         if assoc_snps>max_nsnp:
@@ -77,6 +82,9 @@ for i in trait_df.index:
     study_id            =trait_studies.at[study_row,"id"]
     study_sample_size   =trait_studies.at[study_row,"sample_size"]
     study_controls      =trait_studies.at[study_row,"ncontrol"]
+    study_description = study_description.replace('"',"")
+    study_description = study_description.replace(";","-")
+    study_description = study_description.replace(",","-")
     new_trait=pd.DataFrame({"phenotype":tl,"description":study_description,
                "n_complete_samples":study_sample_size,
                "variable_type":"",
