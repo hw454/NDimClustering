@@ -1,6 +1,5 @@
-devtools::install(("ndimclustering"))
-library("ndimclustering")
 
+# Where to load the data from
 data_dir <- "../NDimClustInputs/BMI_CAD/"
 # variable set-up
 threshmul <- 5.0
@@ -34,21 +33,3 @@ setup_matrices(data_dir = data_dir,
 M2 <- data_matrices$beta
 M3 <- data_matrices$se
 M4 <- data_matrices$pval
-narm <- TRUE
-xbar <- apply(M2, 2, mean, na.rm = narm)
-se <- apply(M2, 2, stats::sd, na.rm = narm)
-# Compute the Sample SE with na_rm
-out_list <- lapply(colnames(M2), calc_col_scale,
-data = M2, mu = xbar, se = se)
-out_mat <- Reduce(cbind, out_list)
-M2h <- calc_scale_mat(M2)
-stats::cor(M2h, method = "pearson", use = "pairwise.complete.obs")
-out_list <- find_principal_components(M2, M3, M4)
-cluster_df <- cluster_kmeans_min(out_list$beta, 3, space_typ = "angle")
-iter_traits <- data.frame("bp_on" = TRUE,
-                         "clust_prob_on" = TRUE,
-                         "clust_typ" = "test",
-                         "ndim_typ" = "test")
-plot_clust_scatter(cluster_df$clusters, out_list$beta, out_list$se, iter_traits)
-
-# Results shuld show scatter plot with points not in a straight line.
