@@ -1,6 +1,6 @@
 
 # Where to load the data from
-data_dir <- "../NDimClustInputs/BMI_CAD/"
+data_dir <- "../NDimClustInputs/BP_Cancer/"
 # variable set-up
 threshmul <- 5.0
 clust_threshold <- 1e-3
@@ -33,3 +33,9 @@ setup_matrices(data_dir = data_dir,
 M2 <- data_matrices$beta
 M3 <- data_matrices$se
 M4 <- data_matrices$pval
+
+corr_mat <- stats::cor(M2,
+                       method = "pearson",
+                       use = "pairwise.complete.obs")
+
+print(corr_mat)

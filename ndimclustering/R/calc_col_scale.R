@@ -18,7 +18,7 @@
 #'
 #' @export
 calc_col_scale <- function(col, data, mu, se) {
-  if (se[col] == 0) {
+    if (se[col] == 0) {
     return(data[, col] - data[, col])
   } else {
   return((data[, col] - mu[col]) / se[col])
