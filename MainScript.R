@@ -25,29 +25,32 @@
 devtools::install("ndimclustering")
 library("ndimclustering")
 
-
+# USER INPUTS
 # Location of the data directory
 data_dir <- "../NDimClustInputs/BMI_SBP/"
 res_dir0 <- "../NDimClustResults/BMI_SBP/"
-if (!file.exists(res_dir0)) {
-  dir.create(file.path(res_dir0))
-}
 
 # Versions to be iterated through.
 # - type of clustering
 clust_typ_str1 <- "basic_angle"
 clust_typ_str2 <- "min_angle"
-clust_typ_list <- c(clust_typ_str2, clust_typ_str1)
 # - probability used from beta value
 bp_on1 <- TRUE
 bp_on2 <- FALSE
-bp_on_list <- c(bp_on1, bp_on2)
 # - probability used for cluster scoring
 clust_prob_on1 <- TRUE
 clust_prob_on2 <- FALSE
-clust_prob_on_list <- c(clust_prob_on1, clust_prob_on2)
 # - Iterate through all change or increment
 ndim_typ <- "all"
+
+# Create diretory for results if it doesn't exist
+if (!file.exists(res_dir0)) {
+  dir.create(file.path(res_dir0))
+}
+# Group terms
+clust_typ_list <- c(clust_typ_str2, clust_typ_str1)
+bp_on_list <- c(bp_on1, bp_on2)
+clust_prob_on_list <- c(clust_prob_on1, clust_prob_on2)
 
 source("SetupNDimClust.R")
 
