@@ -12,7 +12,7 @@ logging.basicConfig(filename = "OpenGwas_DataLoad.log",
                     datefmt= "%Y-%m-%d %H:%M:%S",
                     filemode="w")
 # Set the input location and datafile.
-input_dir="../NDimClustInputs/BMI_CAD/"
+input_dir="../NDimClustInputs/BP_Cancer/"
 trait_input_csv = "TraitsData.csv"
 # Read in the desired traits.
 trait_df = pd.read_csv(input_dir + trait_input_csv,
@@ -68,7 +68,7 @@ for i in trait_df.index:
         assocs = pd.DataFrame.from_dict(igd.associations(init_snp_list,
                                                  [study_id], 
                                                  proxies = 1, 
-                                                 r2 = 0.8, 
+                                                 r2 = 5.0, 
                                                  align_alleles = 1, 
                                                  palindromes = 1, 
                                                  maf_threshold = 0.3)
@@ -103,14 +103,14 @@ for i in trait_df.index:
 trait_info_df.to_csv(input_dir+"/trait_info_nfil.csv",na_rep="NAN")
 ic(trait_info_df)
 #ic(igd.tophits([outcome_id]))
-init_study=pd.DataFrame.from_dict(igd.tophits([outcome_id], 
-                                              pval=5e-15, clump=1, r2=0.1, 
-                                              kb=10000, force_server=False, 
-                                              access_token="NULL")).sort_values(by="p",
-                                                                                 ascending=True)
+#init_study=pd.DataFrame.from_dict(igd.tophits([outcome_id], 
+  #                                            pval=5e-15, clump=1, r2=0.1, 
+ #                                             kb=10000, force_server=False, 
+   #                                           access_token="NULL")).sort_values(by="p",
+    #                                                                             ascending=True)
 #logging.info(init_study.head())
 #ic(init_study.head())
-init_snp_list=init_study.rsid
+#init_snp_list=init_study.rsid
 # ACCESS DATA VIA API
 # ieugwaspy package doesn't appear to be working. Trially GWAS catalog API
 #apiurl="https://www.ebi.ac.uk/gwas/rest/api/efoTraits/"+trait_df.Trait_ID[0]
@@ -137,7 +137,7 @@ for i_tr in trait_info_df.index:
     assocs  = pd.DataFrame.from_dict(igd.associations(init_snp_list,
                                                  [gwas_id], 
                                                  proxies = 1, 
-                                                 r2 = 0.8, 
+                                                 r2 = 5.0, 
                                                  align_alleles = 1, 
                                                  palindromes = 1, 
                                                  maf_threshold = 0.3)
