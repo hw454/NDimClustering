@@ -74,7 +74,7 @@ clust_pca_compare_single <- function(df_list, iter_traits,
     st <- "regular"
   }
   if (grepl("min", iter_traits$clust_typ)) {
-    cluster_out <- cluster_kmeans_min(b_pc_mat,
+    cluster_out <- cluster_kmeans_min(pca_list,
                                       nums$nr,
                                       space_typ = st,
                                       clust_prob_on = iter_traits$clust_prob_on, # nolint
@@ -82,7 +82,7 @@ clust_pca_compare_single <- function(df_list, iter_traits,
                                       threshold = thresholds$clust,
                                       narm = na_handling$narm)
   } else if (grepl("basic", iter_traits$clust_typ)) {
-    cluster_out <- cluster_kmeans_basic(b_pc_mat,
+    cluster_out <- cluster_kmeans_basic(pca_list,
                                         nums$nr,
                                         space_typ = st,
                                         clust_prob_on = iter_traits$clust_prob_on, # nolint

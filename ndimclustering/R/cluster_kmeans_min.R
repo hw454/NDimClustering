@@ -33,7 +33,7 @@
 #' @family cluster_functions
 #'
 #' @export
-cluster_kmeans_min <- function(b_mat,
+cluster_kmeans_min <- function(data_list,
                               nclust = 10,
                               max_dist = 10.0,
                               space_typ = "regular",
@@ -43,6 +43,13 @@ cluster_kmeans_min <- function(b_mat,
                               narm = TRUE) {
   # Using the association scores for each SNP accross traits cluster the traits
   # using kmeans. Return the cluster setup which minimises AIC.
+  b_mat <- data_list$beta
+  se_mat <- data_list$se
+  # Crop the data to those with the lowest standard error.
+  # Add remaining terms to closest cluster once centres have been found.
+  crop_se <- docore::lim(se_mat, 0, 0.5)
+  crop_se <- crop_se[complete.cases(crop_se), ]
+  crop_snp_list <- rownames(crop_se)
 
   if (space_typ == "angle") {
     # For each point in b_df_comp convert the score to the angle
@@ -51,15 +58,13 @@ cluster_kmeans_min <- function(b_mat,
   } else {
     b_mat_clust <- b_mat
   }
-  # max_dist <- max_dist_calc(b_mat_clust,
-  #                          norm_typ = norm_typ,
-  #                          na_rm = narm)
-  # Filter complete cases
-  # b_mat_comp <- b_mat_clust[complete.cases(b_mat_clust), ]
+
+  # Crop the data to focus on the snps with the lowest standard error
+  b_mat_crop <- b_mat_clust[crop_snp_list, ]
 
   # Initial cluster dataframe
   clust_re_list <- lapply(1:(nclust + 1), km_nan,
-                    b_mat = b_mat_clust,
+                    b_mat = b_mat_crop,
                     clust_threshold = threshold,
                     norm_typ = norm_typ,
                     na_rm = narm,
@@ -74,9 +79,19 @@ cluster_kmeans_min <- function(b_mat,
   # maybe variations due to machine precision in the aic values.
   cluster_df <- ic_df[which(ic_df$ncents == min_cents), ]
   rownames(cluster_df) <- cluster_df$snp_id
+  # cluster number identification for each observation
+  snp_cluster_list <- lapply(setdiff(rownames(b_mat_clust), crop_snp_list),
+                            find_closest_clust_snp,
+                            b_mat = b_mat_clust,
+                            cluster_df = clust_out$clusters,
+                            centroids_df = clust_out$centres,
+                            norm_typ = norm_typ)
+  nan_cluster_df <- Reduce(rbind, snp_cluster_list)
   if (clust_prob_on) {
-    cluster_df$clust_prob <- calc_clust_prob(cluster_df$clust_dist)
+    nan_cluster_df$clust_prob <- calc_clust_prob(nan_cluster_df$clust_dist)
   }
+  cluster_df <- rbind(cluster_df, nan_cluster_df)
+  # ADDFEATURE - Assign junk clusters.
   clust_out <- list("clusters" = cluster_df, "centres" = centroids_df)
   return(clust_out)
 }
