@@ -23,6 +23,9 @@ plot_clust_scatter <- function(cluster_df, b_mat,
   pnme <- paste0(iter_traits$res_dir, "clusters_num_axis", num_axis, ".png")
   c1 <- colnames(b_mat)[1]
   c2 <- colnames(b_mat)[2]
+  se_bar <- colMeans(se_mat)
+  norm_se <- rowSums(se_mat) / se_bar
+  alpha_vec <- 1.0 / (1.0 + norm_se)
   snp_list <- row.names(b_mat)
   res_df <- data.frame(
     row.names = snp_list,
@@ -31,20 +34,24 @@ plot_clust_scatter <- function(cluster_df, b_mat,
     bxse = se_mat[, c1],
     byse = se_mat[, c2],
     clust_num = cluster_df[snp_list, "clust_num"],
-    clust_prob = cluster_df[snp_list, "clust_prob"]
+    clust_prob = cluster_df[snp_list, "clust_prob"],
+    alp = alpha_vec
   )
   ggplot2::ggplot(data = res_df,
                   ggplot2::aes(x = bx, y = by)) +
   ggplot2::geom_point(ggplot2::aes(colour = clust_num,
-                  size = clust_prob), shape = 21) +
+                  size = clust_prob,
+                  alpha = alp), shape = 21) +
   ggplot2::geom_errorbarh(
     ggplot2::aes(xmin = res_df$bx - 1.96 * res_df$bxse,
                  xmax = res_df$bx + 1.96 * res_df$bxse,
-                 color = clust_num), linetype = "solid") +
+                 color = clust_num,
+                 alpha = alp), linetype = "solid") +
   ggplot2::geom_errorbar(
     ggplot2::aes(ymin = res_df$by - 1.96 * res_df$byse,
                  ymax = res_df$by + 1.96 * res_df$byse,
-                 color = clust_num), linetype = "solid") +
+                 color = clust_num,
+                 alpha = alp), linetype = "solid") +
   ggplot2::ylab("Association with PC2") +
   ggplot2::xlab("Association with PC1") +
   ggplot2::ggtitle("Clustered by principal components") 
