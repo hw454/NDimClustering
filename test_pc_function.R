@@ -1,39 +1,15 @@
 devtools::install(("ndimclustering"))
 library("ndimclustering")
-
-data_dir <- "../NDimClustInputs/BMI_CAD/"
-# variable set-up
-threshmul <- 5.0
-clust_threshold <- 1e-3
-thresh_norm <- "F"
-clust_norm <- "F"
-nr <- 5 # Number of clusters
-np <- 2 # Number of PCs
-na_percent <- 0.25 # The percentage of a column that can acceptably be not NaN
-
-# Testing dimensions
-test <- 0 # testing switch
-num_trait0 <- 380
-num_trait1 <- 410
-num_rows <- 50
-
-# Create the data variables from the inputs
-setup_algorithm_data(threshmul = threshmul,
-                    clust_threshold = clust_threshold,
-                    na_percent = na_percent,
-                    nr = nr,
-                    np = np,
-                    clust_norm = clust_norm,
-                    thresh_norm = thresh_norm)
-
-setup_matrices(data_dir = data_dir,
-              test = test,
-              num_rows = num_rows,
-              num_trait0 = num_trait0,
-              num_trait1 = num_trait1)
-M2 <- data_matrices$beta
-M3 <- data_matrices$se
-M4 <- data_matrices$pval
+d <- 60
+M2 <- matrix(runif(d * d, 0, 10), nrow = d)
+M3 <- matrix(runif(d * d, 0, 1), nrow = d)
+M4 <- matrix(runif(d * d), nrow = d)
+colnames(M2) <- seq_len(ncol(M2))
+colnames(M3) <- seq_len(ncol(M3))
+colnames(M4) <- seq_len(ncol(M4))
+rownames(M2) <- seq_len(nrow(M2))
+rownames(M3) <- seq_len(nrow(M3))
+rownames(M4) <- seq_len(nrow(M4))
 narm <- TRUE
 xbar <- apply(M2, 2, mean, na.rm = narm)
 se <- apply(M2, 2, stats::sd, na.rm = narm)
@@ -44,7 +20,7 @@ out_mat <- Reduce(cbind, out_list)
 M2h <- calc_scale_mat(M2)
 stats::cor(M2h, method = "pearson", use = "pairwise.complete.obs")
 out_list <- find_principal_components(M2, M3, M4)
-cluster_df <- cluster_kmeans_min(out_list$beta, 3, space_typ = "angle")
+cluster_df <- cluster_kmeans_min(out_list, 3, space_typ = "angle")
 iter_traits <- data.frame("bp_on" = TRUE,
                          "clust_prob_on" = TRUE,
                          "clust_typ" = "test",
