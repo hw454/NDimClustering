@@ -24,7 +24,7 @@ plot_clust_scatter <- function(cluster_df, b_mat,
   c1 <- colnames(b_mat)[1]
   c2 <- colnames(b_mat)[2]
   se_bar <- colMeans(se_mat)
-  norm_se <- rowSums(se_mat) / se_bar
+  norm_se <- rowSums(se_mat / se_bar)
   alpha_vec <- 1.0 / (1.0 + norm_se)
   snp_list <- row.names(b_mat)
   res_df <- data.frame(
