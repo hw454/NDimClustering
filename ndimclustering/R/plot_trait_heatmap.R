@@ -51,7 +51,6 @@ plot_trait_heatmap <- function(c_scores, iter_traits, pw = 16, ph = 4) {
     # Plot the scores against the traits.
     pnme <- paste0(iter_traits$res_dir, "trait_vs_ClustScores_iter", i, ".png")
     title_iter <- paste0(title_str, ". \n Iteration number ", i)
-    print(long_form_df)
     p <- ggplot2::ggplot(long_form_df,
                       ggplot2::aes(x = trait,
                                   y = clust_num,

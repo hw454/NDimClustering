@@ -29,22 +29,30 @@ trait_info_df=pd.DataFrame(columns=cols)
 # Load GWAS info
 gwas_data = igd.gwasinfo()
 gwas_df = pd.DataFrame.from_dict(gwas_data, orient="index")
-# Find the outcome snps
+# Find the outcome study
 outcome_trait_row = trait_df[trait_df.Type == "Outcome"].index[0]
 outcome_description = trait_df.at[outcome_trait_row,
                                   "Description"].replace(';',' ')
 outcome_studies = gwas_df[gwas_df["trait"].str.contains(outcome_description, case = False)]
 # Choose the outcome study with the most SNPs
-max_nsnp = max(outcome_studies["nsnp"])
-outcome_entry_row = outcome_studies[outcome_studies.nsnp == max_nsnp].index[0]
+max_nsnp_o = max(outcome_studies["nsnp"])
+outcome_entry_row = outcome_studies[outcome_studies.nsnp == max_nsnp_o].index[0]
 outcome_id = outcome_studies.at[outcome_entry_row,"id"]
-init_study = pd.DataFrame.from_dict(igd.tophits([outcome_id], 
-                                              pval = 5e-5,
+# Find the exposure snps
+exposure_trait_row = trait_df[trait_df.Type == "Exposure"].index[0]
+exposure_description = trait_df.at[exposure_trait_row,
+                                  "Description"].replace(';',' ')
+exposure_studies = gwas_df[gwas_df["trait"].str.contains(exposure_description, case = False)]
+# Choose the outcome study with the most SNPs
+max_nsnp_e = max(exposure_studies["nsnp"])
+exposure_id = exposure_studies[exposure_studies.nsnp == max_nsnp_e].index[0]
+# Define the initial study by the top hits for the exposure
+init_study = pd.DataFrame.from_dict(igd.tophits([exposure_id], 
+                                              pval = 5e-6,
                                               clump = 0,
-                                              r2 = 5.0, 
+                                              r2 = 0.5, 
                                               force_server = True, 
-                                              access_token = "NULL")).sort_values(by = "p",
-                                                                                 ascending = True)
+                                              access_token = "NULL"))
 # Initial SNP list is the SNPS in outcome study.
 init_snp_list = init_study.rsid
 print("Number of snps in initial study", len(init_snp_list))
@@ -52,8 +60,10 @@ print("Number of snps in initial study", len(init_snp_list))
 for i in trait_df.index:
     if (trait_df.at[i,"Type"] == "Outcome"): 
         pheno_cat = "Outcome"
-    else:
+    elif(trait_df.at[i,"Type"] == "Exposure"): 
         pheno_cat="Exposure"
+    else:
+        pheno_cat="Trait"
     tl = str(trait_df.at[i,"Phenotype"])
     t_entry = trait_df[trait_df.Phenotype==tl]
     trait_description = t_entry.at[i,"Description"].replace(';',' ')
@@ -68,7 +78,7 @@ for i in trait_df.index:
         assocs = pd.DataFrame.from_dict(igd.associations(init_snp_list,
                                                  [study_id], 
                                                  proxies = 1, 
-                                                 r2 = 5.0, 
+                                                 r2 = 0.1, 
                                                  align_alleles = 1, 
                                                  palindromes = 1, 
                                                  maf_threshold = 0.3)
