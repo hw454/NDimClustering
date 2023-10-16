@@ -75,13 +75,16 @@ clust_pca_all <- function(data_matrices,
                           "clust_dist" = numeric(),
                           "num_axis" = integer())
   cluster_df <- add_np_cols(cluster_df, nums$np)
+  clust_dist_df <- data.frame("snp_id" = character())
+  clust_dist_df <- add_nclust_cols(cluster_df, nums$nr)
   df_list <- list("clust_scores" = c_scores,
                   "max_diff" = max_df,
                   "e_list" = list(),
                   "b_pc_list" = list(),
                   "se_pc_list" = list(),
                   "trait" = trait_df,
-                  "cluster_items" = cluster_df)
+                  "clust_items" = cluster_df,
+                  "clust_membership" = clust_dist_df)
   # Fill trait_df with valid traits before running main program.
   trait_df <- make_trait_df(pheno_list = data_matrices$trait_info$phenotype,
                             data_mat = data_matrices$b_df,

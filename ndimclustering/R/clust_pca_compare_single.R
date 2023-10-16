@@ -91,8 +91,10 @@ clust_pca_compare_single <- function(df_list, iter_traits,
                                         narm = na_handling$narm)
   }
   cluster_df <- cluster_out$clusters
+  cluster_df["num_axis"] <- num_axis
   centroids_df <- cluster_out$centres
-  cluster_df$num_axis <- num_axis
+  clust_dist_df <- calc_clust_dist(df_list$b_pc, centroids_df)
+  clust_dist_df["num_axis"] <- num_axis
 
   df_list$clust_items <- rbind(df_list$clust_items, cluster_df)
   # Find the set of cluster numbers
@@ -105,6 +107,7 @@ clust_pca_compare_single <- function(df_list, iter_traits,
                                 bp_on = iter_traits$bp_on,
                                 clust_prob_on = iter_traits$clust_prob_on,
                                 num_axis = num_axis)
+  c_score0["num_axis"] <- num_axis
   # Iterate through each cluster and compare across the others to find if
   # any pair have a distinct difference.
   diff_score_list <- lapply(c_nums, compare_oneclust_tolist,
@@ -120,8 +123,8 @@ clust_pca_compare_single <- function(df_list, iter_traits,
   max_df0 <- diff_scores[row, ]
   max_df0["num_axis"] <- num_axis
   df_list$max_diff <- rbind(df_list$max_diff, max_df0)
-  c_score0["num_axis"] <- num_axis
   df_list$clust_scores <- rbind(df_list$clust_scores, c_score0)
+  df_list$clust_membership <- dplyr::bind_rows(df_list$clust_membership, clust_dist_df)
   # print("None of the outcomes clustering met the thresholding test. ")
   return(df_list)
 }

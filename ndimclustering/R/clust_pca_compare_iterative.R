@@ -84,11 +84,14 @@ clust_pca_compare_iterative <- function(data_matrices,
                           "num_axis" = integer(),
                           "ncents" = integer())
   cluster_df <- add_np_cols(cluster_df, nums$np)
+  clust_dist_df <- data.frame("snp_id" = character())
+  clust_dist_df <- add_nclust_cols(cluster_df, nums$nr)
   df_list <- list("clust_scores" = c_scores,
                   "max_diff" = max_df,
                   "e_list" = list(),
                   "trait" = list(),
-                  "cluster_items" = cluster_df)
+                  "cluster_items" = cluster_df,
+                  "cluster_membership" = clust_dist_df)
   pheno_list <- data_matrices$trait_info$phenotype
   na <- length(pheno_list)
   for (ai in 1:na){
