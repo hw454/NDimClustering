@@ -17,9 +17,10 @@
 plot_clust_scatter <- function(cluster_df, b_mat,
                           se_mat,
                           iter_traits,
-                          num_axis = 0,
+                          num_axis = 2,
                           pw = 8,
                           ph = 4) {
+  crop_cluster_df <- cluster_df[cluster_df$num_axis == num_axis, ]
   pnme <- paste0(iter_traits$res_dir, "clusters_num_axis", num_axis, ".png")
   c1 <- colnames(b_mat)[1]
   c2 <- colnames(b_mat)[2]
