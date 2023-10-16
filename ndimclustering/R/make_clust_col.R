@@ -7,7 +7,7 @@
 #' @return dataframe(Pi = numeric())
 #'
 #' @export
-make_p_col <- function(i) {
+make_clust_col <- function(i) {
   # Create a dataframe with column Pi
   cname <- paste0("clust_", i)
   out <- data.frame(col = numeric())
