@@ -55,7 +55,10 @@ The check can only be made if there are snps which are members of the
 }
 \seealso{
 Other clustering_components: 
-\code{\link{calc_dist_cent}()},
+\code{\link{calc_clust_dist_col}()},
+\code{\link{calc_clust_dist}()},
+\code{\link{calc_member_dist_cent}()},
+\code{\link{calc_snp_cent_dist}()},
 \code{\link{mat_to_angle_mat}()}
 }
 \concept{centroid_functions}

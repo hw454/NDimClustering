@@ -5,7 +5,7 @@
 \title{Cluster the data using kmeans then minimising aic.}
 \usage{
 cluster_kmeans_min(
-  b_mat,
+  data_list,
   nclust = 10,
   max_dist = 10,
   space_typ = "regular",
@@ -16,8 +16,6 @@ cluster_kmeans_min(
 )
 }
 \arguments{
-\item{b_mat}{The data matrix}
-
 \item{nclust}{The maximum number of clusters to consider. default\:10}
 
 \item{max_dist}{The maximum distance between any two points.}
@@ -37,6 +35,8 @@ for clusters to be considered converged.}
 
 \item{narm}{Bool to indicate how to handle NaNs. If TRUE (default)
 NaNs are ignored in calculations.}
+
+\item{b_mat}{The data matrix}
 }
 \value{
 clusters_df

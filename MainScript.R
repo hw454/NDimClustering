@@ -27,13 +27,15 @@ library("ndimclustering")
 
 # USER INPUTS
 # Location of the data directory
-data_dir <- "../NDimClustInputs/BMI_SBP/"
-res_dir0 <- "../NDimClustResults/BMI_SBP/"
+data_dir <- "./ndimclustering/data/"
+res_dir0 <- "../testResults/"
 
 # Versions to be iterated through.
 # - type of clustering
 clust_typ_str1 <- "basic_angle"
 clust_typ_str2 <- "min_angle"
+clust_typ_str3 <- "basic"
+clust_typ_str4 <- "min"
 # - probability used from beta value
 bp_on1 <- TRUE
 bp_on2 <- FALSE
@@ -48,7 +50,10 @@ if (!file.exists(res_dir0)) {
   dir.create(file.path(res_dir0))
 }
 # Group terms
-clust_typ_list <- c(clust_typ_str2, clust_typ_str1)
+clust_typ_list <- c(clust_typ_str2,
+                    clust_typ_str1,
+                    clust_typ_str3,
+                    clust_typ_str4)
 bp_on_list <- c(bp_on1, bp_on2)
 clust_prob_on_list <- c(clust_prob_on1, clust_prob_on2)
 

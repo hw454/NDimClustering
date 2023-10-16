@@ -23,7 +23,10 @@ The angles correspond to the angles to the unit vector
 }
 \seealso{
 Other clustering_components: 
-\code{\link{calc_dist_cent}()},
+\code{\link{calc_clust_dist_col}()},
+\code{\link{calc_clust_dist}()},
+\code{\link{calc_member_dist_cent}()},
+\code{\link{calc_snp_cent_dist}()},
 \code{\link{check_clust_cent}()}
 }
 \concept{clustering_components}

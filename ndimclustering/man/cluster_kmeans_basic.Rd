@@ -5,7 +5,7 @@
 \title{Cluster data with a standard kmeans approach}
 \usage{
 cluster_kmeans_basic(
-  b_mat,
+  data_list,
   nclust = 10,
   space_typ = "regular",
   clust_prob_on = TRUE,
@@ -15,8 +15,6 @@ cluster_kmeans_basic(
 )
 }
 \arguments{
-\item{b_mat}{Matrix of data. Rows correspond to snps.}
-
 \item{nclust}{Number of clusters to allocate}
 
 \item{space_typ}{Whether to uses angles of spatial co-ordinates.
@@ -32,6 +30,8 @@ The default is the Froebenius norm "F".}
 by for clusters to be considered converged.}
 
 \item{narm}{Boolean swithc. If TRUE (default) ignore NaNs in calculations.}
+
+\item{b_mat}{Matrix of data. Rows correspond to snps.}
 }
 \value{
 clusters_df
