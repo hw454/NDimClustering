@@ -12,7 +12,7 @@
 #' @family dataframe_editors
 #'
 #' @export
-add_np_cols <- function(df, nr) {
+add_nclust_cols <- function(df, nr) {
   # Create dataframe with columns with labels Pi
   # for i in 1 to np to the dataframe.
   p_cols <- lapply(1:nr, make_clust_col)
