@@ -67,7 +67,7 @@ km_nan <- function(b_mat,
     clust_num = clust_samp
   )
   cluster_df["clust_prob"] <- numeric()
-  clust_dist_list <- lapply(snp_list, calc_dist_cent,
+  clust_dist_list <- lapply(snp_list, calc_member_dist_cent,
                           b_mat = b_mat,
                           cluster_df = cluster_df,
                           centroids_df = centroids_df,
