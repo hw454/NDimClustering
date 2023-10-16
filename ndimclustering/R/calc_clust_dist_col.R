@@ -20,14 +20,14 @@
 #' @family clustering_components
 #'
 #' @export
-calc_clust_dist_col <- function(c_num, b_mat, centroids_df,
+calc_clust_dist_col <- function(c_num, data_mat, centroids_df,
                            norm_typ = "F") {
-   snp_list <- row.names(b_mat)
+   snp_list <- row.names(data_mat)
    cent <- centroids_df[c_num, ]
    clust_dist_lists <- lapply(snp_list, calc_snp_cent_dist,
         cent = cent,
-        data_mat = b_mat)
+        data_mat = data_mat)
    clust_dist_col_df <- Reduce(rbind, clust_dist_lists)
-   colnames(clust_dist_col_df) <- c(paste0("clust_", i))
+   colnames(clust_dist_col_df) <- c(paste0("clust_", c_num))
   return(clust_dist_col_df)
 }
