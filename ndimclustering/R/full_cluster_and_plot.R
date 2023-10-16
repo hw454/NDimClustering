@@ -98,9 +98,11 @@ full_cluster_and_plot <- function(data_matrices,
   c_scores <- out$clust_scores
   plot_trait_heatmap(c_scores, iter_traits)
   print("Heatmap plot done")
-  # Only plot max diff when iterating through the axis
   plot_clust_scatter(out$clust_items, out$b_pc, out$se_pc, iter_traits)
   print("scatter plot done")
+  # Only plot max diff when iterating through the axis
+  plot_clust_scatter_rgb(out$clust_membership, out$b_pc, out$se_pc, iter_traits)
+  print("rgb scatter plot done")
   # Plot the transform heatmap.
   plot_transform_heatmap(out$e_mat, iter_traits)
   out <- list("iter_df" = iter_df,
