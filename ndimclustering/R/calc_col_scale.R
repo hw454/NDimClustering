@@ -18,9 +18,15 @@
 #'
 #' @export
 calc_col_scale <- function(col, data, mu, se) {
-    if (se[col] == 0) {
-    return(data[, col] - data[, col])
+  if (is.na(se[col])) {
+    # If SE is NULL
+   return(data[, col] - data[, col])
+
+  } else if (se[col] == 0) {
+    # If SE is 0 or NULL
+   return(data[, col] - data[, col])
   } else {
-  return((data[, col] - mu[col]) / se[col])
+    # SE is defined
+    return((data[, col] - mu[col]) / se[col])
   }
 }
