@@ -1,0 +1,2 @@
+#' keyword internal
+"_PACKAGE"
