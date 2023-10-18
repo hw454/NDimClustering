@@ -6,7 +6,7 @@
  :param centroids_df: The dataframe of the centroid co-ordinates for each
    cluster. The rows are each cluster number and the columns are the traits.
  :param norm_typ: The type of norm to use in the distance calculation. The
-   default is the Froebenius norm "F".
+   default is the Froebenius norm "fro".
 
  Calculate the distance between each point in "b_mat"
    and the cluster centroid allocated to c_num.

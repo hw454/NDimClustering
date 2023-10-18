@@ -6,7 +6,7 @@
  :param score_mat: the data matrix. Each row is a snp and the values
     are the co-ordinates of the snp accross the trait axis.
  :param norm_typ: the type of norm to use in the distance calculations
-    when comparig the snps. Default is the Froebenius norm "F".
+    when comparig the snps. Default is the Froebenius norm "fro".
 
  "dist_df" is a dataframe with columns\:
    * "snp1" snp label
@@ -16,7 +16,7 @@
  :return dist_df:
  :rtype: dataframe
 """
-def calc_all_dist_pairs (score_mat, norm_typ = "F"):
+def calc_all_dist_pairs (score_mat, norm_typ = "fro"):
   # Find the distance between all pairs of points.
   dist_df = pd.Dataframe({
     "snp1" : pd.Series(dtype = "str"),
