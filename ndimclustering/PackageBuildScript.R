@@ -1,7 +1,0 @@
-setwd("ndimclustering")
-roxygen2::roxygenise()
-devtools::document()
-devtools::check()
-devtools::build()
-setwd("../")
-q()
