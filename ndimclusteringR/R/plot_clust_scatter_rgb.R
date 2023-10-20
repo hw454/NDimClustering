@@ -36,7 +36,7 @@ plot_clust_scatter_rgb <- function(clust_dist_df, b_mat,
   snp_list <- row.names(b_mat)
   max_dist <- apply(crop_clust_dist_df, 2, max)
   min_dist <- apply(crop_clust_dist_df, 2, min)
-  norm_dist_df <- apply(crop_clust_dist_df, 2, scales::rescale)
+  norm_dist_df <- crop_clust_dist_df-min_dist / (max_dist - min_dist)
   clust_names <- colnames(norm_dist_df)
   colour_vec <- paste0("rgb(",norm_dist_df[, clust_names[1]],
                     norm_dist_df[, clust_names[2]],
