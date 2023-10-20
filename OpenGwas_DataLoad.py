@@ -5,16 +5,18 @@ import logging
 import requests
 from scipy.stats import t
 
+MAX_TRIES = 100
+
 # Set the input location and datafile.
-input_dir="../NDimClustInputs/BMI_SBP/"
+input_dir="../NDimClustInputs/BMI_CAD/"
 trait_input_csv = "TraitsData.csv"
 
 def get_study(snp_list, id_list):
+  max_nsnp = 0
   for study_id in id_list:
     ic("associations with ", study_id)
     assocs = pd.DataFrame.from_dict(igd.associations(snp_list,
                                                  [study_id], 
-                                                 pval = 5e-8,
                                                  proxies = 1, 
                                                  r2 = 0.5, 
                                                  align_alleles = 1, 
@@ -92,10 +94,10 @@ exposure_id = exposure_studies[exposure_studies.nsnp == max_nsnp_e].index[0]
 # Define the initial study by the top hits for the exposure
 ic("tophits ", exposure_id)
 init_study = pd.DataFrame.from_dict(igd.tophits([exposure_id], 
-                                              pval = 5e-6,
+                                              pval = 1e-7,
                                               clump = 0,
-                                              r2 = 0.5, 
-                                              force_server = True, 
+                                              r2 = 0.3, 
+                                              force_server = False, 
                                               access_token = "NULL"))
 # Initial SNP list is the SNPS in exposure study.
 init_snp_list = init_study.rsid
@@ -124,12 +126,12 @@ for i in trait_df.index:
     if len(trait_studies) == 0: 
         print("No matching studies found for trait ",tl)
         continue
-    max_nsnp=0
     # Find the overlap in SNPS between the outcome and the trait.
     # Use the GWAS with the largest overlap.
     study_max_entry, assocs = get_study(init_snp_list, 
                                 id_list = trait_studies.id)
     study_row           =study_max_entry.index[0]
+    max_nsnp            = trait_studies.at[study_row,"nsnp"]
     study_description   = trait_studies.at[study_row,"trait"]
     study_id            = trait_studies.at[study_row,"id"]
     study_sample_size   = trait_studies.at[study_row,"sample_size"]
@@ -155,7 +157,6 @@ for i in trait_df.index:
     # Get the trait id
     #logging.info(new_trait)
     i+=1
-    trait_info_df.to_csv(input_dir+"/trait_info_nfil.csv",na_rep="NAN")
     # ADDFEATURE - With trait that's assigned add data to matrices
     study_row_ind = trait_info_df.index[-1]
     data_dict = set_data_row(trait = tl,
@@ -164,15 +165,15 @@ for i in trait_df.index:
                            df_dict = data_dict,
                            trait_info_df = trait_info_df,
                            assocs = assocs)
+    
 ic("trait df", trait_info_df)
-# Create Dataframes for beta, se, pval and tstat
-# Fill with incrementing axis.
+# Save data to csv files
 #------------------------------------
-
-beta_df.to_csv(input_dir + "/unstdBeta_df.csv", na_rep = "NAN")
-se_df.to_csv(input_dir + "/unstdSE_df.csv", na_rep = "NAN")
-pval_df.to_csv(input_dir + "/pval_df.csv", na_rep = "NAN")
-tstat_df.to_csv(input_dir + "/tstat_df.csv", na_rep = "NAN")
+trait_info_df.to_csv(input_dir+"/trait_info_nfil.csv", na_rep="NAN")
+data_dict.beta.to_csv(input_dir + "/unstdBeta_df.csv", na_rep = "NAN")
+data_dict.se.to_csv(input_dir + "/unstdSE_df.csv", na_rep = "NAN")
+data_dict.pval.to_csv(input_dir + "/pval_df.csv", na_rep = "NAN")
+data_dict.tstat.to_csv(input_dir + "/tstat_df.csv", na_rep = "NAN")
 ic("number of points", beta_df.shape[0])
 
 
