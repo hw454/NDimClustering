@@ -1,4 +1,4 @@
-setwd("ndimclustering")
+setwd("ndimclusteringR")
 roxygen2::roxygenise()
 devtools::document()
 devtools::check()

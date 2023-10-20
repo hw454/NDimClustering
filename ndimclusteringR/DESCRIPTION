@@ -1,4 +1,4 @@
-Package: ndimclustering
+Package: ndimclusteringR
 Type: Package
 Title: N-dimensional Clustering Package
 Version: 0.0.1
