@@ -15,7 +15,7 @@
 add_np_cols <- function(df, np) {
   # Create dataframe with columns with labels Pi
   # for i in 1 to np to the dataframe.
-  p_cols <- lapply(1:np, make_p_col)
+  p_cols <- lapply(1:np, make_p_col, rows = row.names(df))
   np_df <- Reduce(cbind, p_cols)
   full_df <- cbind(df, np_df)
   return(full_df)

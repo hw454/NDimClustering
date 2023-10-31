@@ -7,10 +7,14 @@
 #' @return dataframe(Pi = numeric())
 #'
 #' @export
-make_p_col <- function(i) {
+make_p_col <- function(i, rows = character()) {
   # Create a dataframe with column Pi
   cname <- paste0("P", i)
-  out <- data.frame(col = numeric())
-  colnames(out) <- c(cname)
+  out <- data.frame(row.names = rows)
+  if (length(rows) > 0) {
+    out[cname] <- NA
+  } else {
+    out[cname] <- numeric()
+  }
   return(out)
 }
