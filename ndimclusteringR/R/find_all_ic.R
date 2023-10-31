@@ -21,8 +21,7 @@ find_all_ic <- function(clust_re, num_axis) {
   set.seed(240) # setting seed
   # The row names will get overridden in rbind so assign rownames to column
   # then reassign when ncents has been chosen.
-  clust_re$clusters["snp_id"] <- rownames(clust_re$clusters)
-  row.names(clust_re$clusters) <- 1:nrow(clust_re$clusters)
+  clust_re$clusters <- tibble::rownames_to_column(clust_re$clusters, "snp_id")
   ic <- calc_clust_ic(clust_re$clusters,
                 group_col = "clust_num",
                 dist_col = "clust_dist",
