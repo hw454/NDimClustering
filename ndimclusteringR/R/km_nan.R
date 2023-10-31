@@ -67,13 +67,13 @@ km_nan <- function(b_mat,
     clust_num = clust_samp
   )
   cluster_df["clust_prob"] <- numeric()
-  clust_dist_list <- lapply(snp_list, calc_member_dist_cent,
+  clust_dist_mem_list <- lapply(snp_list, calc_member_dist_cent,
                           b_mat = b_mat,
                           cluster_df = cluster_df,
                           centroids_df = centroids_df,
                           norm_typ = norm_typ)
-  clust_dist_df <- Reduce(rbind, clust_dist_list)
-  cluster_df <- cbind(cluster_df, clust_dist_df)
+  clust_dist_mem_df <- Reduce(rbind, clust_dist_mem_list)
+  cluster_df <- cbind(cluster_df, clust_dist_mem_df)
   for (iter in 1:iter_max){
     # For each SNP find the cluster with the closest centre.
     snp_clust_list <- lapply(snp_list, find_closest_clust_snp,
@@ -81,9 +81,18 @@ km_nan <- function(b_mat,
                             cluster_df = cluster_df,
                             centroids_df = centroids_df,
                             norm_typ = norm_typ)
+    print(snp_clust_list)
     # Combine the list of dataframes into one dataframe.
     # Override Cluster_df with the new assignment
-    cluster_df <- Reduce(rbind, snp_clust_list)
+    df_cols <- function(df, col) {
+                          df[col]
+                          }
+    cluster_df_list <- lapply(snp_clust_list,
+                          df_cols,
+                          col = "clusters")
+    print(cluster_df_list)
+    cluster_df <- Reduce(rbind, cluster_df_list)
+    print(cluster_df)
     # Recompute the centroids based on the average of the clusters.
     # Check if the previous centres differ from the cluster means.
     thresh_list <- lapply(rownames(centroids_df), check_clust_cent,
@@ -105,7 +114,9 @@ km_nan <- function(b_mat,
   if (prob_on) {
     cluster_df$clust_prob <- calc_clust_prob(cluster_df$clust_dist)
   }
- cluster_df <- dplyr::mutate(cluster_df, "ncents" = nclust)
- clust_out <- list("clusters" = cluster_df, "centres" = centroids_df)
- return(clust_out)
+  print(cluster_df)
+  cluster_df <- dplyr::mutate(cluster_df, "ncents" = nclust)
+  clust_out <- list("clusters" = cluster_df, "centres" = centroids_df,
+                   "clust_dist" = snp_clust_list$clust_dist)
+  return(clust_out)
 }
