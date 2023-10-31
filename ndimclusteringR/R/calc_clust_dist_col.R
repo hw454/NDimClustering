@@ -1,7 +1,7 @@
 #' Calculate the distance between the snps and the cluster centroid
 #'
 #' @param c_num The clust number to calculate the distance to
-#' @param b_mat the data matrix used for the coordinate of the snp.
+#' @param data_mat the data matrix used for the coordinate of the snp.
 #'   Rows are snps, columns are the trait axes.
 #' @param centroids_df The dataframe of the centroid co-ordinates for each
 #'   cluster. The rows are each cluster number and the columns are the traits.
