@@ -58,6 +58,7 @@ cluster_kmeans_basic <- function(data_list,
   b_mat_crop <- b_mat_clust[crop_snp_list, ]
 
   # Initial cluster dataframe
+  print("pre km")
   clust_out <- km_nan(b_mat_crop,
                     nclust = nclust,
                     clust_threshold = threshold,
@@ -65,17 +66,27 @@ cluster_kmeans_basic <- function(data_list,
                     prob_on = clust_prob_on,
                     na_rm = narm)
   # cluster number identification for the snps with higher standard error.
-  snp_cluster_list <- lapply(setdiff(rownames(b_mat_clust), crop_snp_list),
+  nan_snp_list <- lapply(setdiff(rownames(b_mat_clust), crop_snp_list),
                             find_closest_clust_snp,
                             b_mat = b_mat_clust,
                             cluster_df = clust_out$clusters,
                             centroids_df = clust_out$centres,
                             norm_typ = norm_typ)
+  f1 <- function(x) {
+    x$clusters
+    }
+  f2 <- function(x) {
+    x$clust_dist
+    }
+  snp_cluster_list <- lapply(nan_snp_list, f1)
+  snp_c_dist_list <- lapply(nan_snp_list, f2)
   nan_cluster_df <- Reduce(rbind, snp_cluster_list)
+  nan_clust_dist_df <- Reduce(rbind, snp_c_dist_list)
   if (clust_prob_on) {
     nan_cluster_df$clust_prob <- calc_clust_prob(nan_cluster_df$clust_dist)
   }
   # ADDFEATURE - Assign junk clusters.
   clust_out$clusters <- rbind(clust_out$clusters, nan_cluster_df)
+  clust_out$cluste_dist <- rbind(clust_out$clust_dist, nan_clust_dist_df)
   return(clust_out)
 }
