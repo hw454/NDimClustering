@@ -20,19 +20,28 @@
 #'   for initialisation if snp is not already in the cluster assignment.
 #'
 #' @details
-#'   The output dataframe "snp_clust_df"  has a row labelled by the "snp_id".
+#'   The dataframe "snp_clust_df"  has a row labelled by the "snp_id".
 #'   The columns are\:
 #'   * "clust_num" The number of the closest cluster
 #'   * "clust_dist" The distance from the snp to the centroid of that cluster.
 #'   * "clust_prob" probability the snp is in the cluster it's been assigned.
+#'   The dataframe "snp_clust_dist_df"  has a row labelled by the "snp_id".
+#'   The columns are the clust numbers, each value is the distance from the
+#'   snp to that cluster.
 #'
-#' @return snp_clust_df
+#'   out_list = ("clusters" = snp_clust_df, "clust_dist" = snp_clust_dist_df)
+#'
+#' @return out_list
 #'
 #' @export
 find_closest_clust_snp <- function(snp_id, b_mat, cluster_df,
                               centroids_df,
                               norm_typ = "F",
                               max_dist = 10.0) {
+  snp_clust_dist_df <- data.frame(
+    row.names = snp_id
+   )
+  snp_clust_dist_df <- add_nclust_cols(snp_clust_dist_df, nrow(centroids_df))
   snp_score <- b_mat[snp_id, ]
   if (!(snp_id %in% row.names(cluster_df))) {
     snp_dist <- max_dist
@@ -44,6 +53,7 @@ find_closest_clust_snp <- function(snp_id, b_mat, cluster_df,
   for (c_num in rownames(centroids_df)) {
     dist <- norm(data.matrix(
               stats::na.omit(centroids_df[c_num, ] - snp_score)), norm_typ)
+    snp_clust_dist_df[snp_id, c_num] <- dist
     if (dist < snp_dist) {
       snp_dist <- dist
       snp_clust_num <- c_num
@@ -55,5 +65,7 @@ find_closest_clust_snp <- function(snp_id, b_mat, cluster_df,
     clust_dist = snp_dist,
     clust_prob = 1.0
    )
-  return(snp_cluster_df)
+  out_list <- list("clusters" = snp_cluster_df,
+                  "clust_dist" = snp_clust_dist_df)
+  return(out_list)
 }
