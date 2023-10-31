@@ -5,10 +5,8 @@ import logging
 import requests
 from scipy.stats import t
 
-MAX_TRIES = 100
-
 # Set the input location and datafile.
-input_dir="../NDimClustInputs/BMI_CAD/"
+input_dir="../NDimClustInputs/BP_Cancer/"
 trait_input_csv = "TraitsData.csv"
 
 def get_study(snp_list, id_list):
@@ -23,28 +21,45 @@ def get_study(snp_list, id_list):
                                                  palindromes = 1, 
                                                  maf_threshold = 0.3)
                                                 )
-    assoc_snps=len(assocs)
+    assoc_snps = len(assocs)
+    if max_nsnp == 0:
+      assocs_out = assocs
     if assoc_snps>max_nsnp:
       max_nsnp=assoc_snps
       study_max_entry=trait_studies[trait_studies.id==study_id]
-  return(study_max_entry, assocs)
+      assocs_out = assocs
+  return(study_max_entry, assocs_out)
 def set_data_row(trait, study_id, snp_list, df_dict, trait_info_df, assocs):
-  beta_df = df_dict["beta"]
-  pval_df = df_dict["pval"]
-  se_df = df_dict["se"]
-  tstat_df = df_dict["tstat"]
+  beta_trait = pd.DataFrame(columns = [trait])
+  pval_trait = pd.DataFrame(columns = [trait])
+  se_trait = pd.DataFrame(columns = [trait])
+  tstat_trait =pd.DataFrame(columns = [trait])
   ic("Get snp matrix data col for ", trait)
+  ic("study id", study_id)
+  ic(assocs.id.unique())
   trait_snp_list = assocs[assocs.id == study_id].rsid
   # For each snp find the association score for the current trait.
   # Trait information received from assocs using gwas_id but stored in matrix
   # by trait label
+  gwas_assocs = assocs[assocs.id == study_id]
   for snp in trait_snp_list:
-    data_row = assocs[(assocs.rsid == snp) & (assocs.id == gwas_id)].index[0]
-    ic(assocs.columns)
-    beta_df.at[snp, trait]  = assocs.at[data_row,"beta"]
-    se_df.at[snp, trait]    = assocs.at[data_row,"se"]
-    pval_df.at[snp, trait]  = assocs.at[data_row,"p"]
-    tstat_df.at[snp, trait] = assocs.at[data_row,"tstat"]
+    data_row = gwas_assocs[gwas_assocs.rsid == snp].index[0]
+    beta_row  = pd.DataFrame(index = [snp], 
+                             data = {trait: gwas_assocs.at[data_row, "beta"]})
+    se_row = pd.DataFrame(index = [snp], 
+                          data = {trait: gwas_assocs.at[data_row, "se"]})
+    pval_row = pd.DataFrame(index = [snp], 
+                            data = {trait: gwas_assocs.at[data_row, "p"]})
+    tstat_row = pd.DataFrame(index = [snp], 
+                            data = {trait: None})
+    beta_trait  = pd.concat([beta_trait, beta_row])
+    se_trait    = pd.concat([se_trait, se_row])
+    pval_trait  = pd.concat([pval_trait, pval_row])
+    tstat_trait = pd.concat([tstat_trait,tstat_row])
+  beta_df = pd.concat([df_dict["beta"], beta_trait], axis=1, join = "outer")
+  se_df = pd.concat([df_dict["se"], se_trait], axis=1, join = "outer")
+  pval_df = pd.concat([df_dict["pval"], pval_trait], axis=1, join = "outer")
+  tstat_df = pd.concat([df_dict["tstat"], tstat_trait], axis=1, join = "outer")
   df_dict = {"beta": beta_df,
              "se": se_df,
              "pval": pval_df,
@@ -131,15 +146,15 @@ for i in trait_df.index:
     study_max_entry, assocs = get_study(init_snp_list, 
                                 id_list = trait_studies.id)
     study_row           =study_max_entry.index[0]
-    max_nsnp            = trait_studies.at[study_row,"nsnp"]
-    study_description   = trait_studies.at[study_row,"trait"]
-    study_id            = trait_studies.at[study_row,"id"]
-    study_sample_size   = trait_studies.at[study_row,"sample_size"]
-    study_controls      = trait_studies.at[study_row,"ncontrol"]
-    study_description = study_description.replace('"',"")
-    study_description = study_description.replace(";","-")
-    study_description = study_description.replace(",","-")
-    new_trait=pd.DataFrame({"phenotype":tl,
+    study_nsnp            = trait_studies.at[study_row, "nsnp"]
+    study_description   = trait_studies.at[study_row, "trait"]
+    study_id            = trait_studies.at[study_row, "id"]
+    study_sample_size   = trait_studies.at[study_row, "sample_size"]
+    study_controls      = trait_studies.at[study_row, "ncontrol"]
+    study_description = study_description.replace('"', "")
+    study_description = study_description.replace(";", "-")
+    study_description = study_description.replace(",", "-")
+    new_trait=pd.DataFrame({"phenotype": tl,
                "description": study_description,
                "n_complete_samples": study_sample_size,
                "variable_type": "",
@@ -149,7 +164,7 @@ for i in trait_df.index:
                "n_controls": study_controls,
                "n_cases": "",
                "n_eff": "",
-               "nsnp": max_nsnp,
+               "nsnp": study_nsnp,
                "keywords": [str(t_entry.at[i,"Keywords"]).replace(';',' ')],
                "pheno_category": pheno_cat,
                "open_gwas_id": study_id})
@@ -167,13 +182,14 @@ for i in trait_df.index:
                            assocs = assocs)
     
 ic("trait df", trait_info_df)
+ic("data", data_dict)
 # Save data to csv files
 #------------------------------------
 trait_info_df.to_csv(input_dir+"/trait_info_nfil.csv", na_rep="NAN")
-data_dict.beta.to_csv(input_dir + "/unstdBeta_df.csv", na_rep = "NAN")
-data_dict.se.to_csv(input_dir + "/unstdSE_df.csv", na_rep = "NAN")
-data_dict.pval.to_csv(input_dir + "/pval_df.csv", na_rep = "NAN")
-data_dict.tstat.to_csv(input_dir + "/tstat_df.csv", na_rep = "NAN")
+data_dict["beta"].to_csv(input_dir + "/unstdBeta_df.csv", na_rep = "NAN")
+data_dict["se"].to_csv(input_dir + "/unstdSE_df.csv", na_rep = "NAN")
+data_dict["pval"].to_csv(input_dir + "/pval_df.csv", na_rep = "NAN")
+data_dict["tstat"].to_csv(input_dir + "/tstat_df.csv", na_rep = "NAN")
 ic("number of points", beta_df.shape[0])
 
 
