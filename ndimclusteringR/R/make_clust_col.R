@@ -7,10 +7,14 @@
 #' @return dataframe(Pi = numeric())
 #'
 #' @export
-make_clust_col <- function(i) {
+make_clust_col <- function(i, rows = character()) {
   # Create a dataframe with column Pi
-  cname <- paste0("clust_", i)
-  out <- data.frame(col = numeric())
-  colnames(out) <- c(cname)
+  cname <- paste0("C", i)
+  out <- data.frame(row.names = rows)
+  if (length(rows) > 0) {
+    out[cname] <- NA
+  } else {
+    out[cname] <- numeric()
+  }
   return(out)
 }

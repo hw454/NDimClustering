@@ -5,7 +5,7 @@
 #'   The label for each column is given by the function [make_clust_cols].
 #'
 #' @param df the dataframe to add columns to
-#' @param np the number of columns to add.
+#' @param nr the number of columns to add.
 #'
 #' @return df
 #'
@@ -15,7 +15,7 @@
 add_nclust_cols <- function(df, nr) {
   # Create dataframe with columns with labels Pi
   # for i in 1 to np to the dataframe.
-  p_cols <- lapply(1:nr, make_clust_col)
+  p_cols <- lapply(1:nr, make_clust_col, rows = row.names(df))
   np_df <- Reduce(cbind, p_cols)
   full_df <- cbind(df, np_df)
   return(full_df)
