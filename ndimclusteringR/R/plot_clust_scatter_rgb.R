@@ -20,13 +20,13 @@ plot_clust_scatter_rgb <- function(clust_dist_df, b_mat,
                           num_axis = 1,
                           pw = 8,
                           ph = 4) {
-  ignore_cols <- c("num_axis")
+  ignore_cols <- c("num_axis", "snp_id")
   crop_clust_dist_df <- clust_dist_df[clust_dist_df$num_axis == num_axis, ]
-  crop_clust_dist_df <- tibble::column_to_rownames(crop_clust_dist_df, "snp_id")
+  #crop_clust_dist_df <- tibble::column_to_rownames(crop_clust_dist_df, "snp_id")
   full_trait_list <- colnames(crop_clust_dist_df)
   full_trait_list <- full_trait_list[!(full_trait_list %in% ignore_cols)]
   crop_clust_dist_df <- crop_clust_dist_df[, full_trait_list]
-  pnme <- paste0(iter_traits$res_dir, "clusters_pc_rgb_num_axis", num_axis, ".png")
+  pnme <- paste0(iter_traits$res_dir, "clust_pc_rgb_numaxis", num_axis, ".png")
   c1 <- colnames(b_mat)[1]
   c2 <- colnames(b_mat)[2]
   se_max <- apply(se_mat, 2, max)
@@ -36,11 +36,13 @@ plot_clust_scatter_rgb <- function(clust_dist_df, b_mat,
   snp_list <- row.names(b_mat)
   max_dist <- apply(crop_clust_dist_df, 2, max)
   min_dist <- apply(crop_clust_dist_df, 2, min)
-  norm_dist_df <- crop_clust_dist_df-min_dist / (max_dist - min_dist)
+  norm_dist_df <- crop_clust_dist_df - min_dist / (max_dist - min_dist)
+  norm_dist_df[norm_dist_df < 0] <- 0.0
+  norm_dist_df[norm_dist_df > 1] <- 1.0
   clust_names <- colnames(norm_dist_df)
-  colour_vec <- paste0("rgb(",norm_dist_df[, clust_names[1]],
-                    norm_dist_df[, clust_names[2]],
-                    norm_dist_df[, clust_names[3]],")")
+  colour_vec <- paste0("rgb(", norm_dist_df[, clust_names[1]], ",",
+                    norm_dist_df[, clust_names[2]], ",",
+                    norm_dist_df[, clust_names[3]], ")")
   colour_vec <- factor(colour_vec)
   # vector with color values
   my_col_vec <- levels(colour_vec)
