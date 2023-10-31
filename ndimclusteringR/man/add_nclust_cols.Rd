@@ -9,7 +9,7 @@ add_nclust_cols(df, nr)
 \arguments{
 \item{df}{the dataframe to add columns to}
 
-\item{np}{the number of columns to add.}
+\item{nr}{the number of columns to add.}
 }
 \value{
 df
@@ -21,6 +21,8 @@ Representing the clusters a column for the clust distance
 }
 \seealso{
 Other dataframe_editors: 
-\code{\link{add_np_cols}()}
+\code{\link{add_np_cols}()},
+\code{\link{test_add_nclust_cols_onecolrow}()},
+\code{\link{test_add_np_cols_onecolrow}()}
 }
 \concept{dataframe_editors}

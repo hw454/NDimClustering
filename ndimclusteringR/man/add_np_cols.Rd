@@ -21,6 +21,8 @@ Representing the principal components a column for the PC score
 }
 \seealso{
 Other dataframe_editors: 
-\code{\link{add_nclust_cols}()}
+\code{\link{add_nclust_cols}()},
+\code{\link{test_add_nclust_cols_onecolrow}()},
+\code{\link{test_add_np_cols_onecolrow}()}
 }
 \concept{dataframe_editors}

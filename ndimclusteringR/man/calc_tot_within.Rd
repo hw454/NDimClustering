@@ -31,7 +31,8 @@ Other cluster_properties:
 
 Other ic_functions: 
 \code{\link{calc_sum_sq_clusts}()},
-\code{\link{find_all_ic}()}
+\code{\link{find_all_ic}()},
+\code{\link{test_find_aic}()}
 }
 \concept{cluster_properties}
 \concept{ic_functions}

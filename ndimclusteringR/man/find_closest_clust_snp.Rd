@@ -34,7 +34,7 @@ default is the Froebenius norm "F".}
 for initialisation if snp is not already in the cluster assignment.}
 }
 \value{
-snp_clust_df
+out_list
 }
 \description{
 Find the distance between the snp and each cluster centroid.
@@ -42,9 +42,14 @@ Find the distance between the snp and each cluster centroid.
   reassign the cluster number and cluster distance.
 }
 \details{
-The output dataframe "snp_clust_df"  has a row labelled by the "snp_id".
+The dataframe "snp_clust_df"  has a row labelled by the "snp_id".
   The columns are\:
   * "clust_num" The number of the closest cluster
   * "clust_dist" The distance from the snp to the centroid of that cluster.
   * "clust_prob" probability the snp is in the cluster it's been assigned.
+  The dataframe "snp_clust_dist_df"  has a row labelled by the "snp_id".
+  The columns are the clust numbers, each value is the distance from the
+  snp to that cluster.
+
+  out_list = ("clusters" = snp_clust_df, "clust_dist" = snp_clust_dist_df)
 }

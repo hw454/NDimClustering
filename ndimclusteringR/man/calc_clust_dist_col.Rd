@@ -9,14 +9,14 @@ calc_clust_dist_col(c_num, data_mat, centroids_df, norm_typ = "F")
 \arguments{
 \item{c_num}{The clust number to calculate the distance to}
 
+\item{data_mat}{the data matrix used for the coordinate of the snp.
+Rows are snps, columns are the trait axes.}
+
 \item{centroids_df}{The dataframe of the centroid co-ordinates for each
 cluster. The rows are each cluster number and the columns are the traits.}
 
 \item{norm_typ}{The type of norm to use in the distance calculation. The
 default is the Froebenius norm "F".}
-
-\item{b_mat}{the data matrix used for the coordinate of the snp.
-Rows are snps, columns are the trait axes.}
 }
 \value{
 clust_dist_df

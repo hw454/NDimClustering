@@ -4,7 +4,7 @@
 \alias{make_p_col}
 \title{Create a dataframe with column Pi.}
 \usage{
-make_p_col(i)
+make_p_col(i, rows = character())
 }
 \arguments{
 \item{i}{- The number for the column label}
