@@ -75,23 +75,39 @@ cluster_kmeans_min <- function(data_list,
   # Find the number of centres that minimizes the AIC
   min_cents <- ic_df$ncents[which.min(ic_df$aic)]
   centroids_df <- clust_re_list[[min_cents]]$centres
+  clust_dist_df <- clust_re_list[[min_cents]]$clust_dist
   # Use the number of centres to locate corresponding clusters since there
   # maybe variations due to machine precision in the aic values.
   cluster_df <- ic_df[which(ic_df$ncents == min_cents), ]
-  rownames(cluster_df) <- cluster_df$snp_id
+  print("line 80")
+  print(colnames(cluster_df))
+  print(rownames(cluster_df))
+  cluster_df <- tibble::column_to_rownames(cluster_df, var = "snp_id")
   # cluster number identification for each observation
-  snp_cluster_list <- lapply(setdiff(rownames(b_mat_clust), crop_snp_list),
+  nan_snp_list <- lapply(setdiff(rownames(b_mat_clust), crop_snp_list),
                             find_closest_clust_snp,
                             b_mat = b_mat_clust,
                             cluster_df = clust_out$clusters,
                             centroids_df = clust_out$centres,
                             norm_typ = norm_typ)
+  f1 <- function(x) {
+    x$clusters
+    }
+  f2 <- function(x) {
+    x$clust_dist
+    }
+  snp_cluster_list <- lapply(nan_snp_list, f1)
+  snp_c_dist_list <- lapply(nan_snp_list, f2)
   nan_cluster_df <- Reduce(rbind, snp_cluster_list)
+  nan_clust_dist_df <- Reduce(rbind, snp_c_dist_list)
   if (clust_prob_on) {
     nan_cluster_df$clust_prob <- calc_clust_prob(nan_cluster_df$clust_dist)
   }
   cluster_df <- rbind(cluster_df, nan_cluster_df)
+  clust_dist_df <- rbind(clust_dist_df, nan_clust_dist_df)
   # ADDFEATURE - Assign junk clusters.
-  clust_out <- list("clusters" = cluster_df, "centres" = centroids_df)
+  clust_out <- list("clusters" = cluster_df,
+                    "centres" = centroids_df,
+                    "clust_dist" = clust_dist_df)
   return(clust_out)
 }
