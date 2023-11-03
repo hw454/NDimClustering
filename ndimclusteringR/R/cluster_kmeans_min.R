@@ -79,9 +79,6 @@ cluster_kmeans_min <- function(data_list,
   # Use the number of centres to locate corresponding clusters since there
   # maybe variations due to machine precision in the aic values.
   cluster_df <- ic_df[which(ic_df$ncents == min_cents), ]
-  print("line 80")
-  print(colnames(cluster_df))
-  print(rownames(cluster_df))
   rownames(cluster_df) <- NULL
   cluster_df <- tibble::column_to_rownames(cluster_df, var = "snp_id")
   # cluster number identification for each observation
