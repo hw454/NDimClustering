@@ -82,6 +82,7 @@ cluster_kmeans_min <- function(data_list,
   print("line 80")
   print(colnames(cluster_df))
   print(rownames(cluster_df))
+  rownames(cluster_df) <- NULL
   cluster_df <- tibble::column_to_rownames(cluster_df, var = "snp_id")
   # cluster number identification for each observation
   nan_snp_list <- lapply(setdiff(rownames(b_mat_clust), crop_snp_list),
