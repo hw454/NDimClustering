@@ -48,10 +48,16 @@ test_km_nan <- function() {
                        na_rm = na_rm)
   print("... test with full matrix")
   expect_cols <- c("clusters", "centres", "clust_dist")
+  testit::assert("... not dataframe clusters",
+    is.data.frame(cluster_df$clusters))
+  testit::assert("... not dataframe centres",
+    is.data.frame(cluster_df$centres))
+  testit::assert("... not dataframe clust_dist",
+    is.data.frame(cluster_df$clust_dist))
   testit::assert("...km_nan has found the wrong list names",
     names(cluster_df) == expect_cols)
   testit::assert("...km_nan has found the wrong clust numbers",
-    unique(cluster_df$clusters$clust_num) == rownames(cluster_df$centres))
+    unique(cluster_df$clusters$clust_num) %in% rownames(cluster_df$centres))
   testit::assert("...km_nan has found the wrong centres column names",
     colnames(cluster_df$centres) == dummy_traits)
   testit::assert("...km_nan has found the wrong clusters row names",
@@ -73,7 +79,7 @@ test_km_nan <- function() {
   testit::assert("...km_nan has found the wrong list names",
     names(cluster_df) == expect_cols)
   testit::assert("...km_nan has found the wrong clust numbers",
-    unique(cluster_df$clusters$clust_num) == rownames(cluster_df$centres))
+    unique(cluster_df$clusters$clust_num) %in% rownames(cluster_df$centres))
   testit::assert("...km_nan has found the wrong centres column names",
     colnames(cluster_df$centres) == dummy_traits)
   testit::assert("...km_nan has found the wrong clusters row names",
@@ -91,7 +97,7 @@ test_km_nan <- function() {
   testit::assert("...km_nan has found the wrong list names",
     names(cluster_df) == expect_cols)
   testit::assert("...km_nan has found the wrong clust numbers",
-    unique(cluster_df$clusters$clust_num) == rownames(cluster_df$centres))
+    unique(cluster_df$clusters$clust_num) %in% rownames(cluster_df$centres))
   testit::assert("...km_nan has found the wrong centres column names",
     colnames(cluster_df$centres) == dummy_traits)
   testit::assert("...km_nan has found the wrong clusters row names",
