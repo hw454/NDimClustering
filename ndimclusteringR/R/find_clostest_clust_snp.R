@@ -53,7 +53,8 @@ find_closest_clust_snp <- function(snp_id, b_mat, cluster_df,
   for (c_num in rownames(centroids_df)) {
     dist <- norm(data.matrix(
               stats::na.omit(centroids_df[c_num, ] - snp_score)), norm_typ)
-    snp_clust_dist_df[snp_id, c_num] <- dist
+    c_col<- paste0("C", c_num)
+    snp_clust_dist_df[snp_id, c_col] <- dist
     if (dist < snp_dist) {
       snp_dist <- dist
       snp_clust_num <- c_num
