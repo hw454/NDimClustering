@@ -58,7 +58,6 @@ cluster_kmeans_basic <- function(data_list,
   b_mat_crop <- b_mat_clust[crop_snp_list, ]
 
   # Initial cluster dataframe
-  print("pre km")
   clust_out <- km_nan(b_mat_crop,
                     nclust = nclust,
                     clust_threshold = threshold,
@@ -87,6 +86,6 @@ cluster_kmeans_basic <- function(data_list,
   }
   # ADDFEATURE - Assign junk clusters.
   clust_out$clusters <- rbind(clust_out$clusters, nan_cluster_df)
-  clust_out$cluste_dist <- rbind(clust_out$clust_dist, nan_clust_dist_df)
+  clust_out$clust_dist <- rbind(clust_out$clust_dist, nan_clust_dist_df)
   return(clust_out)
 }
