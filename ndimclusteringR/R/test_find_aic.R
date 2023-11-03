@@ -50,7 +50,7 @@ test_find_aic <- function() {
   #clust_re, num_axis
   expect_cols <- c("snp_id", colnames(cluster_df), "aic", "bic")
   clust_re <- find_all_ic(clust_re, num_axis)
-  testit::assert("find_all_aic has found the wrong row names when empty",
+  testit::assert("find_all_aic has found the wrong row names",
     colnames(clust_re) == expect_cols)
   return()
 }
