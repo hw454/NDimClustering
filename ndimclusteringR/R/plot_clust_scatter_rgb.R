@@ -21,24 +21,30 @@ plot_clust_scatter_rgb <- function(clust_dist_df, b_mat,
                           pw = 8,
                           ph = 4) {
   ignore_cols <- c("num_axis", "snp_id")
+  # Get the data for the number of axis being plotted
   crop_clust_dist_df <- clust_dist_df[clust_dist_df$num_axis == num_axis, ]
-  #crop_clust_dist_df <- tibble::column_to_rownames(crop_clust_dist_df, "snp_id")
+  # Get the list of trait names
   full_trait_list <- colnames(crop_clust_dist_df)
   full_trait_list <- full_trait_list[!(full_trait_list %in% ignore_cols)]
   crop_clust_dist_df <- crop_clust_dist_df[, full_trait_list]
+  # Set the filename
   pnme <- paste0(iter_traits$res_dir, "clust_pc_rgb_numaxis", num_axis, ".png")
+  # First and second trait in the data matrix
   c1 <- colnames(b_mat)[1]
   c2 <- colnames(b_mat)[2]
+  # Set the transparency alpha to be higher when the se is lower.
   se_max <- apply(se_mat, 2, max)
   se_min <- apply(se_mat, 2, min)
   norm_se <- rowSums((se_mat - se_min) / (se_max - se_min))
   alpha_vec <- 1.0 / (1.0 + norm_se)
+  # Normalise the values in each column then assign to rgb value. 
   snp_list <- row.names(b_mat)
   max_dist <- apply(crop_clust_dist_df, 2, max)
   min_dist <- apply(crop_clust_dist_df, 2, min)
-  norm_dist_df <- crop_clust_dist_df - min_dist / (max_dist - min_dist)
+  norm_dist_df <- (crop_clust_dist_df - min_dist) / (max_dist - min_dist)
   norm_dist_df[norm_dist_df < 0] <- 0.0
   norm_dist_df[norm_dist_df > 1] <- 1.0
+  norm_dist_df[is.na(norm_dist_df)] <- 0.0
   clust_names <- colnames(norm_dist_df)
   colour_vec <- paste0("rgb(", norm_dist_df[, clust_names[1]], ",",
                     norm_dist_df[, clust_names[2]], ",",
@@ -48,6 +54,7 @@ plot_clust_scatter_rgb <- function(clust_dist_df, b_mat,
   my_col_vec <- levels(colour_vec)
   my_col_vec <- sapply(seq_along(my_col_vec),
                   function(i) eval(parse(text = my_col_vec[i])))
+  # Assign the data required for pplotting into a dataframe
   res_df <- data.frame(
     row.names = snp_list,
     bx = b_mat[, c1],
@@ -59,11 +66,14 @@ plot_clust_scatter_rgb <- function(clust_dist_df, b_mat,
   )
   print(head(res_df))
   print(head(my_col_vec))
+  # Set the main plotting data
   ggplot2::ggplot(data = res_df,
                   ggplot2::aes(x = bx, y = by)) + # nolint: object_usage_linter.
+  # Set the colour
   ggplot2::geom_point(ggplot2::aes(
                   col = cols # nolint: object_usage_linter.
                  ), shape = 21, show.legend = FALSE) + # nolint: object_usage_linter.
+  # Set the error bars
   ggplot2::geom_errorbarh(
     ggplot2::aes(xmin = res_df$bx - 1.96 * res_df$bxse,
                  xmax = res_df$bx + 1.96 * res_df$bxse,
@@ -72,10 +82,13 @@ plot_clust_scatter_rgb <- function(clust_dist_df, b_mat,
     ggplot2::aes(ymin = res_df$by - 1.96 * res_df$byse,
                  ymax = res_df$by + 1.96 * res_df$byse,
                  col = cols), linetype = "solid", show.legend = FALSE) +
+  # Add the colour scale
   ggplot2::scale_color_manual(values = my_col_vec) +
+  # Add the labels
   ggplot2::ylab("Association with PC2") +
   ggplot2::xlab("Association with PC1") +
   ggplot2::ggtitle("Clustered by principal components")
+  # Save
   ggplot2::ggsave(filename = pnme, width = pw, height = ph)
   return()
 }
