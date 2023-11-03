@@ -81,24 +81,27 @@ km_nan <- function(b_mat,
                             cluster_df = cluster_df,
                             centroids_df = centroids_df,
                             norm_typ = norm_typ)
-    print(snp_clust_list)
     # Combine the list of dataframes into one dataframe.
     # Override Cluster_df with the new assignment
     df_cols <- function(df, col) {
-                          df[col]
+                          df[[col]]
                           }
     cluster_df_list <- lapply(snp_clust_list,
                           df_cols,
                           col = "clusters")
-    print(cluster_df_list)
     cluster_df <- Reduce(rbind, cluster_df_list)
-    print(cluster_df)
+    clust_dist_df_list <- lapply(snp_clust_list,
+                          df_cols,
+                          col = "clust_dist")
+    clust_dist_df <- Reduce(rbind, clust_dist_df_list)
     # Recompute the centroids based on the average of the clusters.
     # Check if the previous centres differ from the cluster means.
     thresh_list <- lapply(rownames(centroids_df), check_clust_cent,
                         clustnum_df = cluster_df$clust_num,
-                        b_mat = b_mat, centroids_df = centroids_df,
-                        na_rm = na_rm, norm_typ = norm_typ,
+                        b_mat = b_mat,
+                        centroids_df = centroids_df,
+                        na_rm = na_rm,
+                        norm_typ = norm_typ,
                         clust_threshold = clust_threshold)#,
                         #axes_nonnan=axes_nonnan)
     thresh_check_df <- Reduce(rbind, thresh_list)
@@ -114,9 +117,8 @@ km_nan <- function(b_mat,
   if (prob_on) {
     cluster_df$clust_prob <- calc_clust_prob(cluster_df$clust_dist)
   }
-  print(cluster_df)
   cluster_df <- dplyr::mutate(cluster_df, "ncents" = nclust)
   clust_out <- list("clusters" = cluster_df, "centres" = centroids_df,
-                   "clust_dist" = snp_clust_list$clust_dist)
+                   "clust_dist" = clust_dist_df)
   return(clust_out)
 }
