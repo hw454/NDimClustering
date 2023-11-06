@@ -68,7 +68,7 @@ clust_pca_compare_iterative <- function(data_matrices,
     clust_num = integer()
   )
   # Add np columns for each PC
-  c_scores_pc <- add_np_cols(c_scores, nums$np)
+  c_scores_pc <- add_np_cols(c_scores_pc, nums$np)
   # Create score dataframe for the traits
   c_scores_tr <- data.frame(
     num_axis = integer(),
