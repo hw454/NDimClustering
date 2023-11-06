@@ -15,6 +15,13 @@ cluster_kmeans_basic(
 )
 }
 \arguments{
+\item{data_list}{List of the matrices of data.
+Conatins the\:
+  * "beta" matrix of assocaition data
+  * "se" matrix of standard error data
+  * "pval" matrix of p-value data
+  * Rows correspond to snps, columns to traits}
+
 \item{nclust}{Number of clusters to allocate}
 
 \item{space_typ}{Whether to uses angles of spatial co-ordinates.
@@ -30,8 +37,6 @@ The default is the Froebenius norm "F".}
 by for clusters to be considered converged.}
 
 \item{narm}{Boolean swithc. If TRUE (default) ignore NaNs in calculations.}
-
-\item{b_mat}{Matrix of data. Rows correspond to snps.}
 }
 \value{
 clusters_df

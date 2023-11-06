@@ -9,21 +9,13 @@ calc_snp_cent_dist(snp_id, data_mat, cent, norm_typ = "F")
 \arguments{
 \item{snp_id}{the label for the snp}
 
-\item{norm_typ}{The type of norm to use in the distance calculation. The
-default is the Froebenius norm "F".}
-
-\item{b_mat}{the data matrix used for the coordinate of the snp.
+\item{data_mat}{the data matrix used for the coordinate of the snp.
 Rows are snps, columns are the trait axes.}
 
-\item{cluster_df}{The dataframe with the snp cluster memberships.
-Columns are\:
- * "clust_num" the cluster number.
- * "clust_dist" distance from the snp to the cluster centroid.
- * "clust_prob" probability the snp is correctly allocated to the cluster.
-Rows are each snp.}
+\item{cent}{The centre for the cluster}
 
-\item{centroids_df}{The dataframe of the centroid co-ordinates for each
-cluster. The rows are each cluster number and the columns are the traits.}
+\item{norm_typ}{The type of norm to use in the distance calculation. The
+default is the Froebenius norm "F".}
 }
 \value{
 snp_clust_df

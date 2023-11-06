@@ -30,8 +30,7 @@ Other cluster_properties:
 
 Other ic_functions: 
 \code{\link{calc_tot_within}()},
-\code{\link{find_all_ic}()},
-\code{\link{test_find_aic}()}
+\code{\link{find_all_ic}()}
 }
 \concept{cluster_properties}
 \concept{ic_functions}

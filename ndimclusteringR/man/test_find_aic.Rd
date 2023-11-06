@@ -6,21 +6,9 @@
 \usage{
 test_find_aic()
 }
-\arguments{
-\item{clust_re}{cluster results dataframe found using [km_nan]}
-
-\item{num_axis}{the number of axis}
-}
-\value{
-clust_re\$clusters
-}
 \description{
-Test the function`find_all_ic`
-}
-\details{
-The aic and bic are found for each cluster using [calc_clust_ic]
-  this is added to clust_re\$clusters and clust_re\$clusters is output.
-  Ncents is also added as an axis to clust_re\$clusters.
+Test the column names after using `find_all_ic`
+on a dummy dataframe.
 }
 \seealso{
 Other tests: 
@@ -31,11 +19,5 @@ Other tests:
 \code{\link{test_km_nan}()},
 \code{\link{test_make_clust_col}()},
 \code{\link{test_na_check}()}
-
-Other ic_functions: 
-\code{\link{calc_sum_sq_clusts}()},
-\code{\link{calc_tot_within}()},
-\code{\link{find_all_ic}()}
 }
-\concept{ic_functions}
 \concept{tests}

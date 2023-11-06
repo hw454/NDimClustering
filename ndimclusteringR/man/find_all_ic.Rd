@@ -27,7 +27,6 @@ The aic and bic are found for each cluster using [calc_clust_ic]
 \seealso{
 Other ic_functions: 
 \code{\link{calc_sum_sq_clusts}()},
-\code{\link{calc_tot_within}()},
-\code{\link{test_find_aic}()}
+\code{\link{calc_tot_within}()}
 }
 \concept{ic_functions}

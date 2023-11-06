@@ -16,6 +16,13 @@ cluster_kmeans_min(
 )
 }
 \arguments{
+\item{data_list}{List of the matrices of data. 
+Conatins the\:
+  * "beta" matrix of assocaition data
+  * "se" matrix of standard error data
+  * "pval" matrix of p-value data
+  * Rows correspond to snps, columns to traits}
+
 \item{nclust}{The maximum number of clusters to consider. default\:10}
 
 \item{max_dist}{The maximum distance between any two points.}
@@ -35,8 +42,6 @@ for clusters to be considered converged.}
 
 \item{narm}{Bool to indicate how to handle NaNs. If TRUE (default)
 NaNs are ignored in calculations.}
-
-\item{b_mat}{The data matrix}
 }
 \value{
 clusters_df

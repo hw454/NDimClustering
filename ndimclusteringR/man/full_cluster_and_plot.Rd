@@ -25,7 +25,12 @@ full_cluster_and_plot(
 * "se" standard errors associated with "beta" values.
 * "trait_info" dataframe of all the traits.}
 
+\item{exp_pheno}{- Label for the exposure phenotype}
+
 \item{out_pheno}{- Label for the outcome phenotype}
+
+\item{res_dir0}{- The location of the base results directory.
+default \:"", the current directory.}
 
 \item{iter}{The iteratio number}
 

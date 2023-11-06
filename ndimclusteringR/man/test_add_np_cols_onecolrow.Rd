@@ -6,9 +6,6 @@
 \usage{
 test_add_np_cols_onecolrow()
 }
-\value{
-df
-}
 \description{
 Create an empty dataframe with column A.
 Check that the column names after add_nclust_cols(5)

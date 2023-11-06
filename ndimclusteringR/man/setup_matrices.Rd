@@ -4,7 +4,13 @@
 \alias{setup_matrices}
 \title{read in data from csv files as matrices.}
 \usage{
-setup_matrices(data_dir, test = 0, num_rows = 0, num_trait0 = 0, num_trait1)
+setup_matrices(
+  data_dir,
+  test = 0,
+  num_rows = 0,
+  num_trait0 = 0,
+  num_trait1 = 0
+)
 }
 \arguments{
 \item{data_dir}{the directory location of the data}
@@ -12,14 +18,14 @@ setup_matrices(data_dir, test = 0, num_rows = 0, num_trait0 = 0, num_trait1)
 \item{test}{Switch 0,1. If 1 then crop the data with the
 test variables. default\:0}
 
+\item{num_rows}{If test=1 then this is the number of rows
+of the data that will be used. default\:0}
+
 \item{num_trait0}{if test==1 then this is the first column
 that will be used. default\:0}
 
 \item{num_trait1}{if test==1 then this is the last column
 that will be used. default\:0}
-
-\item{n_rows}{If test=1 then this is the number of rows
-of the data that will be used. default\:0}
 }
 \description{
 The directory must contain files with the names\:

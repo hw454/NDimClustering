@@ -8,6 +8,9 @@ make_clust_col(i, rows = character())
 }
 \arguments{
 \item{i}{- The number for the column label}
+
+\item{rows}{- The rows for the dataframe,
+defalut\: character() for an empty dataframe}
 }
 \value{
 dataframe(Pi = numeric())
