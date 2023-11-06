@@ -52,18 +52,42 @@ clust_pca_compare_single <- function(df_list, iter_traits,
   print(paste("PCA on", num_axis, "axes"))
   # Get the data upto this axis
   b_iter_mat <- data_matrices$beta[, trait_df$label]
+  b_iter_mat <- na.omit(b_iter_mat)
   se_iter_mat <- data_matrices$se[, trait_df$label]
+  se_iter_mat <- na.omit(se_iter_mat)
   pval_iter_mat <- data_matrices$pval[, trait_df$label]
+  pval_iter_mat <- na.omit(pval_iter_mat)
   # Cluster the data on these axes
+  #pca_beta <- stats::prcomp(b_iter_mat,
+  #      center = TRUE,
+  #      scale = TRUE,
+  #      rank = nums$np)
+  #t_mat <- pca_beta$rotation
+  #b_pc_mat <- pca_beta$x
+  #plot_scatter(b_pc_mat,
+   #             iter_traits,
+   #             num_axis = num_axis)
+  #p_pc_mat <- transform_coords_in_mat(pval_iter_mat, t_mat)
+  #se_pc_mat <- transform_coords_in_mat(se_iter_mat, t_mat)
+  # ARCHIVE bespoke PCA
+  print(b_iter_mat)
   pca_list <- find_principal_components(b_iter_mat, pval_iter_mat, se_iter_mat,
                           nums$np, na_handling$narm)
   b_pc_mat    <- pca_list$beta
-  p_pc_mat <- pca_list$pval
-  t_mat       <- pca_list$transform
+  plot_scatter(b_pc_mat,
+                iter_traits,
+                num_axis = num_axis)
+  # p_pc_mat <- pca_list$pval
+  # t_mat       <- pca_list$transform
   # Store the matrices for result output
   df_list$e_mat <- t_mat
   df_list$b_pc <- b_pc_mat
-  df_list$se_pc <- pca_list$se
+  df_list$se_pc <- se_pc_mat
+  df_list$pval_pc <- p_pc_mat
+  pca_list <- list("beta" = b_pc_mat,
+                   "pval" = p_pc_mat,
+                   "se" = se_pc_mat,
+                   "transform" = t_mat)
   # Get column names for PCs
   pc_cols <- colnames(b_pc_mat)
   # Cluster the data on these axes
@@ -90,7 +114,7 @@ clust_pca_compare_single <- function(df_list, iter_traits,
                                         narm = na_handling$narm)
   }
   cluster_df <- cluster_out$clusters
-  centroids_df <- cluster_out$centres
+  # Centroids df centroids_df <- cluster_out$centres
   # Calculate the distance to all the cluster centres
   clust_dist_df <- cluster_out$clust_dist
   # Find the set of cluster numbers
@@ -127,9 +151,8 @@ clust_pca_compare_single <- function(df_list, iter_traits,
   c_score_tr0["num_axis"] <- num_axis
   clust_dist_df["num_axis"] <- num_axis
   cluster_df["num_axis"] <- num_axis
-  
-  print(head(clust_dist_df))
-  print(head(cluster_df))
+  print(utils::head(clust_dist_df))
+  print(utils::head(cluster_df))
   clust_dist_df <- tibble::rownames_to_column(clust_dist_df, "snp_id")
   cluster_df <- tibble::rownames_to_column(cluster_df, "snp_id")
   df_list$clust_items <- rbind(df_list$clust_items, cluster_df)
