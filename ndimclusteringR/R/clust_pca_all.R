@@ -52,13 +52,22 @@ clust_pca_all <- function(data_matrices,
                          norm_typs = list("clust" = "F", "thresh" = "F"),
                          nums = list("max_dist" = 1, "np" = 3, "nr" = 5)
                         ) {
-  # Data frame for recording the cluster scores.
-  c_scores <- data.frame(
+  # Data frame for recording the cluster scores on the pcs
+  c_scores_pc <- data.frame(
     num_axis = integer(),
     clust_num = integer()
   )
   # Add np columns for each PC
-  c_scores <- add_np_cols(c_scores, nums$np)
+  c_scores_pc <- add_np_cols(c_scores_pc, nums$np)
+  # Data frame for recording the cluster scores on the traits
+  c_scores_tr <- data.frame(
+    num_axis = integer(),
+    clust_num = integer()
+  )
+  # Add np columns for each PC
+  for (tr in data_matrices$trait_info$phenotype){
+    c_scores_tr[tr] <- numeric()
+  }
   # Initialise with outcome
   trait_df <- data.frame(
                        num_axis = 1,
@@ -77,7 +86,8 @@ clust_pca_all <- function(data_matrices,
   cluster_df <- add_np_cols(cluster_df, nums$np)
   clust_dist_df <- data.frame("snp_id" = character())
   clust_dist_df <- add_nclust_cols(clust_dist_df, nums$nr)
-  df_list <- list("clust_scores" = c_scores,
+  df_list <- list("clust_pc_scores" = c_scores_pc,
+                  "clust_trait_scores" = c_scores_tr,
                   "max_diff" = max_df,
                   "e_list" = list(),
                   "b_pc_list" = list(),

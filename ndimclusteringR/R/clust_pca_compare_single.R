@@ -92,14 +92,20 @@ clust_pca_compare_single <- function(df_list, iter_traits,
   cluster_df <- cluster_out$clusters
   centroids_df <- cluster_out$centres
   # Calculate the distance to all the cluster centres
-  clust_dist_df <- calc_clust_dist(df_list$b_pc, centroids_df)
+  clust_dist_df <- cluster_out$clust_dist
   # Find the set of cluster numbers
   c_nums <- unique(cluster_df$clust_num)
   # Score the clustered data based on affiliations with axes.
   # Find the score for each PC
-  c_score0 <- score_all_clusters(cluster_df,
+  c_score_pc0 <- score_all_clusters(cluster_df,
                                 beta_mat = b_pc_mat,
                                 pval_mat = p_pc_mat,
+                                bp_on = iter_traits$bp_on,
+                                clust_prob_on = iter_traits$clust_prob_on,
+                                num_axis = num_axis)
+  c_score_tr0 <- score_all_clusters(cluster_df,
+                                beta_mat = b_iter_mat,
+                                pval_mat = pval_iter_mat,
                                 bp_on = iter_traits$bp_on,
                                 clust_prob_on = iter_traits$clust_prob_on,
                                 num_axis = num_axis)
@@ -107,7 +113,7 @@ clust_pca_compare_single <- function(df_list, iter_traits,
   # any pair have a distinct difference.
   diff_score_list <- lapply(c_nums, compare_oneclust_tolist,
           c_nums = c_nums,
-          c_score0 = c_score0,
+          c_score0 = c_score_pc0,
           axis = pc_cols,
           clust_norm = norm_typs$clust
         )
@@ -117,16 +123,19 @@ clust_pca_compare_single <- function(df_list, iter_traits,
   row <- which.max(diff_scores$diff)
   max_df0 <- diff_scores[row, ]
   max_df0["num_axis"] <- num_axis
-  c_score0["num_axis"] <- num_axis
+  c_score_pc0["num_axis"] <- num_axis
+  c_score_tr0["num_axis"] <- num_axis
   clust_dist_df["num_axis"] <- num_axis
   cluster_df["num_axis"] <- num_axis
+  
   print(head(clust_dist_df))
   print(head(cluster_df))
   clust_dist_df <- tibble::rownames_to_column(clust_dist_df, "snp_id")
   cluster_df <- tibble::rownames_to_column(cluster_df, "snp_id")
   df_list$clust_items <- rbind(df_list$clust_items, cluster_df)
   df_list$max_diff <- rbind(df_list$max_diff, max_df0)
-  df_list$clust_scores <- rbind(df_list$clust_scores, c_score0)
+  df_list$clust_pc_scores <- rbind(df_list$clust_pc_scores, c_score_pc0)
+  df_list$clust_trait_scores <- rbind(df_list$clust_trait_scores, c_score_tr0)
   df_list$clust_membership <- dplyr::bind_rows(df_list$clust_membership,
                                               clust_dist_df)
   return(df_list)

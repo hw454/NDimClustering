@@ -63,12 +63,17 @@ clust_pca_compare_iterative <- function(data_matrices,
     axes_ind = integer()
   )
   # Data frame for recording the cluster scores.
-  c_scores <- data.frame(
+  c_scores_pc <- data.frame(
     num_axis = integer(),
     clust_num = integer()
   )
   # Add np columns for each PC
-  c_scores <- add_np_cols(c_scores, nums$np)
+  c_scores_pc <- add_np_cols(c_scores, nums$np)
+  # Create score dataframe for the traits
+  c_scores_tr <- data.frame(
+    num_axis = integer(),
+    clust_num = integer()
+  )
   # Initialise with outcome
   trait_df <- data.frame(label = out_pheno,
                        axes_ind = which(data_matrices$trait_info$phenotype == out_pheno)[1] #nolint
@@ -86,7 +91,8 @@ clust_pca_compare_iterative <- function(data_matrices,
   cluster_df <- add_np_cols(cluster_df, nums$np)
   clust_dist_df <- data.frame("snp_id" = character())
   clust_dist_df <- add_nclust_cols(cluster_df, nums$nr)
-  df_list <- list("clust_scores" = c_scores,
+  df_list <- list("clust_pc_scores" = c_scores_pc,
+                  "clust_trait_scores" = c_scores_tr,
                   "max_diff" = max_df,
                   "e_list" = list(),
                   "trait" = list(),
@@ -108,6 +114,11 @@ clust_pca_compare_iterative <- function(data_matrices,
                               axes_ind = a_ind)
       trait_df <- rbind(trait_df, trait_row)
       df_list$trait <- rbind(df_list$trait, trait_df)
+      # Add np columns for each PC
+      for (tr in trait_df$label){
+        c_scores_tr[tr] <- numeric()
+      }
+      # Run program for this trait list
       df_list <- clust_pca_compare_single(df_list,
                                     iter_traits = iter_traits,
                                     num_axis = ai,
