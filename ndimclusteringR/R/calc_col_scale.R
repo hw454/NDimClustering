@@ -20,11 +20,11 @@
 calc_col_scale <- function(col, data, mu, se) {
   if (is.na(se[col])) {
     # If SE is NULL
-   return(data[, col] - data[, col])
+   return(data[, col] - mu[col])
 
   } else if (se[col] == 0) {
     # If SE is 0 or NULL
-   return(data[, col] - data[, col])
+   return(data[, col] - mu[col])
   } else {
     # SE is defined
     return((data[, col] - mu[col]) / se[col])
