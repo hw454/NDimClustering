@@ -1,6 +1,11 @@
 #' Cluster the data using kmeans then minimising aic.
 #'
-#' @param b_mat The data matrix
+#' @param data_list List of the matrices of data. 
+#'  Conatins the\:
+#'    * "beta" matrix of assocaition data
+#'    * "se" matrix of standard error data
+#'    * "pval" matrix of p-value data
+#'    * Rows correspond to snps, columns to traits
 #' @param nclust The maximum number of clusters to consider. default\:10
 #' @param max_dist The maximum distance between any two points.
 #' @param space_typ The spatial structure of the data when clustering.
@@ -48,7 +53,7 @@ cluster_kmeans_min <- function(data_list,
   # Crop the data to those with the lowest standard error.
   # Add remaining terms to closest cluster once centres have been found.
   crop_se <- docore::lim(se_mat, 0, 0.5)
-  crop_se <- crop_se[complete.cases(crop_se), ]
+  crop_se <- crop_se[stats::complete.cases(crop_se), ]
   crop_snp_list <- rownames(crop_se)
 
   if (space_typ == "angle") {

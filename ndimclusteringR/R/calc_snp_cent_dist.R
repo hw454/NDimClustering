@@ -1,16 +1,9 @@
 #' Calculate the distance between the snps and their allocated cluster centroid
 #'
 #' @param snp_id the label for the snp
-#' @param b_mat the data matrix used for the coordinate of the snp.
+#' @param data_mat the data matrix used for the coordinate of the snp.
 #'   Rows are snps, columns are the trait axes.
-#' @param cluster_df The dataframe with the snp cluster memberships.
-#'   Columns are\:
-#'    * "clust_num" the cluster number.
-#'    * "clust_dist" distance from the snp to the cluster centroid.
-#'    * "clust_prob" probability the snp is correctly allocated to the cluster.
-#'   Rows are each snp.
-#' @param centroids_df The dataframe of the centroid co-ordinates for each
-#'   cluster. The rows are each cluster number and the columns are the traits.
+#' @param cent The centre for the cluster
 #' @param norm_typ The type of norm to use in the distance calculation. The
 #'   default is the Froebenius norm "F".
 #'

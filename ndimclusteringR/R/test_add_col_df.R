@@ -1,6 +1,7 @@
 #' Test add a column with value to a dataframe
+#'
 #' @export
-test_add_col_df <- function(){
+test_add_col_df <- function() {
     dummy_df0 <- data.frame(row.names = character(), A = integer())
     col <- "B"
     col_val <- 0.0
@@ -19,5 +20,4 @@ test_add_col_df <- function(){
       all(colnames(dummy_df1) == expect_cols))
     testit::assert("Add col one row has wrong number of rows.",
       all(nrow(dummy_df1) == 1))
-    return()
 }

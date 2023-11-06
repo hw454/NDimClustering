@@ -1,7 +1,5 @@
 #' Test the `check_col_na` function
 #'
-#' @return
-#'
 #' @export
 #'
 #' @family tests

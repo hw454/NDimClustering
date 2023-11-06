@@ -1,10 +1,8 @@
 #' Add "np" columns to a dataframe.
 #'
-#' Create an empty dataframe.
+#' @description Create an empty dataframe.
 #' Check that the column names after add_npcols(5)
 #' are (P1,P2,P3,P4,P5)
-#'
-#' @return
 #'
 #' @family tests
 #'
@@ -18,5 +16,4 @@ test_add_np_cols_onerow <- function() {
     colnames(df) == expect_cols)
   testit::assert("Add np has found the wrong row names with one row",
     rownames(df) == c("A"))
-  return()
 }

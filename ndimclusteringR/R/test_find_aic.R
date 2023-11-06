@@ -1,22 +1,9 @@
 #' Test the function`find_all_ic`
 #'
+#' @description Test the column names after using `find_all_ic`
+#' on a dummy dataframe.
+#'
 #' @family tests
-#' @export
-#' #' @description Using [calc_clust_ic]
-#'   for each cluster find the aic and bic and add this to the
-#'   cluster results dataframe.
-#'
-#' @param clust_re cluster results dataframe found using [km_nan]
-#' @param num_axis the number of axis
-#'
-#' @details
-#'   The aic and bic are found for each cluster using [calc_clust_ic]
-#'   this is added to clust_re\$clusters and clust_re\$clusters is output.
-#'   Ncents is also added as an axis to clust_re\$clusters.
-#'
-#' @return clust_re\$clusters
-#'
-#' @family ic_functions
 #'
 #' @export
 test_find_aic <- function() {
@@ -52,5 +39,4 @@ test_find_aic <- function() {
   clust_re <- find_all_ic(clust_re, num_axis)
   testit::assert("find_all_aic has found the wrong row names",
     colnames(clust_re) == expect_cols)
-  return()
 }

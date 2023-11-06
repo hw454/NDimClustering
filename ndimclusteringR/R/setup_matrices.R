@@ -11,7 +11,7 @@
 #' @param data_dir the directory location of the data
 #' @param test Switch 0,1. If 1 then crop the data with the
 #'   test variables. default\:0
-#' @param n_rows If test=1 then this is the number of rows
+#' @param num_rows If test=1 then this is the number of rows
 #'   of the data that will be used. default\:0
 #' @param num_trait0 if test==1 then this is the first column
 #'   that will be used. default\:0
@@ -24,7 +24,7 @@
 #'
 #' @export
 setup_matrices <- function(data_dir, test = 0,
-                           num_rows = 0, num_trait0 = 0, num_trait1) {
+                           num_rows = 0, num_trait0 = 0, num_trait1 = 0) {
 unstd_beta_df <- as.matrix(data.table::fread(
                         paste0(data_dir, "unstdBeta_df.csv")),
                         rownames = 1)

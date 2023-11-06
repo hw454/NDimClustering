@@ -22,5 +22,4 @@ test_add_col_df_list <- function(){
       all(nrow(dummy_df_list[["df_0"]]) == nrow(dummy_df0)))
     testit::assert("Wrong number of rows for second dataframe",
       all(nrow(dummy_df_list[["df_1"]]) == nrow(dummy_df1)))
-    return()
 }

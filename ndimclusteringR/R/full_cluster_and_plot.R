@@ -5,7 +5,10 @@
 #'   * "pval" probabilities associated with "beta" values.
 #'   * "se" standard errors associated with "beta" values.
 #'   * "trait_info" dataframe of all the traits.
+#' @param exp_pheno - Label for the exposure phenotype
 #' @param out_pheno - Label for the outcome phenotype
+#' @param res_dir0 - The location of the base results directory.
+#'  default \:"", the current directory.
 #' @param thresholds - List for the  threshold related variables.
 #'   * "threshmul" is multiplied by the data variance for cluster
 #'   difference threshold.
@@ -95,8 +98,12 @@ full_cluster_and_plot <- function(data_matrices,
                           norm_typs = norm_typs,
                           nums = nums)
   print("Clust done")
-  c_scores <- out$clust_scores
-  plot_trait_heatmap(c_scores, iter_traits)
+  print("Plot pc scores")
+  c_scores_pc <- out$clust_pc_scores
+  plot_trait_heatmap(c_scores_pc, iter_traits)
+  print("Plot trait scores")
+  c_scores_tr <- out$clust_trait_scores
+  plot_trait_heatmap(c_scores_tr, iter_traits)
   print("Heatmap plot done")
   num_axis <- length(data_matrices$trait_info$phenotype)
   plot_clust_scatter(out$clust_items, out$b_pc, out$se_pc, iter_traits,
@@ -115,7 +122,8 @@ full_cluster_and_plot <- function(data_matrices,
   # Plot the transform heatmap.
   plot_transform_heatmap(out$e_mat, iter_traits)
   out <- list("iter_df" = iter_df,
-              "c_scores" = c_scores,
+              "c_scores_pc" = c_scores_pc,
+              "c_scores_tr" = c_scores_tr,
               "max_df" = out$max_diff)
   } else if (iter_traits$ndim_typ == "iterative") {
   out <- clust_pca_compare_iterative(data_matrices = data_matrices,
@@ -127,8 +135,8 @@ full_cluster_and_plot <- function(data_matrices,
   )
   print("Clust done")
   max_diff_df <- out$max_diff
-  c_scores <- out$clust_scores
-  plot_trait_heatmap(c_scores, iter_traits)
+  c_scores_tr <- out$clust_trait_scores
+  plot_trait_heatmap(c_scores_tr, iter_traits)
   print("Heatmap plot done")
   plot_max_diff(max_diff_df, iter_traits)
   print("Diff plot done")

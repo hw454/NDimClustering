@@ -3,6 +3,8 @@
 #' @details i is the input number
 #'
 #' @param i - The number for the column label
+#' @param rows - The rows for the dataframe,
+#'  defalut\: character() for an empty dataframe
 #'
 #' @return dataframe(Pi = numeric())
 #'

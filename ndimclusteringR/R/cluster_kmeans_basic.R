@@ -1,6 +1,11 @@
 #' Cluster data with a standard kmeans approach
 #'
-#' @param b_mat Matrix of data. Rows correspond to snps.
+#' @param data_list List of the matrices of data.
+#'  Conatins the\:
+#'    * "beta" matrix of assocaition data
+#'    * "se" matrix of standard error data
+#'    * "pval" matrix of p-value data
+#'    * Rows correspond to snps, columns to traits
 #' @param nclust Number of clusters to allocate
 #' @param space_typ Whether to uses angles of spatial co-ordinates.
 #'   If "angle" use angles found using [convert_point_mat_to_angle]
@@ -43,7 +48,7 @@ cluster_kmeans_basic <- function(data_list,
   # Crop the data to those with the lowest standard error.
   # Add remaining terms to closest cluster once centres have been found.
   crop_se <- docore::lim(se_mat, 0, 2)
-  crop_se <- crop_se[complete.cases(crop_se), ]
+  crop_se <- crop_se[stats::complete.cases(crop_se), ]
   crop_snp_list <- rownames(crop_se)
 
   # Filter NaNs before clustering

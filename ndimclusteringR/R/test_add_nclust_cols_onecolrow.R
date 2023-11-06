@@ -1,10 +1,8 @@
 #' Add "np" columns to a dataframe.
 #'
-#' Create an empty dataframe with column A.
+#' @description Create an empty dataframe with column A.
 #' Check that the column names after add_nclust_cols(5)
 #' are (A, C1,C2,C3,C4,C5)
-#'
-#' @return df
 #'
 #' @family dataframe_editors
 #'
@@ -21,5 +19,4 @@ test_add_nclust_cols_onecolrow <- function() {
     all(colnames(df) == expect_cols))
   testit::assert("Add clust has found the wrong row names when empty",
     rownames(df) == c("A"))
-  return()
 }

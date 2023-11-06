@@ -21,8 +21,6 @@
 #' column "thresh_check" contains Bool indicating whether that cluster
 #' converged.
 #'
-#' @return
-#'
 #' @family tests
 #'
 #' @export
@@ -121,5 +119,4 @@ test_km_nan <- function() {
     rownames(cluster_df$clusters) == dummy_snps)
   testit::assert("...km_nan has found the wrong clust_dist row names",
     rownames(cluster_df$clust_dist) == dummy_snps)
-  return()
 }

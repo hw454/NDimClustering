@@ -9,6 +9,8 @@
 #' @param b_mat The matrix of the score data
 #' @param se_mat The matrix of the standarad errors associated with the scores.
 #' @param iter_traits The iteration variables for the type of iteration.
+#' @param exp_pheno The label for the exposure phenotype
+#' @param out_pheno The label for the output phenotype
 #' @param num_axis The number of trait axis, default\:0
 #' @param pw The plot width, default\:8
 #' @param ph The plot heigh, default\:4
@@ -24,7 +26,10 @@ plot_clust_exp_out_scatter <- function(cluster_df, b_mat,
                           ph = 4) {
   crop_cluster_df <- cluster_df[cluster_df$num_axis == num_axis, ]
   crop_cluster_df <- tibble::column_to_rownames(crop_cluster_df, "snp_id")
-  pnme <- paste0(iter_traits$res_dir, "clusters_num_axis_exp_out", num_axis, ".png")
+  pnme <- paste0(iter_traits$res_dir,
+                "clusters_num_axis_exp_out",
+                num_axis,
+                ".png")
   c1 <- exp_pheno
   c2 <- out_pheno
   se_max <- apply(se_mat, 2, max)
