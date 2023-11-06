@@ -64,8 +64,8 @@ plot_clust_scatter_rgb <- function(clust_dist_df, b_mat,
     cols = colour_vec,
     alp = alpha_vec
   )
-  print(head(res_df))
-  print(head(my_col_vec))
+  print(utils::head(res_df))
+  print(utils::head(my_col_vec))
   # Set the main plotting data
   ggplot2::ggplot(data = res_df,
                   ggplot2::aes(x = bx, y = by)) + # nolint: object_usage_linter.
