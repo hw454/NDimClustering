@@ -58,25 +58,24 @@ clust_pca_compare_single <- function(df_list, iter_traits,
   pval_iter_mat <- data_matrices$pval[, trait_df$label]
   pval_iter_mat <- na.omit(pval_iter_mat)
   # Cluster the data on these axes
-  #pca_beta <- stats::prcomp(b_iter_mat,
-  #      center = TRUE,
-  #      scale = TRUE,
-  #      rank = nums$np)
-  #t_mat <- pca_beta$rotation
-  #b_pc_mat <- pca_beta$x
-  #plot_scatter(b_pc_mat,
-   #             iter_traits,
-   #             num_axis = num_axis)
-  #p_pc_mat <- transform_coords_in_mat(pval_iter_mat, t_mat)
-  #se_pc_mat <- transform_coords_in_mat(se_iter_mat, t_mat)
-  # ARCHIVE bespoke PCA
-  print(b_iter_mat)
-  pca_list <- find_principal_components(b_iter_mat, pval_iter_mat, se_iter_mat,
-                          nums$np, na_handling$narm)
-  b_pc_mat    <- pca_list$beta
+  pca_beta <- stats::prcomp(b_iter_mat,
+        center = TRUE,
+        scale = TRUE,
+        rank = nums$np)
+  t_mat <- pca_beta$rotation
+  b_pc_mat <- pca_beta$x
   plot_scatter(b_pc_mat,
                 iter_traits,
                 num_axis = num_axis)
+  p_pc_mat <- transform_coords_in_mat(pval_iter_mat, t_mat)
+  se_pc_mat <- transform_coords_in_mat(se_iter_mat, t_mat)
+  # ARCHIVE bespoke PCA
+  #pca_list <- find_principal_components(b_iter_mat, pval_iter_mat, se_iter_mat,
+   #                       nums$np, na_handling$narm)
+  #b_pc_mat    <- pca_list$beta
+  #plot_scatter(b_pc_mat,
+  #              iter_traits,
+  #              num_axis = num_axis)
   # p_pc_mat <- pca_list$pval
   # t_mat       <- pca_list$transform
   # Store the matrices for result output
