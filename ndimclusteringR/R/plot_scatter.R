@@ -19,7 +19,6 @@ plot_scatter <- function(b_mat,
                           num_axis = 2,
                           pw = 8,
                           ph = 4) {
-  print(b_mat)
   pnme <- paste0(iter_traits$res_dir, "scatter_num_axis_pc", num_axis, ".png")
   c1 <- colnames(b_mat)[1]
   c2 <- colnames(b_mat)[2]
@@ -31,6 +30,7 @@ plot_scatter <- function(b_mat,
   )
   ggplot2::ggplot(data = res_df,
                   ggplot2::aes(x = bx, y = by)) + # nolint: object_usage_linter.
+   ggplot2::geom_point() +
   ggplot2::ylab("Association with PC2") +
   ggplot2::xlab("Association with PC1") +
   ggplot2::ggtitle("Clustered by principal components")
