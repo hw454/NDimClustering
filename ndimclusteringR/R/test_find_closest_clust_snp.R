@@ -49,31 +49,31 @@ test_find_closest_clust_snp <- function() {
                             cluster_df = cluster_df,
                             centroids_df = centres_df,
                             )
-  print(snp_clust_list)
   # Combine the list of dataframes into one dataframe.
   # Override Cluster_df with the new assignment
   cluster_df_list <- lapply(snp_clust_list,
                           df_cols,
                           col = "clusters")
-  print(cluster_df_list)
   cluster_df <- Reduce(rbind, cluster_df_list)
   expect_cols_clust <- c("clust_num", "clust_dist", "clust_prob")
   clust_dist_df_list <- lapply(snp_clust_list,
                           df_cols,
                           col = "clust_dist")
   clust_dist_df <- Reduce(rbind, clust_dist_df_list)
-  expect_cols_dist <- c("C1", "C2", "C3", "C4", "C5")
-  print(cluster_df)
+  c_1 <- make_clust_col_name(1)
+  c_2 <- make_clust_col_name(2)
+  c_3 <- make_clust_col_name(3)
+  c_4 <- make_clust_col_name(4)
+  c_5 <- make_clust_col_name(5)
+  expect_cols_dist <- c(c_1, c_2, c_3, c_4, c_5)
   testit::assert("find_closest_clust_snp wrong labels cluster_df",
     all(names(cluster_df) == expect_cols_clust))
-testit::assert("find_closest_clust_snp wrong labels clust_dist_df",
+  testit::assert("find_closest_clust_snp wrong labels clust_dist_df",
     all(names(clust_dist_df) == expect_cols_dist))
   testit::assert("find_closest_clust_snp wrong type",
     is.data.frame(cluster_df))
-  print(cluster_df)
 }
 df_cols <- function(df, col) {
-  print(df[[col]])
   testit::assert("not dataframe in function",
   is.data.frame(df[[col]]))
   return(df[[col]])
