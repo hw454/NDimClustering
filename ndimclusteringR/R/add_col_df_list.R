@@ -11,6 +11,6 @@ add_col_df_list <- function(df_list, col, col_val) {
     df_list_out <- lapply(df_list, add_col_df,
                       col = col,
                       col_val = col_val)
-    df_list_out <- stats::setNames(df_list_out, names(df_list))
+    df_list <- stats::setNames(df_list_out, names(df_list))
     return(df_list)
 }
