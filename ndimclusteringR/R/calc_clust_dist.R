@@ -8,7 +8,7 @@
 #'   default is the Froebenius norm "F".
 #'
 #' @description Calculate the distance between the point in "b_mat"
-#'   corresponding to "snp_id" and the cluster centroid allocated to "snp_id".
+#'   corresponding to "snp_id" and each cluster centroid.
 #'   This is stored in a dataframe "snp_clust_df" which has rowname "snp_id",
 #'   and column "clust_dist", with the calculated distance.
 #'
