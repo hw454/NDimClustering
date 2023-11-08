@@ -28,6 +28,6 @@ calc_clust_dist_col <- function(c_num, data_mat, centroids_df,
         cent = cent,
         data_mat = data_mat)
    clust_dist_col_df <- Reduce(rbind, clust_dist_lists)
-   colnames(clust_dist_col_df) <- c(paste0("clust_", c_num))
+   colnames(clust_dist_col_df) <- c(make_clust_col_name(c_num))
   return(clust_dist_col_df)
 }

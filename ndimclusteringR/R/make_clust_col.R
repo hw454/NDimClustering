@@ -9,12 +9,12 @@
 #' @return dataframe(Pi = numeric())
 #'
 #' @export
-make_clust_col <- function(i, rows = character()) {
+make_clust_col <- function(i, rows = character(), col_val = NA) {
   # Create a dataframe with column Pi
-  cname <- paste0("C", i)
+  cname <- make_clust_col_name(i)
   out <- data.frame(row.names = rows)
   if (length(rows) > 0) {
-    out[cname] <- NA
+    out[cname] <- col_val
   } else {
     out[cname] <- numeric()
   }
