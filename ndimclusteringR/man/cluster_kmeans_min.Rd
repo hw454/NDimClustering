@@ -16,7 +16,7 @@ cluster_kmeans_min(
 )
 }
 \arguments{
-\item{data_list}{List of the matrices of data. 
+\item{data_list}{List of the matrices of data.
 Conatins the\:
   * "beta" matrix of assocaition data
   * "se" matrix of standard error data

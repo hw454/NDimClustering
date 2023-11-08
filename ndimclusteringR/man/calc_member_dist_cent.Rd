@@ -36,10 +36,8 @@ Calculate the distance between the point in "b_mat"
 }
 \seealso{
 Other distance_functions: 
-\code{\link{calc_all_dist_pairs}()},
 \code{\link{calc_clust_dist_col}()},
 \code{\link{calc_clust_dist}()},
-\code{\link{calc_col_dist}()},
 \code{\link{calc_pair_dist_df}()},
 \code{\link{calc_snp_cent_dist}()},
 \code{\link{max_dist_calc}()}

@@ -4,7 +4,7 @@
 \alias{make_clust_col}
 \title{Create a dataframe with column clust_i.}
 \usage{
-make_clust_col(i, rows = character())
+make_clust_col(i, rows = character(), col_val = NA)
 }
 \arguments{
 \item{i}{- The number for the column label}

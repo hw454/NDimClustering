@@ -17,6 +17,9 @@ Other tests:
 \code{\link{test_add_nclust_cols_onerow}()},
 \code{\link{test_add_np_cols_empty}()},
 \code{\link{test_add_np_cols_onerow}()},
+\code{\link{test_calc_clust_dist_col}()},
+\code{\link{test_calc_clust_dist}()},
+\code{\link{test_calc_member_dist_cent}()},
 \code{\link{test_find_aic}()},
 \code{\link{test_km_nan}()},
 \code{\link{test_na_check}()}

@@ -21,15 +21,13 @@ snp_clust_df
 }
 \description{
 Calculate the distance between the point in "b_mat"
-  corresponding to "snp_id" and the cluster centroid allocated to "snp_id".
+  corresponding to "snp_id" and each cluster centroid.
   This is stored in a dataframe "snp_clust_df" which has rowname "snp_id",
   and column "clust_dist", with the calculated distance.
 }
 \seealso{
 Other distance_functions: 
-\code{\link{calc_all_dist_pairs}()},
 \code{\link{calc_clust_dist_col}()},
-\code{\link{calc_col_dist}()},
 \code{\link{calc_member_dist_cent}()},
 \code{\link{calc_pair_dist_df}()},
 \code{\link{calc_snp_cent_dist}()},
