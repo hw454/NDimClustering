@@ -1,6 +1,6 @@
 #' Cluster the data using kmeans then minimising aic.
 #'
-#' @param data_list List of the matrices of data. 
+#' @param data_list List of the matrices of data.
 #'  Conatins the\:
 #'    * "beta" matrix of assocaition data
 #'    * "se" matrix of standard error data
