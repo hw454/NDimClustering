@@ -10,9 +10,10 @@
 test_make_clust_col <- function() {
   df <- data.frame(row.names = character())
   ex_rows <- c("A", "B", "C")
-  df <- make_clust_col(5, rows = ex_rows)
-  df2 <- make_clust_col(5)
-  expect_cols <- c("C5")
+  c_num <- as.integer(5)
+  df <- make_clust_col(c_num, rows = ex_rows)
+  df2 <- make_clust_col(c_num)
+  expect_cols <- c(make_clust_col_name(c_num))
   print("... test case with rows")
   testit::assert("make_clust_col has found the wrong column names",
     all(colnames(df) == expect_cols))
