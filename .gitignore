@@ -43,3 +43,4 @@ rsconnect/
 *.pycache
 *.log
 basic_bpOFF_clustprobOFF/*
+*.png
