@@ -49,10 +49,11 @@ km_nan <- function(b_mat,
   snp_list <- rownames(b_mat)
   # Generate data frame with max and min data.
   # Min and Max are columns. Rows for each column of b_mat
-    min_max_df <- data.frame(
+  b_mat_no_na <- na.omit(b_mat)
+  min_max_df <- data.frame(
     row.names = colnames(b_mat),
-    min = apply(b_mat, 2, min, na.rm = na_rm),
-    max = apply(b_mat, 2, max, na.rm = na_rm)
+    min = apply(b_mat_no_na, 2, min),
+    max = apply(b_mat_no_na, 2, max)
   )
   min_max_df <- stats::na.omit(min_max_df)
   # Randomly assign central coords per cluster.
