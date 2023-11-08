@@ -8,7 +8,7 @@
 #'
 #' @export
 add_col_df <- function(df, col, col_val = NULL) {
-    if (nrow(df) <= 0){
+    if (nrow(df) <= 0) {
         df[col] <- numeric()
     } else {
         df[col] <- col_val
