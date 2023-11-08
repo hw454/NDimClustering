@@ -10,8 +10,5 @@
 #'
 #' @export
 make_clust_col_name <- function(c_num) {
-testit::assert("Error in `make clust col name`.
-               Cluster number should be an integer",
-               typeof(c_num) == integer())
 return(paste0("clust_", c_num))
 }

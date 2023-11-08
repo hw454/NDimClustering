@@ -11,7 +11,7 @@
 #' @export
 make_pc_col <- function(i, rows = character()) {
   # Create a dataframe with column Pi
-  cname <- paste0("PC", i)
+  cname <- make_pc_col_name(i)
   out <- data.frame(row.names = rows)
   if (length(rows) > 0) {
     out[cname] <- NA
