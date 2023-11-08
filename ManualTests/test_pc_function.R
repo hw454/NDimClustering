@@ -10,7 +10,7 @@ form_beta_corr <- function(n_path, d, rand_shift, a_list, b_list) {
     a <- a_list[n_path]
     b <- b_list[n_path]
     x_mat <- matrix(rep(1:d, times = d), nrow = d)
-    beta <- (a * (2 ** n_path) + rand_shift) * x_mat + b
+    beta <- (a * x_mat + b) + rand_shift
     beta[, 1] <- 1:d
     return(beta)
 }
@@ -21,8 +21,8 @@ test_pc_function <- function(d = 10, num_path = 0, pc_type = "HW", n_pc = 3) {
     print(paste("Test", pc_type, "with", num_path, "pathways"))
     rand_mat <- matrix(runif(d * d, 0, 1), nrow = d)
     if (num_path > 0) {
-        a_list <- runif(num_path + 1, 0, 10)
-        b_list <- runif(num_path + 1, 0, 10)
+        a_list <- runif(num_path + 1, -3, 3)
+        b_list <- runif(num_path + 1, 0, d)
         mat_list <- lapply(1:(num_path + 1),
                            form_beta_corr,
                            d = d,
@@ -87,10 +87,9 @@ test_pc_function <- function(d = 10, num_path = 0, pc_type = "HW", n_pc = 3) {
                    out_pheno = c2,
                    num_axis = num_axis)
 }
-pc_type_1 <- "HW"
 pc_type_2 <- "prcomp"
 num_paths_list <- 0:3
-pc_list <- list(pc_type_1, pc_type_2)
+pc_list <- list(pc_type_2)
 d <- 30
 for (p_type in pc_list){
     for (np in num_paths_list){
