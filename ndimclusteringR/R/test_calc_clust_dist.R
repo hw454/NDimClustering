@@ -1,6 +1,6 @@
 #' Test `calc_clust_dist` the function which finds the distance
 #' from a point to the centre of a cluster numbered c_num
-#' 
+#'
 #' @description
 #'  * Check output is dataframe
 #'  * Check the number of rows is same data_mat
