@@ -5,6 +5,7 @@
 #' @param i - The number for the column label
 #' @param rows - The rows for the dataframe,
 #'  defalut\: character() for an empty dataframe
+#' @param col_val Value for column, default\: NA
 #'
 #' @return dataframe(Pi = numeric())
 #'
