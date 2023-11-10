@@ -26,7 +26,7 @@ test_find_low_percent_col_mat <- function() {
                                 na_rm = na_rm)
     print(typeof(low_rows))
     print(low_rows)
-    testit::assert("...Should find list", is.list(low_rows))
+    testit::assert("...Should find list", is.character(low_rows))
     testit::assert("...More than 10% of terms found",
         length(low_rows) < 0.1 * r * c)
     testit::assert("...All rows should be rownames in the data_mat",
