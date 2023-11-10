@@ -52,11 +52,11 @@ clust_pca_compare_single <- function(df_list, iter_traits,
   print(paste("PCA on", num_axis, "axes"))
   # Get the data upto this axis
   b_iter_mat <- data_matrices$beta[, trait_df$label]
-  b_iter_mat <- na.omit(b_iter_mat)
+  b_iter_mat <- stats::na.omit(b_iter_mat)
   se_iter_mat <- data_matrices$se[, trait_df$label]
-  se_iter_mat <- na.omit(se_iter_mat)
+  se_iter_mat <- stats::na.omit(se_iter_mat)
   pval_iter_mat <- data_matrices$pval[, trait_df$label]
-  pval_iter_mat <- na.omit(pval_iter_mat)
+  pval_iter_mat <- stats::na.omit(pval_iter_mat)
   # Cluster the data on these axes
   pca_beta <- stats::prcomp(b_iter_mat,
         center = TRUE,
@@ -95,23 +95,14 @@ clust_pca_compare_single <- function(df_list, iter_traits,
   } else {
     st <- "regular"
   }
-  if (grepl("min", iter_traits$clust_typ)) {
-    cluster_out <- cluster_kmeans_min(pca_list,
+  cluster_out <- cluster_kmeans(pca_list,
                                       nums$nr,
                                       space_typ = st,
+                                      clust_typ = iter_traits$clust_typ,
                                       clust_prob_on = iter_traits$clust_prob_on, # nolint
                                       norm_typ = norm_typs$clust,
                                       threshold = thresholds$clust,
                                       narm = na_handling$narm)
-  } else if (grepl("basic", iter_traits$clust_typ)) {
-    cluster_out <- cluster_kmeans_basic(pca_list,
-                                        nums$nr,
-                                        space_typ = st,
-                                        clust_prob_on = iter_traits$clust_prob_on, # nolint
-                                        threshold = thresholds$clust,
-                                        norm_typ = norm_typs$clust,
-                                        narm = na_handling$narm)
-  }
   cluster_df <- cluster_out$clusters
   # Centroids df centroids_df <- cluster_out$centres
   # Calculate the distance to all the cluster centres
