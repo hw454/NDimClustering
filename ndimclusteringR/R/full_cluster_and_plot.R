@@ -100,10 +100,10 @@ full_cluster_and_plot <- function(data_matrices,
   print("Clust done")
   print("Plot pc scores")
   c_scores_pc <- out$clust_pc_scores
-  plot_trait_heatmap(c_scores_pc, iter_traits)
+  plot_trait_heatmap(c_scores_pc, iter_traits, prefix = "pca")
   print("Plot trait scores")
   c_scores_tr <- out$clust_trait_scores
-  plot_trait_heatmap(c_scores_tr, iter_traits)
+  plot_trait_heatmap(c_scores_tr, iter_traits, prefix = "pheno")
   print("Heatmap plot done")
   num_axis <- length(data_matrices$trait_info$phenotype)
   plot_clust_scatter(out$clust_items, out$b_pc, out$se_pc, iter_traits,
@@ -116,9 +116,18 @@ full_cluster_and_plot <- function(data_matrices,
                              num_axis = num_axis)
   print("exposure outcome scatter plot done")
   # Only plot max diff when iterating through the axis
-  plot_clust_scatter_rgb(out$clust_membership, out$b_pc, out$se_pc, iter_traits,
+  plot_clust_scatter_rgb(out$clust_membership,
+                          out$b_pc,
+                          out$se_pc,
+                          iter_traits,
                           num_axis = num_axis)
-  print("rgb scatter plot done")
+  print("rgb pca scatter plot done")
+  plot_clust_scatter_rgb(out$clust_membership,
+                         data_matrices$beta,
+                         data_matrices$se,
+                         iter_traits,
+                         num_axis = num_axis)
+  print("rgb exp out scatter plot done")
   # Plot the transform heatmap.
   plot_transform_heatmap(out$e_mat, iter_traits)
   out <- list("iter_df" = iter_df,
