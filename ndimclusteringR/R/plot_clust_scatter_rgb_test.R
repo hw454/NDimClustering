@@ -14,7 +14,7 @@
 #' @param ph The plot heigh, default\:4
 #'
 #' @export
-plot_clust_scatter_rgb <- function(clust_dist_df, b_mat,
+plot_clust_scatter_rgb_test <- function(clust_dist_df, b_mat,
                           se_mat,
                           iter_traits,
                           num_axis = 1,
@@ -36,7 +36,7 @@ plot_clust_scatter_rgb <- function(clust_dist_df, b_mat,
   norm_se <- rowSums((se_mat - se_min) / (se_max - se_min))
   alpha_vec <- 1.0 / (1.0 + norm_se)
   # Normalise the values in each column then assign to rgb value.
-  snp_list <- rownames(b_mat)
+  snp_list <- row.names(b_mat)
   max_dist <- apply(crop_clust_dist_df, 2, max)
   min_dist <- apply(crop_clust_dist_df, 2, min)
   norm_dist_df <- (crop_clust_dist_df - min_dist) / (max_dist - min_dist)
@@ -53,8 +53,6 @@ plot_clust_scatter_rgb <- function(clust_dist_df, b_mat,
   my_col_vec <- sapply(seq_along(my_col_vec),
                   function(i) eval(parse(text = my_col_vec[i])))
   # Assign the data required for pplotting into a dataframe
-  print(dim(b_mat))
-  print(dim(snp_list))
   res_df <- data.frame(
     row.names = snp_list,
     bx = b_mat[, c1],
@@ -66,20 +64,24 @@ plot_clust_scatter_rgb <- function(clust_dist_df, b_mat,
   )
   print(utils::head(res_df))
   print(utils::head(my_col_vec))
-  title_str <- paste("Clusters plotted against the", c1, "and", c2, "traits.")
-  caption_str <- paste("r score given by weighting to", clust_names[1],
-              "\n g score given by weighting to", clust_names[2],
-              "\n b score given by weighting to", clust_names[3],
-              "\n Clustering method used is", iter_traits$clust_typ)
-    # Set the filename
+  # Set the filename
   pnme <- paste0(iter_traits$res_dir,
                 "scatter_clustrgb",
                 c1,
                 "_vs_",
                 c2,
-                "_naxis",
-                num_axis,
+                "_pctype",
+                iter_traits$pc_type,
+                "_numpaths",
+                iter_traits$num_paths,
                 ".png")
+  title_str <- paste("Clusters plotted against the", c1, "and", c2, "traits.")
+  caption_str <- paste("Test case with", iter_traits$num_paths,
+              "pathways. \n The method for PCA that will be used is",
+              iter_traits$pc_type, ".",
+              "\n r score given by weighting to", clust_names[1],
+              "\n g score given by weighting to", clust_names[2],
+              "\n b score given by weighting to", clust_names[3])
   # Set the main plotting data
   ggplot2::ggplot(data = res_df,
                   ggplot2::aes(x = bx, y = by)) + # nolint: object_usage_linter.

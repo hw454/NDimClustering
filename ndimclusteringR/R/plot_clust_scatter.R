@@ -40,6 +40,16 @@ plot_clust_scatter <- function(cluster_df, b_mat,
     clust_prob = crop_cluster_df[snp_list, "clust_prob"],
     alp = alpha_vec
   )
+  pnme <- paste0(iter_traits$res_dir,
+                "scatter",
+                c1,
+                "_vs_",
+                c2,
+                "_naxis",
+                num_axis,
+                ".png")
+  title_str <- paste("Clusters plotted against the", c1, "and", c2, "traits.")
+  caption_str <- paste("The clustering type used is", iter_traits$clust_typ)
   ggplot2::ggplot(data = res_df,
                   ggplot2::aes(x = bx, y = by)) + # nolint: object_usage_linter.
   ggplot2::geom_point(ggplot2::aes(
@@ -56,9 +66,10 @@ plot_clust_scatter <- function(cluster_df, b_mat,
                  ymax = res_df$by + 1.96 * res_df$byse,
                  color = clust_num,
                  alpha = alp), linetype = "solid") +
-  ggplot2::ylab("Association with PC2") +
-  ggplot2::xlab("Association with PC1") +
-  ggplot2::ggtitle("Clustered by principal components")
+  ggplot2::ylab(paste("Association with", c2)) +
+  ggplot2::xlab(paste("Association with", c1)) +
+  ggplot2::ggtitle(title_str) +
+  ggplot2::labs(caption = caption_str)
   ggplot2::ggsave(filename = pnme, width = pw, height = ph)
   return()
 }

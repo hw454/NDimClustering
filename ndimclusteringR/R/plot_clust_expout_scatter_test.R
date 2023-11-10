@@ -16,7 +16,7 @@
 #' @param ph The plot heigh, default\:4
 #'
 #' @export
-plot_clust_exp_out_scatter <- function(cluster_df, b_mat,
+plot_clust_expout_scatter_test <- function(cluster_df, b_mat,
                           se_mat,
                           iter_traits,
                           exp_pheno,
@@ -26,7 +26,6 @@ plot_clust_exp_out_scatter <- function(cluster_df, b_mat,
                           ph = 4) {
   crop_cluster_df <- cluster_df[cluster_df$num_axis == num_axis, ]
   crop_cluster_df <- tibble::column_to_rownames(crop_cluster_df, "snp_id")
-
   c1 <- exp_pheno
   c2 <- out_pheno
   se_max <- apply(se_mat, 2, max)
@@ -49,11 +48,14 @@ plot_clust_exp_out_scatter <- function(cluster_df, b_mat,
                 c1,
                 "_vs_",
                 c2,
-                "_naxis",
-                num_axis,
+                "_pctype",
+                iter_traits$pc_type,
+                "_numpaths",
+                iter_traits$num_paths,
                 ".png")
-  title_str <- (paste("Clusters plotted against", c1, "and", c2))
-  caption_str <- paste("The clustering type used is", iter_traits$clust_typ)
+  title_str <- paste("Clusters plotted against the", c1, "and", c2, ".")
+  caption_str <- paste("Test case with", iter_traits$num_paths,
+  "pathways. \n The method for PCA that will be used is", iter_traits$pc_type)
   ggplot2::ggplot(data = res_df,
                   ggplot2::aes(x = bx, y = by)) + # nolint: object_usage_linter.
   ggplot2::geom_point(ggplot2::aes(
@@ -72,7 +74,7 @@ plot_clust_exp_out_scatter <- function(cluster_df, b_mat,
                  alpha = alp), linetype = "solid") +
   ggplot2::xlab(paste("Association with", c1)) +
   ggplot2::ylab(paste("Association with", c2)) +
-  ggplot2::ggtitle(title_str) +
+  ggplot2::ggtitle(title_str)+
   ggplot2::labs(caption = caption_str)
   ggplot2::ggsave(filename = pnme, width = pw, height = ph)
   return()

@@ -12,7 +12,7 @@
 #' @param ph The plot heigh, default\:4
 #'
 #' @export
-plot_scatter <- function(b_mat,
+plot_scatter_test <- function(b_mat,
                           iter_traits,
                           num_axis = 2,
                           pw = 8,
@@ -30,6 +30,10 @@ plot_scatter <- function(b_mat,
                 c1,
                 "_vs_",
                 c2,
+                "_pctype",
+                iter_traits$pctype,
+                "_numpaths",
+                iter_traits$num_paths,
                 ".png")
   title_str <- paste("Before clustering, scatter ", c1, "vs", c2)
   ggplot2::ggplot(data = res_df,

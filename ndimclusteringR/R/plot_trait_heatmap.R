@@ -23,7 +23,7 @@
 #' @return Final heatmap plot
 #'
 #' @export
-plot_trait_heatmap <- function(c_scores, iter_traits, pw = 16, ph = 4) {
+plot_trait_heatmap <- function(c_scores, iter_traits, pw = 16, ph = 4, prefix="") {
   ignore_cols <- c("num_axis")
   full_trait_list <- colnames(c_scores)
   full_trait_list <- full_trait_list[!(full_trait_list %in% ignore_cols)]
@@ -36,10 +36,13 @@ plot_trait_heatmap <- function(c_scores, iter_traits, pw = 16, ph = 4) {
   print(paste("vmax", vmax))
   print(paste("break_width", break_width))
   d_str <- make_full_desc_str(iter_traits)
-  title_str <- paste("Association score for trait against cluster. 
-  Cluster type", d_str)
+  title_str <- paste("Association score for trait against cluster.")
+  caption_str <- paste( "Cluster type", d_str, " The traits are", prefix)
   for (i in unique(c_scores$num_axis)){
     # Get the traits for this iteration
+      caption_str <- paste("Cluster type", d_str,
+                          " The traits are", prefix,
+                          "The number of axis are ", i)
     trait_list <- crop_col_names(c_scores, "num_axis", i, ignore_cols)
     # FIXME calculate total score for each cluster an add as trait.
     # Extract the association scores for each clust trait pair.
@@ -65,7 +68,8 @@ plot_trait_heatmap <- function(c_scores, iter_traits, pw = 16, ph = 4) {
                       midpoint = colmid,
                       breaks = seq(vmin, vmax, break_width),
                       limits = c(vmin, vmax)) +
-      ggplot2::ggtitle(title_iter)
+      ggplot2::ggtitle(title_iter) +
+      ggplot2::labs(caption = caption_str)
     ggplot2::ggsave(filename = pnme, width = pw, height = ph)
   }
 return(p)
