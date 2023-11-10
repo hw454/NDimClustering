@@ -37,6 +37,8 @@ Other tests:
 \code{\link{test_calc_clust_dist}()},
 \code{\link{test_calc_member_dist_cent}()},
 \code{\link{test_find_aic}()},
+\code{\link{test_find_low_percent_col_mat}()},
+\code{\link{test_find_low_percent_col}()},
 \code{\link{test_make_clust_col}()},
 \code{\link{test_na_check}()}
 }

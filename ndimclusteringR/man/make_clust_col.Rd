@@ -11,6 +11,8 @@ make_clust_col(i, rows = character(), col_val = NA)
 
 \item{rows}{- The rows for the dataframe,
 defalut\: character() for an empty dataframe}
+
+\item{col_val}{Value for column, default\: NA}
 }
 \value{
 dataframe(Pi = numeric())
