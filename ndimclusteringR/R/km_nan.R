@@ -49,7 +49,7 @@ km_nan <- function(b_mat,
   snp_list <- rownames(b_mat)
   # Generate data frame with max and min data.
   # Min and Max are columns. Rows for each column of b_mat
-  b_mat_no_na <- na.omit(b_mat)
+  b_mat_no_na <- stats::na.omit(b_mat)
   min_max_df <- data.frame(
     row.names = colnames(b_mat),
     min = apply(b_mat_no_na, 2, min),
