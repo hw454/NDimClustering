@@ -4,7 +4,7 @@
 \alias{plot_trait_heatmap}
 \title{Plot a heatmap of the scores for each trait for each cluster.}
 \usage{
-plot_trait_heatmap(c_scores, iter_traits, pw = 16, ph = 4)
+plot_trait_heatmap(c_scores, iter_traits, pw = 16, ph = 4, prefix = "")
 }
 \arguments{
 \item{c_scores}{- Dataframe of clusters and their scores for each axis.
