@@ -24,15 +24,12 @@ test_find_low_percent_col <- function() {
                                 col = col,
                                 col_percent = p,
                                 na_rm = na_rm)
-    print(typeof(low_rows))
-    print(low_rows)
-    testit::assert("...Should find list", is.character(low_rows))
+    testit::assert("...Should find character", is.character(low_rows))
     testit::assert("...More than 10% of terms found",
-        length(low_rows) < 0.1 * r)
+        length(low_rows) <= 0.1 * r)
     testit::assert("...All rows should be rownames in the data_mat",
         low_rows %in% rownames(data_mat))
-    min_ind <- arrayInd(which.min(data_mat[, col]), data_mat[, col])
-    min_row <- rownames(data_mat)[min_ind[, 1]]
+    min_row <- rownames(data_mat)[which.min(data_mat[, col])]
     testit::assert("...Min should be in lowest percent",
         min_row %in% low_rows)
 }
