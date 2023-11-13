@@ -116,16 +116,22 @@ full_cluster_and_plot <- function(data_matrices,
                              num_axis = num_axis)
   print("exposure outcome scatter plot done")
   # Only plot max diff when iterating through the axis
+  col1 <- colnames(out$b_pc)[1]
+  col2 <- colnames(out$b_pc)[2]
   plot_clust_scatter_rgb(out$clust_membership,
                           out$b_pc,
                           out$se_pc,
                           iter_traits,
+                          c1 = col1,
+                          c2 = col2,
                           num_axis = num_axis)
   print("rgb pca scatter plot done")
   plot_clust_scatter_rgb(out$clust_membership,
                          data_matrices$beta,
                          data_matrices$se,
                          iter_traits,
+                         c1 = out_pheno,
+                         c2 = exp_pheno,
                          num_axis = num_axis)
   print("rgb exp out scatter plot done")
   # Plot the transform heatmap.

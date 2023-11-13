@@ -9,6 +9,8 @@ plot_clust_scatter_rgb(
   b_mat,
   se_mat,
   iter_traits,
+  c1,
+  c2,
   num_axis = 1,
   pw = 8,
   ph = 4
