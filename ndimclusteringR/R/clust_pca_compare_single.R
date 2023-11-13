@@ -141,8 +141,6 @@ clust_pca_compare_single <- function(df_list, iter_traits,
   c_score_tr0["num_axis"] <- num_axis
   clust_dist_df["num_axis"] <- num_axis
   cluster_df["num_axis"] <- num_axis
-  print(utils::head(clust_dist_df))
-  print(utils::head(cluster_df))
   clust_dist_df <- tibble::rownames_to_column(clust_dist_df, "snp_id")
   cluster_df <- tibble::rownames_to_column(cluster_df, "snp_id")
   df_list$clust_items <- rbind(df_list$clust_items, cluster_df)
