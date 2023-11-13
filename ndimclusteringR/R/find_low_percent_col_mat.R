@@ -11,6 +11,7 @@ find_low_percent_col_mat <- function(data_mat, col_percent, na_rm = TRUE){
                            col_percent = col_percent,
                            na_rm = na_rm)
    sub_rows <- Reduce(rbind, sub_rows_list)
+   sub_rows <- as.vector(sub_rows)
    sub_rows <- unique(sub_rows)
    return(sub_rows)
 }
