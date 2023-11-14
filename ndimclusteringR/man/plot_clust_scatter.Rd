@@ -9,6 +9,8 @@ plot_clust_scatter(
   b_mat,
   se_mat,
   iter_traits,
+  c1,
+  c2,
   num_axis = 2,
   pw = 8,
   ph = 4
@@ -22,6 +24,10 @@ plot_clust_scatter(
 \item{se_mat}{The matrix of the standarad errors associated with the scores.}
 
 \item{iter_traits}{The iteration variables for the type of iteration.}
+
+\item{c1}{Label for the data column for x-axis}
+
+\item{c2}{Label for the data column for y-axis}
 
 \item{num_axis}{The number of trait axis, default\:0}
 

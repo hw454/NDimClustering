@@ -9,6 +9,8 @@
 #' @param b_mat The matrix of the score data
 #' @param se_mat The matrix of the standarad errors associated with the scores.
 #' @param iter_traits The iteration variables for the type of iteration.
+#' @param c1 Label for the data column for x-axis
+#' @param c2 Label for the data column for y-axis
 #' @param num_axis The number of trait axis, default\:0
 #' @param pw The plot width, default\:8
 #' @param ph The plot heigh, default\:4
@@ -35,7 +37,7 @@ plot_clust_scatter_rgb <- function(clust_dist_df, b_mat,
   # Set the transparency alpha to be higher when the se is lower.
   se_max <- apply(se_mat[snp_list, ], 2, max, na.rm = TRUE)
   se_min <- apply(se_mat[snp_list, ], 2, min, na.rm = TRUE)
-  norm_se <- rowSums((se_mat - se_min) / (se_max - se_min))
+  norm_se <- rowSums((se_mat[snp_list, ] - se_min) / (se_max - se_min))
   alpha_vec <- 1.0 / (1.0 + norm_se)
   # Normalise the values in each column then assign to rgb value.
   max_dist <- apply(crop_clust_dist_df[snp_list, ], 2, max, na.rm = TRUE)
@@ -45,7 +47,6 @@ plot_clust_scatter_rgb <- function(clust_dist_df, b_mat,
   norm_dist_df[norm_dist_df < 0] <- 0.0
   norm_dist_df[norm_dist_df > 1] <- 1.0
   norm_dist_df[is.na(norm_dist_df)] <- 0.0
-  print(norm_dist_df)
   clust_names <- colnames(norm_dist_df)
   colour_vec <- paste0("rgb(", norm_dist_df[, clust_names[1]], ",",
                     norm_dist_df[, clust_names[2]], ",",
@@ -62,9 +63,10 @@ plot_clust_scatter_rgb <- function(clust_dist_df, b_mat,
     by = b_mat[snp_list, c2],
     bxse = se_mat[snp_list, c1],
     byse = se_mat[snp_list, c2],
-    cols = colour_vec[snp_list],
-    alp = alpha_vec[snp_list]
+    cols = colour_vec,
+    alp = alpha_vec
   )
+  # Create the strings for the filename and labels
   title_str <- paste("Clusters plotted against the", c1, "and", c2, "traits.")
   caption_str <- paste("r score given by weighting to", clust_names[1],
               "\n g score given by weighting to", clust_names[2],
@@ -79,6 +81,11 @@ plot_clust_scatter_rgb <- function(clust_dist_df, b_mat,
                 "_naxis",
                 num_axis,
                 ".png")
+  # Find the axis limits
+  xmin <- min(res_df$bx, na.rm = TRUE)
+  xmax <- max(res_df$bx, na.rm = TRUE)
+  ymin <- min(res_df$by, na.rm = TRUE)
+  ymax <- max(res_df$by, na.rm = TRUE)
   # Set the main plotting data
   ggplot2::ggplot(data = res_df,
                   ggplot2::aes(x = bx, y = by)) + # nolint: object_usage_linter.
@@ -100,6 +107,8 @@ plot_clust_scatter_rgb <- function(clust_dist_df, b_mat,
   # Add the colour scale
   ggplot2::scale_color_manual(values = my_col_vec) +
   # Add the labels
+  ggplot2::xlim(xmin, xmax) +
+  ggplot2::ylim(ymin, ymax) +
   ggplot2::ylab(paste("Association with", c2)) +
   ggplot2::xlab(paste("Association with", c1)) +
   ggplot2::ggtitle(title_str) +

@@ -25,6 +25,10 @@ plot_clust_scatter_rgb(
 
 \item{iter_traits}{The iteration variables for the type of iteration.}
 
+\item{c1}{Label for the data column for x-axis}
+
+\item{c2}{Label for the data column for y-axis}
+
 \item{num_axis}{The number of trait axis, default\:0}
 
 \item{pw}{The plot width, default\:8}
