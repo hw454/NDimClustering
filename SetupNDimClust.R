@@ -5,7 +5,7 @@
 
 # variable set-up
 threshmul <- 5.0
-clust_threshold <- 1e-3
+clust_threshold <- 1e-8
 thresh_norm <- "F"
 clust_norm <- "F"
 nr <- 5 # Number of clusters
