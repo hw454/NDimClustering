@@ -5,7 +5,7 @@
 #' @param na_rm whether to remove NaNs or not
 #'
 #' @export
-find_low_percent_col_mat <- function(data_mat, col_percent, na_rm = TRUE){
+find_low_percent_col_mat <- function(data_mat, col_percent, na_rm = TRUE) {
    sub_rows_list <- lapply(colnames(data_mat), find_low_percent_col,
                            data_mat = data_mat,
                            col_percent = col_percent,
