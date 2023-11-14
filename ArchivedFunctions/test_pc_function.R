@@ -19,6 +19,14 @@ create_pc <- function(i) {
 }
 test_pc_function <- function(d = 10, num_path = 0, pc_type = "HW", n_pc = 3) {
     print(paste("Test", pc_type, "with", num_path, "pathways"))
+    iter_traits <- data.frame("bp_on" = TRUE,
+                         "clust_prob_on" = TRUE,
+                         "clust_typ" = "test",
+                         "ndim_typ" = "test",
+                         "pc_type" = pc_type,
+                         "num_paths" = num_path,
+                         "res_dir" = paste0("PC_TestResults/")
+    )
     rand_mat <- matrix(runif(d * d, 0, 1), nrow = d)
     if (num_path > 0) {
         a_list <- runif(num_path + 1, -3, 3)
@@ -33,6 +41,7 @@ test_pc_function <- function(d = 10, num_path = 0, pc_type = "HW", n_pc = 3) {
     } else {
         dummy_beta <- rand_mat
     }
+    plot_scatter_test(b_mat, num_axis = d, iter_traits = iter_traits)
     dummy_se <- matrix(runif((num_path + 1) * d * d, 0, 1),
                              nrow = (num_path + 1) * d)
     dummy_p <- matrix(runif((num_path + 1) * d * d),
@@ -43,7 +52,10 @@ test_pc_function <- function(d = 10, num_path = 0, pc_type = "HW", n_pc = 3) {
     # Compute the Sample SE with na_rm
     num_axis <- ncol(dummy_beta)
     if (pc_type == "HW") {
-        out_list <- find_principal_components(dummy_beta, dummy_se, dummy_p, np = n_pc)
+        out_list <- find_principal_components(dummy_beta,
+                                        dummy_se,
+                                        dummy_p,
+                                        np = n_pc)
         out_list$se <- calc_scale_mat(out_list$se)
         pc_cols <- lapply(1:n_pc, create_pc)
         colnames(out_list$se) <- pc_cols
@@ -71,25 +83,26 @@ test_pc_function <- function(d = 10, num_path = 0, pc_type = "HW", n_pc = 3) {
     cluster_df <- cluster_out$clusters
     cluster_df["num_axis"] <- num_axis
     cluster_df <- tibble::rownames_to_column(cluster_df, "snp_id")
-    iter_traits <- data.frame("bp_on" = TRUE,
-                         "clust_prob_on" = TRUE,
-                         "clust_typ" = "test",
-                         "ndim_typ" = "test",
-                         "res_dir" = paste0("PC_TestResults/", pc_type, "_", num_path + 1, "paths")
-    )
     c1 <- colnames(dummy_beta)[1]
     c2 <- colnames(dummy_beta)[2]
     print("Plot")
-    plot_clust_scatter(cluster_df, out_list$beta, out_list$se, iter_traits,
+    plot_clust_scatter_test(cluster_df,
+                   out_list$beta,
+                   out_list$se,
+                   iter_traits,
                    num_axis = num_axis)
-    plot_clust_exp_out_scatter(cluster_df, dummy_beta, dummy_se, iter_traits,
+    plot_clust_expout_scatter_test(cluster_df,
+                   dummy_beta,
+                   dummy_se,
+                   iter_traits,
                    exp_pheno = c1,
                    out_pheno = c2,
                    num_axis = num_axis)
 }
+pc_type_1 <- "HW"
 pc_type_2 <- "prcomp"
 num_paths_list <- 0:3
-pc_list <- list(pc_type_2)
+pc_list <- list(pc_type_1, pc_type_2)
 d <- 30
 for (p_type in pc_list){
     for (np in num_paths_list){
