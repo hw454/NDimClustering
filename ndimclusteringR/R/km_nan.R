@@ -90,7 +90,6 @@ km_nan <- function(b_mat,
     cluster_df_list <- lapply(snp_clust_list,
                           df_cols,
                           col = "clusters")
-    print(cluster_df_list)
     cluster_df <- Reduce(rbind, cluster_df_list)
     clust_dist_df_list <- lapply(snp_clust_list,
                           df_cols,
