@@ -25,6 +25,10 @@ plot_scatter <- function(b_mat,
     bx = b_mat[, c1],
     by = b_mat[, c2]
   )
+  xmin <- min(res_df$bx, na.rm = TRUE)
+  xmax <- max(res_df$bx, na.rm = TRUE)
+  ymin <- min(res_df$by, na.rm = TRUE)
+  ymax <- max(res_df$by, na.rm = TRUE)
   pnme <- paste0(iter_traits$res_dir,
                 "scatter",
                 c1,
@@ -34,7 +38,9 @@ plot_scatter <- function(b_mat,
   title_str <- paste("Before clustering, scatter ", c1, "vs", c2)
   ggplot2::ggplot(data = res_df,
                   ggplot2::aes(x = bx, y = by)) + # nolint: object_usage_linter.
-   ggplot2::geom_point() +
+  ggplot2::geom_point() +
+  ggplot2::xlim(xmin, xmax) +
+  ggplot2::ylim(ymin, ymax) +
   ggplot2::ylab(paste("Association with", c2)) +
   ggplot2::xlab(paste("Association with", c1)) +
   ggplot2::ggtitle(title_str)
