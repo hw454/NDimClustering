@@ -106,8 +106,10 @@ full_cluster_and_plot <- function(data_matrices,
   plot_trait_heatmap(c_scores_tr, iter_traits, prefix = "pheno")
   print("Heatmap plot done")
   num_axis <- length(data_matrices$trait_info$phenotype)
+  col1 <- colnames(out$b_pc)[1]
+  col2 <- colnames(out$b_pc)[2]
   plot_clust_scatter(out$clust_items, out$b_pc, out$se_pc, iter_traits,
-                     num_axis = num_axis)
+                     c1 = col1, c2 = col2, num_axis = num_axis)
   print("scatter plot done")
   plot_clust_exp_out_scatter(out$clust_items, data_matrices$beta,
                              data_matrices$se, iter_traits,
