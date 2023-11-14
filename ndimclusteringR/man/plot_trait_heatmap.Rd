@@ -25,6 +25,8 @@ Destriptions for these terms in [make_trait_df]}
 \item{pw}{Plot width, default\:16}
 
 \item{ph}{Plot heigh, default\:4.}
+
+\item{prefix}{The variable category for y-axis}
 }
 \value{
 Final heatmap plot

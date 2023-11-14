@@ -15,6 +15,7 @@
 #'   Destriptions for these terms in [make_trait_df]
 #' @param pw Plot width, default\:16
 #' @param ph Plot heigh, default\:4.
+#' @param prefix The variable category for y-axis
 #'
 #' @description
 #' For values of num_axis plot the heatmap of traits against cluster score.
@@ -23,7 +24,8 @@
 #' @return Final heatmap plot
 #'
 #' @export
-plot_trait_heatmap <- function(c_scores, iter_traits, pw = 16, ph = 4, prefix="") {
+plot_trait_heatmap <- function(c_scores, iter_traits,
+                               pw = 16, ph = 4, prefix = "") {
   ignore_cols <- c("num_axis")
   full_trait_list <- colnames(c_scores)
   full_trait_list <- full_trait_list[!(full_trait_list %in% ignore_cols)]
@@ -37,7 +39,8 @@ plot_trait_heatmap <- function(c_scores, iter_traits, pw = 16, ph = 4, prefix=""
   print(paste("break_width", break_width))
   d_str <- make_full_desc_str(iter_traits)
   title_str <- paste("Association score for trait against cluster.")
-  caption_str <- paste( "Cluster type", d_str, " The traits are", prefix)
+  caption_str <- paste("Cluster type", d_str,
+                       "\n The traits are:", full_trait_list)
   for (i in unique(c_scores$num_axis)){
     # Get the traits for this iteration
       caption_str <- paste("Cluster type", d_str,
@@ -52,7 +55,7 @@ plot_trait_heatmap <- function(c_scores, iter_traits, pw = 16, ph = 4, prefix=""
     # Use log scale on the association scores
     long_form_df$score <- log(abs(long_form_df$score))
     # Plot the scores against the traits.
-    pnme <- paste0(iter_traits$res_dir, "trait_vs_ClustScores_iter", i, ".png")
+    pnme <- paste0(iter_traits$res_dir, prefix, "_vs_clust_naxis", i, ".png")
     title_iter <- paste0(title_str, ". \n Iteration number ", i)
     p <- ggplot2::ggplot(long_form_df,
                       ggplot2::aes(y = trait,
