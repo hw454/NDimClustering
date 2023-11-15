@@ -6,7 +6,7 @@ import requests
 from scipy.stats import t
 
 # Set the input location and datafile.
-input_dir="../NDimClustInputs/BP_Cancer/"
+input_dir="../NDimClustInputs/BMI_SBP/"
 trait_input_csv = "TraitsData.csv"
 
 def get_study(snp_list, id_list):

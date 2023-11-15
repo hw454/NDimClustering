@@ -104,6 +104,24 @@ cluster_kmeans <- function(data_list,
                     norm_typ = norm_typ,
                     prob_on = clust_prob_on,
                     na_rm = narm)
+  } else if (grepl("mrclust", clust_type)){
+    c1 <- colnames(b_mat_crop)[1]
+    c2 <- colnames(b_mat_crop)[2]
+    bx <- b_mat_crop[, c1]
+    by <- b_mat_crop[, c2]
+    bxse <- crop_se[, c1]
+    byse <- crop_se[, c2]
+    ratio_est <- by / bx
+    ratio_est_se <- byse / abs(bx)
+    results_list <- mrclust::mr_clust_em(theta = ratio_est,
+                                         theta_se = ratio_est_se,
+                                         bx = bx,
+                                         by = by,
+                                         bxse = bxse,
+                                         byse = byse,
+                                         obs_names = crop_snp_list)
+    results_df <- results_list$results$best
+    print(head(results_df))
   }
   # cluster number identification for each observation
   nan_snp_list <- lapply(setdiff(rownames(b_mat_clust), crop_snp_list),
