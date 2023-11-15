@@ -2,22 +2,25 @@ devtools::install(("ndimclusteringR"))
 library("ndimclusteringR")
 
 number_row_col_names <- function(mat) {
-    colnames(mat) <- seq_len(ncol(mat))
-    rownames(mat) <- seq_len(nrow(mat))
-    return(mat)
+  colnames(mat) <- seq_len(ncol(mat))
+  rownames(mat) <- seq_len(nrow(mat))
+  return(mat)
 }
 form_beta_corr <- function(n_path, d, rand_shift, a_list, b_list) {
-    a <- a_list[n_path]
-    b <- b_list[n_path]
-    x_mat <- matrix(rep(1:d, times = d), nrow = d)
-    beta <- (a * x_mat + b) + rand_shift
-    beta[, 1] <- 1:d
-    return(beta)
+  a <- a_list[n_path]
+  b <- b_list[n_path]
+  x_mat <- matrix(rep(1:d, times = d), nrow = d)
+  beta <- (a * x_mat + b) + rand_shift
+  beta[, 1] <- 1:d
+  return(beta)
 }
 create_pc <- function(i) {
-    return(paste0("PC", i))
+  return(paste0("PC", i))
 }
-test_clust_kmeans_function <- function(d = 10, num_path = 0, pc_type = "HW", n_pc = 2) {
+test_clust_kmeans_function <- function(d = 10,
+                                       num_path = 0,
+                                       pc_type = "prcomp",
+                                       n_pc = 2) {
   print(paste("Test", pc_type, "with", num_path, "pathways"))
   iter_traits <- data.frame("bp_on" = TRUE,
     "clust_prob_on" = TRUE,
@@ -43,7 +46,7 @@ test_clust_kmeans_function <- function(d = 10, num_path = 0, pc_type = "HW", n_p
   }
   plot_scatter_test(dummy_beta, num_axis = d, iter_traits = iter_traits)
   dummy_se <- matrix(runif((num_path + 1) * d * d, 0, 1),
-                    nrow = (num_path + 1) * d)
+                     nrow = (num_path + 1) * d)
   dummy_p <- matrix(runif((num_path + 1) * d * d),
                     nrow = (num_path + 1) * d)
   dummy_beta <- number_row_col_names(dummy_beta)
@@ -51,15 +54,7 @@ test_clust_kmeans_function <- function(d = 10, num_path = 0, pc_type = "HW", n_p
   dummy_p <- number_row_col_names(dummy_p)
   # Compute the Sample SE with na_rm
   num_axis <- ncol(dummy_beta)
-  if (pc_type == "HW") {
-    out_list <- find_principal_components(dummy_beta,
-                                          dummy_se,
-                                          dummy_p,
-                                          np = n_pc)
-    out_list$se <- calc_scale_mat(out_list$se)
-    pc_cols <- lapply(1:n_pc, create_pc)
-    colnames(out_list$se) <- pc_cols
-  } else if (pc_type == "prcomp") {
+  if (pc_type == "prcomp") {
     pca_beta <- stats::prcomp(dummy_beta,
                               center = TRUE,
                               scale = TRUE,
@@ -79,7 +74,10 @@ test_clust_kmeans_function <- function(d = 10, num_path = 0, pc_type = "HW", n_p
   }
   print("Cluster")
   print(out_list)
-  cluster_out <- cluster_kmeans(out_list, nclust = 3, space_typ = "angle", clust_typ = "mrclust")
+  cluster_out <- cluster_kmeans(out_list,
+                                nclust = 3,
+                                space_typ = "angle",
+                                clust_typ = "mrclust")
   cluster_df <- cluster_out$clusters
   cluster_df["num_axis"] <- num_axis
   cluster_df <- tibble::rownames_to_column(cluster_df, "snp_id")
