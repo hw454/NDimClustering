@@ -163,7 +163,7 @@ cluster_kmeans <- function(data_list, iter_traits,
                                 iter_traits,
                                 c1,
                                 c2,
-                                num_axis = 2)
+                                num_axis = num_axis)
   clust_out$clusters <- tibble::column_to_rownames(clust_out$clusters, "snp_id")
   #DEBUG END
   # ADDFEATURE - Assign junk clusters.
