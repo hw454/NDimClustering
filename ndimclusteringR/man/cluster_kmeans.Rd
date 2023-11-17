@@ -6,6 +6,7 @@
 \usage{
 cluster_kmeans(
   data_list,
+  iter_traits,
   nclust = 10,
   max_dist = 10,
   space_typ = "regular",
@@ -32,6 +33,10 @@ Conatins the\:
 If "angle" then the data is converted to angles. If "regular" the
 data is left the same.}
 
+\item{clust_typ}{String describing the clsutering method.
+* "basic" then find fixed number of clusters
+* "min" then minimise the aic}
+
 \item{clust_prob_on}{Bool switch. If TRUE (default) then cluster
 probability if used to weight the cluster scores.}
 
@@ -43,10 +48,6 @@ for clusters to be considered converged.}
 
 \item{narm}{Bool to indicate how to handle NaNs. If TRUE (default)
 NaNs are ignored in calculations.}
-
-\item{clust_type}{String describing the clsutering method.
-* "basic" then find fixed number of clusters
-* "min" then minimise the aic}
 }
 \value{
 clusters_df

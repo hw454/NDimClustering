@@ -11,7 +11,7 @@
 #' @param space_typ The spatial structure of the data when clustering.
 #'   If "angle" then the data is converted to angles. If "regular" the
 #'   data is left the same.
-#' @param clust_type String describing the clsutering method.
+#' @param clust_typ String describing the clsutering method.
 #'  * "basic" then find fixed number of clusters
 #'  * "min" then minimise the aic
 #' @param clust_prob_on Bool switch. If TRUE (default) then cluster
@@ -41,15 +41,15 @@
 #' @family cluster_functions
 #'
 #' @export
-cluster_kmeans <- function(data_list,
-                              nclust = 10,
-                              max_dist = 10.0,
-                              space_typ = "regular",
-                              clust_typ = "basic",
-                              clust_prob_on = TRUE,
-                              norm_typ = "F",
-                              threshold = 1e-5,
-                              narm = TRUE) {
+cluster_kmeans <- function(data_list, iter_traits,
+                           nclust = 10,
+                           max_dist = 10.0,
+                           space_typ = "regular",
+                           clust_typ = "basic",
+                           clust_prob_on = TRUE,
+                           norm_typ = "F",
+                           threshold = 1e-5,
+                           narm = TRUE) {
   # Using the association scores for each SNP accross traits cluster the traits
   # using kmeans. Return the cluster setup which minimises AIC.
   b_mat <- data_list$beta
@@ -57,8 +57,8 @@ cluster_kmeans <- function(data_list,
   # Crop the data to those with the lowest standard error.
   # Add remaining terms to closest cluster once centres have been found.
   #crop_se_snp_list <- find_low_percent_col_mat(se_mat,
-                                             # col_percent = 0.1,
-                                             # na_rm = narm)
+  #                                           # col_percent = 0.1,
+  #                                           # na_rm = narm)
   crop_se <- se_mat #se_mat[crop_se_snp_list, ]
   crop_se <- crop_se[stats::complete.cases(crop_se), ]
   crop_snp_list <- rownames(crop_se)
@@ -76,13 +76,13 @@ cluster_kmeans <- function(data_list,
   if (grepl("min", clust_typ)) {
     # Initial cluster dataframe
     clust_re_list <- lapply(1:(nclust + 1), km_nan,
-                    b_mat = b_mat_crop,
-                    clust_threshold = threshold,
-                    norm_typ = norm_typ,
-                    na_rm = narm,
-                    prob_on = clust_prob_on)
+                            b_mat = b_mat_crop,
+                            clust_threshold = threshold,
+                            norm_typ = norm_typ,
+                            na_rm = narm,
+                            prob_on = clust_prob_on)
     ic_list <- lapply(clust_re_list, find_all_ic,
-                    num_axis = ncol(b_mat))
+                      num_axis = ncol(b_mat))
     ic_df <- Reduce(rbind, ic_list)
     # Find the number of centres that minimizes the AIC
     min_cents <- ic_df$ncents[which.min(ic_df$aic)]
@@ -94,30 +94,49 @@ cluster_kmeans <- function(data_list,
     rownames(cluster_df) <- NULL
     cluster_df <- tibble::column_to_rownames(cluster_df, var = "snp_id")
     clust_out <- list("clusters" = cluster_df,
-                    "centres" = centroids_df,
-                    "clust_dist" = clust_dist_df)
+                      "centres" = centroids_df,
+                      "clust_dist" = clust_dist_df)
   } else if (grepl("basic", clust_typ)) {
     # Initial cluster dataframe
     clust_out <- km_nan(b_mat_crop,
-                    nclust = nclust,
-                    clust_threshold = threshold,
-                    norm_typ = norm_typ,
-                    prob_on = clust_prob_on,
-                    na_rm = narm)
+                        nclust = nclust,
+                        clust_threshold = threshold,
+                        norm_typ = norm_typ,
+                        prob_on = clust_prob_on,
+                        na_rm = narm)
+  } else if (grepl("mrclust", clust_typ)) {
+    col1 <- colnames(b_mat)[1]
+    col2 <- colnames(b_mat)[2]
+    bx <- b_mat_crop[, col1]
+    by <- b_mat_crop[, col2]
+    bxse <- crop_se[, col1]
+    byse <- crop_se[, col2]
+    ratio_est <- by / bx
+    ratio_est_se <- byse / abs(bx)
+    set.seed(2000030885)
+    res_em <- mrclust::mr_clust_em(theta = ratio_est,
+                                   theta_se = ratio_est_se,
+                                   bx = bx,
+                                   by = by,
+                                   bxse = bxse,
+                                   byse = byse,
+                                   obs_names = crop_snp_list,
+                                   junk_sd = 0.5)
+    print(res_em)
   }
   # cluster number identification for each observation
   nan_snp_list <- lapply(setdiff(rownames(b_mat_clust), crop_snp_list),
-                            find_closest_clust_snp,
-                            b_mat = b_mat_clust,
-                            cluster_df = clust_out$clusters,
-                            centroids_df = clust_out$centres,
-                            norm_typ = norm_typ)
+                         find_closest_clust_snp,
+                         b_mat = b_mat_clust,
+                         cluster_df = clust_out$clusters,
+                         centroids_df = clust_out$centres,
+                         norm_typ = norm_typ)
   f1 <- function(x) {
     x$clusters
-    }
+  }
   f2 <- function(x) {
     x$clust_dist
-    }
+  }
   snp_cluster_list <- lapply(nan_snp_list, f1)
   snp_c_dist_list <- lapply(nan_snp_list, f2)
   nan_cluster_df <- Reduce(rbind, snp_cluster_list)
@@ -127,6 +146,21 @@ cluster_kmeans <- function(data_list,
   }
   clust_out$clusters <- rbind(clust_out$clusters, nan_cluster_df)
   clust_out$clust_dist <- rbind(clust_out$clust_dist, nan_clust_dist_df)
+  #DEBUG START
+  clust_out$clusters <- tibble::rownames_to_column(clust_out$clusters, "snp_id")
+  c1 <- colnames(b_mat_crop)[1]
+  c2 <- colnames(b_mat_crop)[2]
+  num_axis <- ncol(b_mat_crop)
+  clust_out$clusters["num_axis"] <- num_axis
+  print(head(clust_out))
+  plot_clust_angle_scatter_test(clust_out$clusters, b_mat_clust,
+                                se_mat,
+                                iter_traits,
+                                c1,
+                                c2,
+                                num_axis = 2)
+  clust_out$clusters <- tibble::column_to_rownames(clust_out$clusters, "snp_id")
+  #DEBUG END
   # ADDFEATURE - Assign junk clusters.
   return(clust_out)
 }
