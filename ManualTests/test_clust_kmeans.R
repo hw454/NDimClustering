@@ -30,7 +30,8 @@ test_clust_kmeans_function <- function(d = 10,
     "num_paths" = num_path,
     "res_dir" = paste0("PC_TestResults/")
   )
-  rand_mat <- matrix(runif(d * d, 0, 1), nrow = d)
+  print(iter_traits)
+  rand_mat <- matrix(runif(d * d, 0.1, 1), nrow = d)
   if (num_path > 0) {
     a_list <- runif(num_path + 1, -3, 3)
     b_list <- runif(num_path + 1, 0, d)
@@ -44,20 +45,24 @@ test_clust_kmeans_function <- function(d = 10,
   } else {
     dummy_beta <- rand_mat
   }
-  plot_scatter_test(dummy_beta, num_axis = d, iter_traits = iter_traits)
+  print("preplot")
+  #plot_scatter_test(dummy_beta, num_axis = d, iter_traits = iter_traits)
   dummy_se <- matrix(runif((num_path + 1) * d * d, 0, 1),
                      nrow = (num_path + 1) * d)
   dummy_p <- matrix(runif((num_path + 1) * d * d),
                     nrow = (num_path + 1) * d)
+  print("prenumber")
   dummy_beta <- number_row_col_names(dummy_beta)
   dummy_se <- number_row_col_names(dummy_se)
   dummy_p <- number_row_col_names(dummy_p)
   # Compute the Sample SE with na_rm
   num_axis <- ncol(dummy_beta)
+  print("pre pca")
   if (pc_type == "prcomp") {
     pca_beta <- stats::prcomp(dummy_beta,
                               center = TRUE,
                               scale = TRUE,
+                              retx = TRUE,
                               rank = n_pc)
     t_mat <- pca_beta$rotation
     b_pc_mat <- pca_beta$x
@@ -71,13 +76,21 @@ test_clust_kmeans_function <- function(d = 10,
                      "pval" = p_pc_mat,
                      "se" = se_pc_mat,
                      "transform" = t_mat)
+  }  else {
+    n <- ncol(dummy_beta)
+    t_mat <- diag(n)
+    out_list <- list("beta" = dummy_beta,
+                     "pval" = dummy_p,
+                     "se" = dummy_se,
+                     "transform" = t_mat)
   }
   print("Cluster")
-  print(out_list)
   cluster_out <- cluster_kmeans(out_list,
+                                iter_traits = iter_traits,
                                 nclust = 3,
+                                max_dist = 10.0,
                                 space_typ = "angle",
-                                clust_typ = "mrclust")
+                                clust_typ = "min")
   cluster_df <- cluster_out$clusters
   cluster_df["num_axis"] <- num_axis
   cluster_df <- tibble::rownames_to_column(cluster_df, "snp_id")
@@ -97,10 +110,10 @@ test_clust_kmeans_function <- function(d = 10,
                                  out_pheno = c2,
                                  num_axis = num_axis)
 }
-pc_type_1 <- "HW"
+pc_type_1 <- "No_pca"
 pc_type_2 <- "prcomp"
-num_paths_list <- 0:3
-pc_list <- list(pc_type_2)#, pc_type_2)
+num_paths_list <- 2:3
+pc_list <- list(pc_type_1, pc_type_2)
 d <- 30
 for (p_type in pc_list){
   for (np in num_paths_list){
