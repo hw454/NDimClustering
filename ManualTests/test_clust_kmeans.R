@@ -46,7 +46,6 @@ test_clust_kmeans_function <- function(d = 10,
     dummy_beta <- rand_mat
   }
   print("preplot")
-  #plot_scatter_test(dummy_beta, num_axis = d, iter_traits = iter_traits)
   dummy_se <- matrix(runif((num_path + 1) * d * d, 0, 1),
                      nrow = (num_path + 1) * d)
   dummy_p <- matrix(runif((num_path + 1) * d * d),
