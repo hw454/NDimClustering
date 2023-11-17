@@ -58,9 +58,9 @@ plot_trait_heatmap <- function(c_scores, iter_traits,
     pnme <- paste0(iter_traits$res_dir, prefix, "_vs_clust_naxis", i, ".png")
     title_iter <- paste0(title_str, ". \n Iteration number ", i)
     p <- ggplot2::ggplot(long_form_df,
-                      ggplot2::aes(y = trait,
-                                  x = clust_num,
-                                  fill = score)) +
+                      ggplot2::aes(y = trait, #nolint
+                                  x = clust_num, #nolint
+                                  fill = score)) + #nolint
       ggplot2::theme(axis.text.x =
                     ggplot2::element_text(angle = 90, vjust = 0.5)) +
       ggplot2::geom_tile() +
