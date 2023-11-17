@@ -40,13 +40,13 @@
 #'
 #' @export
 clust_pca_compare_single <- function(df_list,
-                                    iter_traits,
-                                    num_axis,
-                                    data_matrices,
-                                    na_handling,
-                                    thresholds,
-                                    norm_typs,
-                                    nums) {
+                                     iter_traits,
+                                     num_axis,
+                                     data_matrices,
+                                     na_handling,
+                                     thresholds,
+                                     norm_typs,
+                                     nums) {
   # Extract the trait_df dataframe from df_list
   trait_df <- df_list$trait
   # If the trait is not all NaN then run clustering.
@@ -60,25 +60,16 @@ clust_pca_compare_single <- function(df_list,
   pval_iter_mat <- stats::na.omit(pval_iter_mat)
   # Cluster the data on these axes
   pca_beta <- stats::prcomp(b_iter_mat,
-        center = TRUE,
-        scale = TRUE,
-        rank = nums$np)
+                            center = TRUE,
+                            scale = TRUE,
+                            rank = nums$np)
   t_mat <- pca_beta$rotation
   b_pc_mat <- pca_beta$x
   plot_scatter(b_pc_mat,
-                iter_traits,
-                num_axis = num_axis)
+               iter_traits,
+               num_axis = num_axis)
   p_pc_mat <- transform_coords_in_mat(pval_iter_mat, t_mat)
   se_pc_mat <- transform_coords_in_mat(se_iter_mat, t_mat)
-  # ARCHIVE bespoke PCA
-  #pca_list <- find_principal_components(b_iter_mat, pval_iter_mat, se_iter_mat,
-   #                       nums$np, na_handling$narm)
-  #b_pc_mat    <- pca_list$beta
-  #plot_scatter(b_pc_mat,
-  #              iter_traits,
-  #              num_axis = num_axis)
-  # p_pc_mat <- pca_list$pval
-  # t_mat       <- pca_list$transform
   # Store the matrices for result output
   df_list$e_mat <- t_mat
   df_list$b_pc <- b_pc_mat
@@ -114,25 +105,25 @@ clust_pca_compare_single <- function(df_list,
   # Score the clustered data based on affiliations with axes.
   # Find the score for each PC
   c_score_pc0 <- score_all_clusters(cluster_df,
-                                beta_mat = b_pc_mat,
-                                pval_mat = p_pc_mat,
-                                bp_on = iter_traits$bp_on,
-                                clust_prob_on = iter_traits$clust_prob_on,
-                                num_axis = num_axis)
+                                    beta_mat = b_pc_mat,
+                                    pval_mat = p_pc_mat,
+                                    bp_on = iter_traits$bp_on,
+                                    clust_prob_on = iter_traits$clust_prob_on,
+                                    num_axis = num_axis)
   c_score_tr0 <- score_all_clusters(cluster_df,
-                                beta_mat = b_iter_mat,
-                                pval_mat = pval_iter_mat,
-                                bp_on = iter_traits$bp_on,
-                                clust_prob_on = iter_traits$clust_prob_on,
-                                num_axis = num_axis)
+                                    beta_mat = b_iter_mat,
+                                    pval_mat = pval_iter_mat,
+                                    bp_on = iter_traits$bp_on,
+                                    clust_prob_on = iter_traits$clust_prob_on,
+                                    num_axis = num_axis)
   # Iterate through each cluster and compare across the others to find if
   # any pair have a distinct difference.
   diff_score_list <- lapply(c_nums, compare_oneclust_tolist,
-          c_nums = c_nums,
-          c_score0 = c_score_pc0,
-          axis = pc_cols,
-          clust_norm = norm_typs$clust
-        )
+    c_nums = c_nums,
+    c_score0 = c_score_pc0,
+    axis = pc_cols,
+    clust_norm = norm_typs$clust
+  )
   diff_score_list <- diff_score_list[!sapply(diff_score_list, is.null)]
   diff_scores <- Reduce(rbind, diff_score_list)
   # Find the pair with maximum cluster score diff and store in max_df0
@@ -150,6 +141,6 @@ clust_pca_compare_single <- function(df_list,
   df_list$clust_pc_scores <- rbind(df_list$clust_pc_scores, c_score_pc0)
   df_list$clust_trait_scores <- rbind(df_list$clust_trait_scores, c_score_tr0)
   df_list$clust_membership <- dplyr::bind_rows(df_list$clust_membership,
-                                              clust_dist_df)
+                                               clust_dist_df)
   return(df_list)
 }

@@ -20,15 +20,15 @@ num_rows <- 50
 
 # Create the data variables from the inputs
 setup_algorithm_data(threshmul = threshmul,
-                    clust_threshold = clust_threshold,
-                    na_percent = na_percent,
-                    nr = nr,
-                    np = np,
-                    clust_norm = clust_norm,
-                    thresh_norm = thresh_norm)
+                     clust_threshold = clust_threshold,
+                     na_percent = na_percent,
+                     nr = nr,
+                     np = np,
+                     clust_norm = clust_norm,
+                     thresh_norm = thresh_norm)
 
 setup_matrices(data_dir = data_dir,
-              test = test,
-              num_rows = num_rows,
-              num_trait0 = num_trait0,
-              num_trait1 = num_trait1)
+               test = test,
+               num_rows = num_rows,
+               num_trait0 = num_trait0,
+               num_trait1 = num_trait1)

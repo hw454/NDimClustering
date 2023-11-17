@@ -24,9 +24,9 @@
 #'
 #' @export
 make_iter_df <- function(clust_typ_list,
-                        bp_on_list,
-                        clust_prob_on_list,
-                        ndim_typ) {
+                         bp_on_list,
+                         clust_prob_on_list,
+                         ndim_typ) {
   iter_df_full <- data.frame(row.names = integer(),
                              "bp_on" = logical(),
                              "clust_prob_on" = logical(),
