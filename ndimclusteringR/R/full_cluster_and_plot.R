@@ -53,34 +53,21 @@
 #' @family cluster_wrappers
 #'
 #' @export
-full_cluster_and_plot <- function(data_matrices,
-                            exp_pheno,
-                            out_pheno,
-                            res_dir0 = "",
-                            iter = 1,
-                            iter_df = data.frame(
-                                        "iter" = 1,
-                                        "bp_on" = FALSE,
-                                        "clust_prob_on" = FALSE,
-                                        "clust_typ" = "basic",
-                                        "ndim_typ" = "all"),
-                            thresholds = list("threshmul" = 5,
-                                              "diff" = 1e-5,
-                                              "clust" = 1e-5),
-                            na_handling = list("narm" = TRUE, "percent" = 0.95),
-                            norm_typs = list("clust" = "F", "thresh" = "F"),
-                            nums = list("max_dist" = 1, "np" = 3, "nr" = 5)
+full_cluster_and_plot <- function(data_matrices, exp_pheno, out_pheno,
+  res_dir0 = "",
+  iter = 1,
+  iter_df = data.frame("iter" = 1,
+                       "bp_on" = FALSE,
+                       "clust_prob_on" = FALSE,
+                       "clust_typ" = "basic",
+                       "ndim_typ" = "all"),
+  thresholds = list("threshmul" = 5,
+                    "diff" = 1e-5,
+                    "clust" = 1e-5),
+  na_handling = list("narm" = TRUE, "percent" = 0.95),
+  norm_typs = list("clust" = "F", "thresh" = "F"),
+  nums = list("max_dist" = 1, "np" = 3, "nr" = 5)
 ) {
-# Using the inuts the `cluster_and_plot` function will find
-# the principal components then cluster on these. The clusters will
-# then be scored on their association with the PCs (based on their)
-# associations with the original traits. The cluster scores are then
-# compared to determine if any two clusters are distinctly different.
-# If yes then the computations are complete and the results are plotted.
-# If no then another axis is added and the process repeated.
-# --
-# This function runs the computations in the `clust_pca_compare`
-# function. Then plots the results.
   iter_traits <- iter_df[iter, ]
   res_dir <- set_dir(res_dir0, iter_traits)
   iter_traits["res_dir"] <- res_dir
@@ -91,72 +78,72 @@ full_cluster_and_plot <- function(data_matrices,
   print("Begining algorithm for inputs")
   print(iter_traits)
   if (iter_traits$ndim_typ == "all") {
-  out <- clust_pca_all(data_matrices = data_matrices,
-                          out_pheno = out_pheno,
-                          na_handling = na_handling,
-                          iter_traits = iter_traits,
-                          norm_typs = norm_typs,
-                          nums = nums)
-  print("Clust done")
-  print("Plot pc scores")
-  c_scores_pc <- out$clust_pc_scores
-  plot_trait_heatmap(c_scores_pc, iter_traits, prefix = "pca")
-  print("Plot trait scores")
-  c_scores_tr <- out$clust_trait_scores
-  plot_trait_heatmap(c_scores_tr, iter_traits, prefix = "pheno")
-  print("Heatmap plot done")
-  num_axis <- length(data_matrices$trait_info$phenotype)
-  col1 <- colnames(out$b_pc)[1]
-  col2 <- colnames(out$b_pc)[2]
-  plot_clust_scatter(out$clust_items, out$b_pc, out$se_pc, iter_traits,
-                     c1 = col1, c2 = col2, num_axis = num_axis)
-  print("scatter plot done")
-  plot_clust_exp_out_scatter(out$clust_items, data_matrices$beta,
-                             data_matrices$se, iter_traits,
-                             exp_pheno,
-                             out_pheno,
-                             num_axis = num_axis)
-  print("exposure outcome scatter plot done")
-  # Only plot max diff when iterating through the axis
-  col1 <- colnames(out$b_pc)[1]
-  col2 <- colnames(out$b_pc)[2]
-  plot_clust_scatter_rgb(out$clust_membership,
-                          out$b_pc,
-                          out$se_pc,
-                          iter_traits,
-                          c1 = col1,
-                          c2 = col2,
-                          num_axis = num_axis)
-  print("rgb pca scatter plot done")
-  plot_clust_scatter_rgb(out$clust_membership,
-                         data_matrices$beta,
-                         data_matrices$se,
-                         iter_traits,
-                         c1 = out_pheno,
-                         c2 = exp_pheno,
-                         num_axis = num_axis)
-  print("rgb exp out scatter plot done")
-  # Plot the transform heatmap.
-  plot_transform_heatmap(out$e_mat, iter_traits)
-  out <- list("iter_df" = iter_df,
-              "c_scores_pc" = c_scores_pc,
-              "c_scores_tr" = c_scores_tr,
-              "max_df" = out$max_diff)
+    out <- clust_pca_all(data_matrices = data_matrices,
+                         out_pheno = out_pheno,
+                         na_handling = na_handling,
+                         iter_traits = iter_traits,
+                         norm_typs = norm_typs,
+                         nums = nums)
+    print("Clust done")
+    print("Plot pc scores")
+    c_scores_pc <- out$clust_pc_scores
+    plot_trait_heatmap(c_scores_pc, iter_traits, prefix = "pca")
+    print("Plot trait scores")
+    c_scores_tr <- out$clust_trait_scores
+    plot_trait_heatmap(c_scores_tr, iter_traits, prefix = "pheno")
+    print("Heatmap plot done")
+    num_axis <- length(data_matrices$trait_info$phenotype)
+    col1 <- colnames(out$b_pc)[1]
+    col2 <- colnames(out$b_pc)[2]
+    plot_clust_scatter(out$clust_items, out$b_pc, out$se_pc, iter_traits,
+                       c1 = col1, c2 = col2, num_axis = num_axis)
+    print("scatter plot done")
+    plot_clust_exp_out_scatter(out$clust_items,
+                               data_matrices$beta,
+                               data_matrices$se,
+                               iter_traits,
+                               exp_pheno,
+                               out_pheno,
+                               num_axis = num_axis)
+    print("exposure outcome scatter plot done")
+    # Only plot max diff when iterating through the axis
+    plot_clust_scatter_rgb(out$clust_membership,
+                           out$b_pc,
+                           out$se_pc,
+                           iter_traits,
+                           c1 = col1,
+                           c2 = col2,
+                           num_axis = num_axis)
+    print("rgb pca scatter plot done")
+    plot_clust_scatter_rgb(out$clust_membership,
+                           data_matrices$beta,
+                           data_matrices$se,
+                           iter_traits,
+                           c1 = out_pheno,
+                           c2 = exp_pheno,
+                           num_axis = num_axis)
+    print("rgb exp out scatter plot done")
+    # Plot the transform heatmap.
+    plot_transform_heatmap(out$e_mat, iter_traits)
+    out <- list("iter_df" = iter_df,
+                "c_scores_pc" = c_scores_pc,
+                "c_scores_tr" = c_scores_tr,
+                "max_df" = out$max_diff)
   } else if (iter_traits$ndim_typ == "iterative") {
-  out <- clust_pca_compare_iterative(data_matrices = data_matrices,
-                          out_pheno = out_pheno,
-                          na_handling = na_handling,
-                          iter_traits = iter_traits,
-                          norm_typs = norm_typs,
-                          nums = nums
-  )
-  print("Clust done")
-  max_diff_df <- out$max_diff
-  c_scores_tr <- out$clust_trait_scores
-  plot_trait_heatmap(c_scores_tr, iter_traits)
-  print("Heatmap plot done")
-  plot_max_diff(max_diff_df, iter_traits)
-  print("Diff plot done")
+    out <- clust_pca_compare_iterative(data_matrices = data_matrices,
+      out_pheno = out_pheno,
+      na_handling = na_handling,
+      iter_traits = iter_traits,
+      norm_typs = norm_typs,
+      nums = nums
+    )
+    print("Clust done")
+    max_diff_df <- out$max_diff
+    c_scores_tr <- out$clust_trait_scores
+    plot_trait_heatmap(c_scores_tr, iter_traits)
+    print("Heatmap plot done")
+    plot_max_diff(max_diff_df, iter_traits)
+    print("Diff plot done")
   }
   return(out)
 }

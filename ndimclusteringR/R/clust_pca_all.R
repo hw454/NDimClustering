@@ -39,19 +39,17 @@
 #' @return df_list
 #'
 #' @export
-clust_pca_all <- function(data_matrices,
-                         out_pheno,
-                         thresholds = list("threshmul" = 5,
+clust_pca_all <- function(data_matrices, out_pheno,
+                          thresholds = list("threshmul" = 5,
                                             "diff" = 1e-5,
                                             "clust" = 1e-5),
-                         iter_traits = list(iter = 0,
+                          iter_traits = list(iter = 0,
                                             "bp_on" = TRUE,
                                             "clust_prob_on" = TRUE,
                                             "clust_typ" = "basic"),
-                         na_handling = list("narm" = TRUE, "percent" = 0.95),
-                         norm_typs = list("clust" = "F", "thresh" = "F"),
-                         nums = list("max_dist" = 1, "np" = 3, "nr" = 5)
-                        ) {
+                          na_handling = list("narm" = TRUE, "percent" = 0.95),
+                          norm_typs = list("clust" = "F", "thresh" = "F"),
+                          nums = list("max_dist" = 1, "np" = 3, "nr" = 5) ) {
   # Data frame for recording the cluster scores on the pcs
   c_scores_pc <- data.frame(
     num_axis = integer(),

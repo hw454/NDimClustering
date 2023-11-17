@@ -39,13 +39,14 @@
 #' @return df_list
 #'
 #' @export
-clust_pca_compare_single <- function(df_list, iter_traits,
-                                            num_axis,
-                                            data_matrices,
-                                            na_handling,
-                                            thresholds,
-                                            norm_typs,
-                                            nums) {
+clust_pca_compare_single <- function(df_list,
+                                    iter_traits,
+                                    num_axis,
+                                    data_matrices,
+                                    na_handling,
+                                    thresholds,
+                                    norm_typs,
+                                    nums) {
   # Extract the trait_df dataframe from df_list
   trait_df <- df_list$trait
   # If the trait is not all NaN then run clustering.
@@ -96,13 +97,14 @@ clust_pca_compare_single <- function(df_list, iter_traits,
     st <- "regular"
   }
   cluster_out <- cluster_kmeans(pca_list,
-                                      nums$nr,
-                                      space_typ = st,
-                                      clust_typ = iter_traits$clust_typ,
-                                      clust_prob_on = iter_traits$clust_prob_on, # nolint
-                                      norm_typ = norm_typs$clust,
-                                      threshold = thresholds$clust,
-                                      narm = na_handling$narm)
+                                iter_traits = iter_traits,
+                                nclust = nums$nr,
+                                space_typ = st,
+                                clust_typ = iter_traits$clust_typ,
+                                clust_prob_on = iter_traits$clust_prob_on, # nolint
+                                norm_typ = norm_typs$clust,
+                                threshold = thresholds$clust,
+                                narm = na_handling$narm)
   cluster_df <- cluster_out$clusters
   # Centroids df centroids_df <- cluster_out$centres
   # Calculate the distance to all the cluster centres
