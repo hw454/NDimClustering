@@ -37,10 +37,12 @@ make_iter_df <- function(clust_typ_list,
       for (clust_prob_on in clust_prob_on_list) {
         for (ndim in ndim_typ) {
           iter_traits <- data.frame(
-            "bp_on" = bp_on,
-            "clust_prob_on" = clust_prob_on,
-            "clust_typ" = clust_typ_str,
-            "ndim_typ" = ndim)
+                                    "pc_type" = "testing_only",
+                                    "num_paths" = "testing_only",
+                                    "bp_on" = bp_on,
+                                    "clust_prob_on" = clust_prob_on,
+                                    "clust_typ" = clust_typ_str,
+                                    "ndim_typ" = ndim)
           iter_df_full <- rbind(iter_df_full, iter_traits)
         }
       }
