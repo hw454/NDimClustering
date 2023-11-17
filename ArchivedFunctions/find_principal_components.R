@@ -35,20 +35,20 @@
 find_principal_components <- function(b_mat, pval_mat, se_mat,
                                       np = 3, narm = TRUE) {
   # Normalise each Column
-  std_b_mat <- calc_scale_mat(b_mat, narm)
+  std_b_mat <- calc_scale_mat(b_mat, narm) # nolint
   # Compute Correlation Matrix
   c_mat <- stats::cor(std_b_mat,
                       method = "pearson",
                       use = "pairwise.complete.obs")
   # Find Eigen Vectors and Eigen Values
-  e_mat <- find_np_eigen_mat(c_mat, np = np)
+  e_mat <- find_np_eigen_mat(c_mat, np = np) # nolint
   # Ensure the transform rownames correspond to the axes in the original data.
   row.names(e_mat) <- colnames(b_mat)
   # Map Scores onto the space of the components
   # represented by np largest Eigen values.
-  b_pc_mat   <- transform_coords_in_mat(b_mat, e_mat)
-  pval_pc_mat <- transform_coords_in_mat(pval_mat, e_mat)
-  se_pc_mat <- transform_coords_in_mat(se_mat, e_mat)
+  b_pc_mat   <- transform_coords_in_mat(b_mat, e_mat) # nolint
+  pval_pc_mat <- transform_coords_in_mat(pval_mat, e_mat) # nolint
+  se_pc_mat <- transform_coords_in_mat(se_mat, e_mat) # nolint
   out_list   <- list("transform" = e_mat,
                      "beta" = b_pc_mat,
                      "pval" = pval_pc_mat,
