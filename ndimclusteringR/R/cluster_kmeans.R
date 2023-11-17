@@ -6,6 +6,11 @@
 #'    * "se" matrix of standard error data
 #'    * "pval" matrix of p-value data
 #'    * Rows correspond to snps, columns to traits
+#' @param iter_traits - list of terms indicating the type of program.
+#'   * "iter" - integer, (default 0)
+#'   * "bp_on" - TRUE (default) if probability of scores is to be used.
+#'   * "clust_prob_on" - TRUE\:default switch for using prob of being in cluster
+#'   * "clust_typ" - default\:"basic", the clustering method to use.
 #' @param nclust The maximum number of clusters to consider. default\:10
 #' @param max_dist The maximum distance between any two points.
 #' @param space_typ The spatial structure of the data when clustering.
