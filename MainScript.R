@@ -63,9 +63,9 @@ source("SetupNDimClust.R")
 
 # Initialise the dataframe for storing the run details of each iteration
 iter_df <- make_iter_df(clust_typ_list,
-                            bp_on_list,
-                            clust_prob_on_list,
-                            ndim_typ)
+                        bp_on_list,
+                        clust_prob_on_list,
+                        ndim_typ)
 
 niter <- dim(iter_df)[1]
 
