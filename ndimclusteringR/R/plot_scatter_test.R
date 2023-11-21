@@ -13,10 +13,10 @@
 #'
 #' @export
 plot_scatter_test <- function(b_mat,
-                          iter_traits,
-                          num_axis = 2,
-                          pw = 8,
-                          ph = 4) {
+                              iter_traits,
+                              num_axis = 2,
+                              pw = 8,
+                              ph = 4) {
   c1 <- colnames(b_mat)[1]
   c2 <- colnames(b_mat)[2]
   snp_list <- row.names(b_mat)
@@ -25,23 +25,24 @@ plot_scatter_test <- function(b_mat,
     bx = b_mat[, c1],
     by = b_mat[, c2]
   )
+  np <- iter_traits$num_paths + 1
   pnme <- paste0(iter_traits$res_dir,
-                "scatter",
-                c1,
-                "_vs_",
-                c2,
-                "_pctype",
-                iter_traits$pctype,
-                "_numpaths",
-                iter_traits$num_paths,
-                ".png")
+                 "scatter",
+                 c1,
+                 "_vs_",
+                 c2,
+                 "_pctype",
+                 iter_traits$pctype,
+                 "_numpaths",
+                 np,
+                 ".png")
   title_str <- paste("Before clustering, scatter ", c1, "vs", c2)
   ggplot2::ggplot(data = res_df,
                   ggplot2::aes(x = bx, y = by)) + # nolint: object_usage_linter.
-   ggplot2::geom_point() +
-  ggplot2::ylab(paste("Association with", c2)) +
-  ggplot2::xlab(paste("Association with", c1)) +
-  ggplot2::ggtitle(title_str)
+    ggplot2::geom_point() +
+    ggplot2::ylab(paste("Association with", c2)) +
+    ggplot2::xlab(paste("Association with", c1)) +
+    ggplot2::ggtitle(title_str)
   ggplot2::ggsave(filename = pnme, width = pw, height = ph)
   return()
 }

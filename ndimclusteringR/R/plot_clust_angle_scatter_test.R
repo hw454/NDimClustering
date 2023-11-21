@@ -26,8 +26,6 @@ plot_clust_angle_scatter_test <- function(cluster_df, b_mat,
                                           ph = 4) {
   crop_cluster_df <- cluster_df[cluster_df$num_axis == num_axis, ]
   crop_cluster_df <- tibble::column_to_rownames(crop_cluster_df, "snp_id")
-  print("crop")
-  print(head(crop_cluster_df))
   c1 <- exp_pheno
   c2 <- out_pheno
   se_max <- apply(se_mat, 2, max)
@@ -45,7 +43,7 @@ plot_clust_angle_scatter_test <- function(cluster_df, b_mat,
     clust_prob = crop_cluster_df[snp_list, "clust_prob"],
     alp = alpha_vec
   )
-  print(head(res_df))
+  np <- iter_traits$num_paths + 1
   pnme <- paste0(iter_traits$res_dir,
                  "scatter_angles_withclusts",
                  c1,
@@ -54,33 +52,24 @@ plot_clust_angle_scatter_test <- function(cluster_df, b_mat,
                  "_pctype",
                  iter_traits$pc_type,
                  "_numpaths",
-                 iter_traits$num_paths,
+                 np,
                  ".png")
   title_str <- paste("Clusters plotted against the angles to",
                      c1, "and", c2, ".")
-  caption_str <- paste("Test case with", iter_traits$num_paths,
+  caption_str <- paste("Test case with", np,
                        "pathways. \n The method for PCA that will be used is",
                        iter_traits$pc_type)
-  ggplot2::ggplot(data = res_df,
-                  ggplot2::aes(x = bx, y = by)) + # nolint: object_usage_linter.
+  angleplot <- ggplot2::ggplot(data = res_df,
+                               ggplot2::aes(x = bx, y = by)) + # nolint
     ggplot2::geom_point(ggplot2::aes(
                                      color = clust_num, # nolint
                                      size = clust_prob, # nolint
                                      alpha = alp), shape = 21) + # nolint
-    ggplot2::geom_errorbarh(ggplot2::aes(xmin = res_df$bx - 1.96 * res_df$bxse,
-                                         xmax = res_df$bx + 1.96 * res_df$bxse,
-                                         color = clust_num,
-                                         alpha = alp),
-                            linetype = "solid") +
-    ggplot2::geom_errorbar(ggplot2::aes(ymin = res_df$by - 1.96 * res_df$byse,
-                                        ymax = res_df$by + 1.96 * res_df$byse,
-                                        color = clust_num,
-                                        alpha = alp),
-                           linetype = "solid") +
     ggplot2::xlab(paste("Association with angle to ", c1)) +
     ggplot2::ylab(paste("Association with angle to", c2)) +
     ggplot2::ggtitle(title_str) +
     ggplot2::labs(caption = caption_str)
   ggplot2::ggsave(filename = pnme, width = pw, height = ph)
-  return()
+  angleplot
+  return(angleplot)
 }

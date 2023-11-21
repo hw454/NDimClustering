@@ -43,39 +43,32 @@ plot_clust_expout_scatter_test <- function(cluster_df, b_mat,
     clust_prob = crop_cluster_df[snp_list, "clust_prob"],
     alp = alpha_vec
   )
+  np <- iter_traits$num_paths + 1
   pnme <- paste0(iter_traits$res_dir,
-                "scatter_withclusts",
-                c1,
-                "_vs_",
-                c2,
-                "_pctype",
-                iter_traits$pc_type,
-                "_numpaths",
-                iter_traits$num_paths,
-                ".png")
+                 "scatter_withclusts",
+                 c1,
+                 "_vs_",
+                 c2,
+                 "_pctype",
+                 iter_traits$pc_type,
+                 "_numpaths",
+                 np,
+                 ".png")
   title_str <- paste("Clusters plotted against the", c1, "and", c2, ".")
-  caption_str <- paste("Test case with", iter_traits$num_paths,
-  "pathways. \n The method for PCA that will be used is", iter_traits$pc_type)
-  ggplot2::ggplot(data = res_df,
-                  ggplot2::aes(x = bx, y = by)) + # nolint: object_usage_linter.
-  ggplot2::geom_point(ggplot2::aes(
-                  color = clust_num, # nolint: object_usage_linter.
-                  size = clust_prob, # nolint: object_usage_linter.
-                  alpha = alp), shape = 21) + # nolint: object_usage_linter.
-  ggplot2::geom_errorbarh(
-    ggplot2::aes(xmin = res_df$bx - 1.96 * res_df$bxse,
-                 xmax = res_df$bx + 1.96 * res_df$bxse,
-                 color = clust_num,
-                 alpha = alp), linetype = "solid") +
-  ggplot2::geom_errorbar(
-    ggplot2::aes(ymin = res_df$by - 1.96 * res_df$byse,
-                 ymax = res_df$by + 1.96 * res_df$byse,
-                 color = clust_num,
-                 alpha = alp), linetype = "solid") +
-  ggplot2::xlab(paste("Association with", c1)) +
-  ggplot2::ylab(paste("Association with", c2)) +
-  ggplot2::ggtitle(title_str)+
-  ggplot2::labs(caption = caption_str)
+  caption_str <- paste("Test case with", np,
+                       "pathways. \n The method for PCA that will be used is",
+                       iter_traits$pc_type)
+  expot_plot <- ggplot2::ggplot(data = res_df,
+                                ggplot2::aes(x = bx, y = by)) + # nolint
+    ggplot2::geom_point(ggplot2::aes(
+                                     color = clust_num, # nolint
+                                     size = clust_prob, # nolint
+                                     alpha = alp), shape = 21) + # nolint
+    ggplot2::xlab(paste("Association with", c1)) +
+    ggplot2::ylab(paste("Association with", c2)) +
+    ggplot2::ggtitle(title_str) +
+    ggplot2::labs(caption = caption_str)
   ggplot2::ggsave(filename = pnme, width = pw, height = ph)
-  return()
+  expot_plot
+  return(expot_plot)
 }
