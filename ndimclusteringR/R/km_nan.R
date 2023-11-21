@@ -17,6 +17,10 @@
 #'   then NaNs are ignored.
 #' @param prob_on Bool to indicate whether cluster probability is to be
 #'   assign. default\:TRUE
+#' @param how_cents How the centroids will be initialised. If "rand (default)"
+#'   then the coordinates are created using a uniform distribution on the range
+#'   of each axis. If "points" then the centroid coordinates are assign to
+#'   nclust random points from the dataspace.
 #'
 #' @details
 #' The cluster centres are randomly assigned using [make_rand_cent].
@@ -39,80 +43,84 @@
 #'
 #' @export
 km_nan <- function(b_mat,
-                  nclust = 5,
-                  iter_max = 300,
-                  clust_threshold = 1e-5,
-                  norm_typ = "F",
-                  na_rm = TRUE,
-                  prob_on = TRUE) {
-  set.seed(123)
+                   nclust = 5,
+                   iter_max = 300,
+                   clust_threshold = 1e-5,
+                   norm_typ = "F",
+                   na_rm = TRUE,
+                   prob_on = TRUE,
+                   how_cents = "rand") {
   snp_list <- rownames(b_mat)
   # Generate data frame with max and min data.
   # Min and Max are columns. Rows for each column of b_mat
   b_mat_no_na <- stats::na.omit(b_mat)
-  min_max_df <- data.frame(
-    row.names = colnames(b_mat),
-    min = apply(b_mat_no_na, 2, min),
-    max = apply(b_mat_no_na, 2, max)
-  )
-  min_max_df <- stats::na.omit(min_max_df)
-  # Randomly assign central coords per cluster.
-  centroid_list <- lapply(rownames(min_max_df), make_rand_cent,
-                          n_cents = nclust, min_max_df = min_max_df)
-  centroids_df <- Reduce(cbind, centroid_list)
+  if (grepl("rand", how_cents)) {
+    min_max_df <- data.frame(row.names = colnames(b_mat),
+      min = apply(b_mat_no_na, 2, min),
+      max = apply(b_mat_no_na, 2, max)
+    )
+    min_max_df <- stats::na.omit(min_max_df)
+    # Randomly assign centroids coords per cluster.
+    centroid_list <- lapply(rownames(min_max_df), make_rand_cent,
+                            n_cents = nclust, min_max_df = min_max_df)
+    centroids_df <- Reduce(cbind, centroid_list)
+  } else if (grepl("point", how_cents)) {
+    init_cent_id <- sample(snp_list, nclust, replace = FALSE)
+    centroids_df <- b_mat[init_cent_id, ]
+    rownames(centroids_df) <- seq(1,nclust)
+  }
   # Randomly assign cluster to snps
   nsnps <- length(snp_list)
-  clust_samp <- replicate(nsnps, sample(1:nclust, 1))
+  clust_samp <- sample(1:nclust, nsnps, replace = TRUE)
   cluster_df <- data.frame(
     row.names = snp_list,
     clust_num = clust_samp
   )
   cluster_df["clust_prob"] <- numeric()
   clust_dist_mem_list <- lapply(snp_list, calc_member_dist_cent,
-                          b_mat = b_mat,
-                          cluster_df = cluster_df,
-                          centroids_df = centroids_df,
-                          norm_typ = norm_typ)
+                                b_mat = b_mat,
+                                cluster_df = cluster_df,
+                                centroids_df = centroids_df,
+                                norm_typ = norm_typ)
   clust_dist_mem_df <- Reduce(rbind, clust_dist_mem_list)
   cluster_df <- cbind(cluster_df, clust_dist_mem_df)
   for (iter in 1:iter_max){
     # For each SNP find the cluster with the closest centre.
     snp_clust_list <- lapply(snp_list, find_closest_clust_snp,
-                            b_mat = b_mat,
-                            cluster_df = cluster_df,
-                            centroids_df = centroids_df,
-                            norm_typ = norm_typ)
+                             b_mat = b_mat,
+                             cluster_df = cluster_df,
+                             centroids_df = centroids_df,
+                             norm_typ = norm_typ)
     # Combine the list of dataframes into one dataframe.
     # Override Cluster_df with the new assignment
     df_cols <- function(df, col) {
-                          df[[col]]
-                          }
+      df[[col]]
+    }
     cluster_df_list <- lapply(snp_clust_list,
-                          df_cols,
-                          col = "clusters")
+                              df_cols,
+                              col = "clusters")
     cluster_df <- Reduce(rbind, cluster_df_list)
     clust_dist_df_list <- lapply(snp_clust_list,
-                          df_cols,
-                          col = "clust_dist")
+                                 df_cols,
+                                 col = "clust_dist")
     clust_dist_df <- Reduce(rbind, clust_dist_df_list)
     # Recompute the centroids based on the average of the clusters.
     # Check if the previous centres differ from the cluster means.
     thresh_list <- lapply(rownames(centroids_df), check_clust_cent,
-                        clustnum_df = cluster_df$clust_num,
-                        b_mat = b_mat,
-                        centroids_df = centroids_df,
-                        na_rm = na_rm,
-                        norm_typ = norm_typ,
-                        clust_threshold = clust_threshold)#,
-                        #axes_nonnan=axes_nonnan)
+                          clustnum_df = cluster_df$clust_num,
+                          b_mat = b_mat,
+                          centroids_df = centroids_df,
+                          na_rm = na_rm,
+                          norm_typ = norm_typ,
+                          clust_threshold = clust_threshold)
     thresh_check_df <- Reduce(rbind, thresh_list)
     # Are all the new centroids within the threshold of the previous
     if (all(thresh_check_df$thresh_check)) {
       print(paste("Clusters converged", iter))
       break
     }
-    centroids_df <- thresh_check_df[,
-                  !names(thresh_check_df) %in% c("thresh_check")]
+    centroids_df <- thresh_check_df[, !names(thresh_check_df)
+                                    %in% c("thresh_check")]
     # Are all the new centroids within the threshold of the previous
   }
   if (prob_on) {
@@ -120,6 +128,6 @@ km_nan <- function(b_mat,
   }
   cluster_df <- dplyr::mutate(cluster_df, "ncents" = nclust)
   clust_out <- list("clusters" = cluster_df, "centres" = centroids_df,
-                   "clust_dist" = clust_dist_df)
+                    "clust_dist" = clust_dist_df)
   return(clust_out)
 }

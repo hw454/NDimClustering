@@ -19,6 +19,10 @@
 #' @param clust_typ String describing the clsutering method.
 #'  * "basic" then find fixed number of clusters
 #'  * "min" then minimise the aic
+#' @param how_cents How the centroids will be initialised. If "rand (default)"
+#'   then the coordinates are created using a uniform distribution on the range
+#'   of each axis. If "points" then the centroid coordinates are assign to
+#'   nclust random points from the dataspace.
 #' @param clust_prob_on Bool switch. If TRUE (default) then cluster
 #'   probability if used to weight the cluster scores.
 #' @param norm_typ The type of norm to be used for distance calculations.
@@ -51,6 +55,7 @@ cluster_kmeans <- function(data_list, iter_traits,
                            max_dist = 10.0,
                            space_typ = "regular",
                            clust_typ = "basic",
+                           how_cents = "rand",
                            clust_prob_on = TRUE,
                            norm_typ = "F",
                            threshold = 1e-5,
@@ -68,16 +73,8 @@ cluster_kmeans <- function(data_list, iter_traits,
   crop_se <- crop_se[stats::complete.cases(crop_se), ]
   crop_snp_list <- rownames(crop_se)
 
-  if (space_typ == "angle") {
-    # For each point in b_df_comp convert the score to the angle
-    # between the vectors to the origin and the unit vectors on the axis.
-    b_mat_clust <- mat_to_angle_mat(b_mat)
-  } else {
-    b_mat_clust <- b_mat
-  }
-
   # Crop the data to focus on the snps with the lowest standard error
-  b_mat_crop <- b_mat_clust[crop_snp_list, ]
+  b_mat_crop <- b_mat[crop_snp_list, ]
   if (grepl("min", clust_typ)) {
     # Initial cluster dataframe
     clust_re_list <- lapply(1:(nclust + 1), km_nan,
@@ -85,7 +82,8 @@ cluster_kmeans <- function(data_list, iter_traits,
                             clust_threshold = threshold,
                             norm_typ = norm_typ,
                             na_rm = narm,
-                            prob_on = clust_prob_on)
+                            prob_on = clust_prob_on,
+                            how_cents = how_cents)
     ic_list <- lapply(clust_re_list, find_all_ic,
                       num_axis = ncol(b_mat))
     ic_df <- Reduce(rbind, ic_list)
@@ -108,7 +106,8 @@ cluster_kmeans <- function(data_list, iter_traits,
                         clust_threshold = threshold,
                         norm_typ = norm_typ,
                         prob_on = clust_prob_on,
-                        na_rm = narm)
+                        na_rm = narm,
+                        how_cents = how_cents)
   } else if (grepl("mrclust", clust_typ)) {
     col1 <- colnames(b_mat)[1]
     col2 <- colnames(b_mat)[2]
@@ -118,7 +117,6 @@ cluster_kmeans <- function(data_list, iter_traits,
     byse <- crop_se[, col2]
     ratio_est <- by / bx
     ratio_est_se <- byse / abs(bx)
-    set.seed(2000030885)
     res_em <- mrclust::mr_clust_em(theta = ratio_est,
                                    theta_se = ratio_est_se,
                                    bx = bx,
@@ -130,9 +128,9 @@ cluster_kmeans <- function(data_list, iter_traits,
     print(res_em)
   }
   # cluster number identification for each observation
-  nan_snp_list <- lapply(setdiff(rownames(b_mat_clust), crop_snp_list),
+  nan_snp_list <- lapply(setdiff(rownames(b_mat), crop_snp_list),
                          find_closest_clust_snp,
-                         b_mat = b_mat_clust,
+                         b_mat = b_mat,
                          cluster_df = clust_out$clusters,
                          centroids_df = clust_out$centres,
                          norm_typ = norm_typ)
@@ -157,13 +155,14 @@ cluster_kmeans <- function(data_list, iter_traits,
   c2 <- colnames(b_mat_crop)[2]
   num_axis <- ncol(b_mat_crop)
   clust_out$clusters["num_axis"] <- num_axis
-  print(head(clust_out))
-  plot_clust_angle_scatter_test(clust_out$clusters, b_mat_clust,
-                                se_mat,
-                                iter_traits,
-                                c1,
-                                c2,
-                                num_axis = num_axis)
+  if (space_typ == "angle") {
+    plot_clust_angle_scatter_test(clust_out$clusters, b_mat,
+                                  se_mat,
+                                  iter_traits,
+                                  c1,
+                                  c2,
+                                  num_axis = num_axis)
+  }
   clust_out$clusters <- tibble::column_to_rownames(clust_out$clusters, "snp_id")
   #DEBUG END
   # ADDFEATURE - Assign junk clusters.

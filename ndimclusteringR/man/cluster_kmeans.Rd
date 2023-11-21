@@ -11,6 +11,7 @@ cluster_kmeans(
   max_dist = 10,
   space_typ = "regular",
   clust_typ = "basic",
+  how_cents = "rand",
   clust_prob_on = TRUE,
   norm_typ = "F",
   threshold = 1e-05,
@@ -42,6 +43,11 @@ data is left the same.}
 \item{clust_typ}{String describing the clsutering method.
 * "basic" then find fixed number of clusters
 * "min" then minimise the aic}
+
+\item{how_cents}{How the centroids will be initialised. If "rand (default)"
+then the coordinates are created using a uniform distribution on the range
+of each axis. If "points" then the centroid coordinates are assign to
+nclust random points from the dataspace.}
 
 \item{clust_prob_on}{Bool switch. If TRUE (default) then cluster
 probability if used to weight the cluster scores.}

@@ -11,7 +11,8 @@ km_nan(
   clust_threshold = 1e-05,
   norm_typ = "F",
   na_rm = TRUE,
-  prob_on = TRUE
+  prob_on = TRUE,
+  how_cents = "rand"
 )
 }
 \arguments{
@@ -34,6 +35,11 @@ then NaNs are ignored.}
 
 \item{prob_on}{Bool to indicate whether cluster probability is to be
 assign. default\:TRUE}
+
+\item{how_cents}{How the centroids will be initialised. If "rand (default)"
+then the coordinates are created using a uniform distribution on the range
+of each axis. If "points" then the centroid coordinates are assign to
+nclust random points from the dataspace.}
 }
 \value{
 clust_out
