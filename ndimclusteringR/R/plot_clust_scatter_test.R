@@ -15,11 +15,12 @@
 #'
 #' @export
 plot_clust_scatter_test <- function(cluster_df, b_mat,
-                          se_mat,
-                          iter_traits,
-                          num_axis = 2,
-                          pw = 8,
-                          ph = 4) {
+  se_mat,
+  iter_traits,
+  num_axis = 2,
+  pw = 8,
+  ph = 4
+) {
   crop_cluster_df <- cluster_df[cluster_df$num_axis == num_axis, ]
   crop_cluster_df <- tibble::column_to_rownames(crop_cluster_df, "snp_id")
   c1 <- colnames(b_mat)[1]
@@ -40,39 +41,53 @@ plot_clust_scatter_test <- function(cluster_df, b_mat,
     alp = alpha_vec
   )
   pnme <- paste0(iter_traits$res_dir,
-                "scatter_withclusts",
-                c1,
-                "_vs_",
-                c2,
-                "_pctype",
-                iter_traits$pc_type,
-                "_numpaths",
-                iter_traits$num_paths,
-                ".png")
+                 "scatter_withclusts",
+                 c1,
+                 "_vs_",
+                 c2,
+                 "_pctype",
+                 iter_traits$pc_type,
+                 "_numpaths",
+                 iter_traits$num_paths,
+                 ".png")
   title_str <- paste("Clusters plotted against the", c1, "and", c2, "traits.")
   caption_str <- paste("Test case with", iter_traits$num_paths,
-              "pathways. \n The method for PCA used is",
-              iter_traits$pc_type, ".")
-  ggplot2::ggplot(data = res_df,
-                  ggplot2::aes(x = bx, y = by)) + # nolint: object_usage_linter.
-  ggplot2::geom_point(ggplot2::aes(
-                  color = clust_num, # nolint: object_usage_linter.
-                  size = clust_prob, # nolint: object_usage_linter.
-                  alpha = alp), shape = 21) + # nolint: object_usage_linter.
-  ggplot2::geom_errorbarh(
-    ggplot2::aes(xmin = res_df$bx - 1.96 * res_df$bxse,
-                 xmax = res_df$bx + 1.96 * res_df$bxse,
-                 color = clust_num,
-                 alpha = alp), linetype = "solid") +
-  ggplot2::geom_errorbar(
-    ggplot2::aes(ymin = res_df$by - 1.96 * res_df$byse,
-                 ymax = res_df$by + 1.96 * res_df$byse,
-                 color = clust_num,
-                 alpha = alp), linetype = "solid") +
-  ggplot2::ylab(paste("Association with", c2)) +
-  ggplot2::xlab(paste("Association with", c1)) +
-  ggplot2::ggtitle(title_str) +
-  ggplot2::labs(caption = caption_str)
+    "pathways. \n The method for PCA used is",
+    iter_traits$pc_type, ".",
+    "\n The method for allocating centroids is",
+    iter_traits$how_cents,
+    "\n The clustering method is", iter_traits$clust_typ
+  )
+  clust_scatter <- ggplot2::ggplot(data = res_df,
+    ggplot2::aes(x = bx, y = by) # nolint: object_usage_linter.
+  ) +
+    ggplot2::geom_point(ggplot2::aes(
+      color = clust_num, # nolint: object_usage_linter.
+      size = clust_prob, # nolint: object_usage_linter.
+      alpha = alp # nolint: object_usage_linter.
+    ),
+    shape = 21) + # nolint: object_usage_linter.
+    ggplot2::geom_errorbarh(
+      ggplot2::aes(xmin = res_df$bx - 1.96 * res_df$bxse,
+        xmax = res_df$bx + 1.96 * res_df$bxse,
+        color = clust_num,
+        alpha = alp
+      ),
+      linetype = "solid"
+    ) +
+    ggplot2::geom_errorbar(
+      ggplot2::aes(ymin = res_df$by - 1.96 * res_df$byse,
+        ymax = res_df$by + 1.96 * res_df$byse,
+        color = clust_num,
+        alpha = alp
+      ),
+      linetype = "solid"
+    ) +
+    ggplot2::ylab(paste("Association with", c2)) +
+    ggplot2::xlab(paste("Association with", c1)) +
+    ggplot2::ggtitle(title_str) +
+    ggplot2::labs(caption = caption_str)
   ggplot2::ggsave(filename = pnme, width = pw, height = ph)
-  return()
+  clust_scatter
+  return(clust_scatter)
 }

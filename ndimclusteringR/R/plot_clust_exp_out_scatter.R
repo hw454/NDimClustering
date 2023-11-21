@@ -17,13 +17,13 @@
 #'
 #' @export
 plot_clust_exp_out_scatter <- function(cluster_df, b_mat,
-                          se_mat,
-                          iter_traits,
-                          exp_pheno,
-                          out_pheno,
-                          num_axis = 2,
-                          pw = 8,
-                          ph = 4) {
+                                       se_mat,
+                                       iter_traits,
+                                       exp_pheno,
+                                       out_pheno,
+                                       num_axis = 2,
+                                       pw = 8,
+                                       ph = 4) {
   crop_cluster_df <- cluster_df[cluster_df$num_axis == num_axis, ]
   snp_list <- crop_cluster_df$snp_id
   crop_cluster_df <- tibble::column_to_rownames(crop_cluster_df, "snp_id")
@@ -51,41 +51,52 @@ plot_clust_exp_out_scatter <- function(cluster_df, b_mat,
   ymax <- max(res_df$by, na.rm = TRUE)
   # Create the strings for the filename and labels
   pnme <- paste0(iter_traits$res_dir,
-                "scatter_withclusts",
-                c1,
-                "_vs_",
-                c2,
-                "_naxis",
-                num_axis,
-                ".png")
+                 "scatter_withclusts",
+                 c1,
+                 "_vs_",
+                 c2,
+                 "_naxis",
+                 num_axis,
+                 ".png")
   title_str <- (paste("Clusters plotted against", c1, "and", c2))
   caption_str <- paste("The clustering type used is", iter_traits$clust_typ)
   ggplot2::ggplot(data = res_df,
                   ggplot2::aes(x = bx, y = by)) + # nolint: object_usage_linter.
-  ggplot2::geom_point(ggplot2::aes(
-                  color = clust_num, # nolint: object_usage_linter.
-                  size = clust_prob # nolint: object_usage_linter.
-                  ), shape = 1) + # nolint: object_usage_linter.
-   ggplot2::geom_point(ggplot2::aes(
-                  color = clust_num, # nolint: object_usage_linter.
-                  size = clust_prob, # nolint: object_usage_linter.
-                  alpha = alp), shape = 20) + # nolint: object_usage_linter.
-  ggplot2::geom_errorbarh(
-    ggplot2::aes(xmin = res_df$bx - 1.96 * res_df$bxse,
-                 xmax = res_df$bx + 1.96 * res_df$bxse,
-                 color = clust_num,
-                 alpha = alp), linetype = "solid") +
-  ggplot2::geom_errorbar(
-    ggplot2::aes(ymin = res_df$by - 1.96 * res_df$byse,
-                 ymax = res_df$by + 1.96 * res_df$byse,
-                 color = clust_num,
-                 alpha = alp), linetype = "solid") +
-  ggplot2::xlim(xmin, xmax) +
-  ggplot2::ylim(ymin, ymax) +
-  ggplot2::xlab(paste("Association with", c1)) +
-  ggplot2::ylab(paste("Association with", c2)) +
-  ggplot2::ggtitle(title_str) +
-  ggplot2::labs(caption = caption_str)
+    ggplot2::geom_point(ggplot2::aes(
+      color = clust_num, # nolint: object_usage_linter.
+      size = clust_prob # nolint: object_usage_linter.
+    ),
+    shape = 1
+    ) +
+    ggplot2::geom_point(ggplot2::aes(
+      color = clust_num, # nolint: object_usage_linter.
+      size = clust_prob, # nolint: object_usage_linter.
+      alpha = alp # nolint: object_usage_linter.
+    ),
+    shape = 20
+    ) +
+    ggplot2::geom_errorbarh(
+      ggplot2::aes(xmin = res_df$bx - 1.96 * res_df$bxse,
+        xmax = res_df$bx + 1.96 * res_df$bxse,
+        color = clust_num,
+        alpha = alp
+      ),
+      linetype = "solid"
+    ) +
+    ggplot2::geom_errorbar(
+      ggplot2::aes(ymin = res_df$by - 1.96 * res_df$byse,
+        ymax = res_df$by + 1.96 * res_df$byse,
+        color = clust_num,
+        alpha = alp
+      ),
+      linetype = "solid"
+    ) +
+    ggplot2::xlim(xmin, xmax) +
+    ggplot2::ylim(ymin, ymax) +
+    ggplot2::xlab(paste("Association with", c1)) +
+    ggplot2::ylab(paste("Association with", c2)) +
+    ggplot2::ggtitle(title_str) +
+    ggplot2::labs(caption = caption_str)
   ggplot2::ggsave(filename = pnme, width = pw, height = ph)
   return()
 }

@@ -57,18 +57,25 @@ plot_clust_expout_scatter_test <- function(cluster_df, b_mat,
   title_str <- paste("Clusters plotted against the", c1, "and", c2, ".")
   caption_str <- paste("Test case with", np,
                        "pathways. \n The method for PCA that will be used is",
-                       iter_traits$pc_type)
-  expot_plot <- ggplot2::ggplot(data = res_df,
-                                ggplot2::aes(x = bx, y = by)) + # nolint
+                       iter_traits$pc_type,
+                       "\n The method for allocating centroids is",
+                       iter_traits$how_cents,
+                       "\n The clustering method is", iter_traits$clust_typ)
+  expout_plot <- ggplot2::ggplot(data = res_df,
+    ggplot2::aes(x = bx, y = by) # nolint: object_usage_linter.
+  ) +
     ggplot2::geom_point(ggplot2::aes(
-                                     color = clust_num, # nolint
-                                     size = clust_prob, # nolint
-                                     alpha = alp), shape = 21) + # nolint
+      color = clust_num, # nolint: object_usage_linter.
+      size = clust_prob, # nolint: object_usage_linter.
+      alpha = alp # nolint: object_usage_linter.
+    ),
+    shape = 21
+    ) +
     ggplot2::xlab(paste("Association with", c1)) +
     ggplot2::ylab(paste("Association with", c2)) +
     ggplot2::ggtitle(title_str) +
     ggplot2::labs(caption = caption_str)
   ggplot2::ggsave(filename = pnme, width = pw, height = ph)
-  expot_plot
-  return(expot_plot)
+  expout_plot
+  return(expout_plot)
 }

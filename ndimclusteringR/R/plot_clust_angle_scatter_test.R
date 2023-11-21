@@ -58,13 +58,20 @@ plot_clust_angle_scatter_test <- function(cluster_df, b_mat,
                      c1, "and", c2, ".")
   caption_str <- paste("Test case with", np,
                        "pathways. \n The method for PCA that will be used is",
-                       iter_traits$pc_type)
+                       iter_traits$pc_type,
+                       "\n The method for allocating centroids is",
+                       iter_traits$how_cents,
+                       "\n The clustering method is", iter_traits$clust_typ)
   angleplot <- ggplot2::ggplot(data = res_df,
-                               ggplot2::aes(x = bx, y = by)) + # nolint
+    ggplot2::aes(x = bx, y = by) # nolint: object_usage_linter.
+  ) +
     ggplot2::geom_point(ggplot2::aes(
-                                     color = clust_num, # nolint
-                                     size = clust_prob, # nolint
-                                     alpha = alp), shape = 21) + # nolint
+      color = clust_num, # nolint: object_usage_linter.
+      size = clust_prob, # nolint: object_usage_linter.
+      alpha = alp # nolint: object_usage_linter.
+    ),
+    shape = 21
+    ) +
     ggplot2::xlab(paste("Association with angle to ", c1)) +
     ggplot2::ylab(paste("Association with angle to", c2)) +
     ggplot2::ggtitle(title_str) +

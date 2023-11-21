@@ -20,12 +20,14 @@ test_clust_kmeans_function <- function(d = 10,
                                        n_pc = 2,
                                        space_typ = "angle",
                                        clust_typ = "min",
-                                       how_cents = "rand") {
+                                       how_cents = "rand",
+                                       ndim_typ = "all") {
   print(paste("Test", pc_type, "with", num_path, "pathways"))
   iter_traits <- data.frame("bp_on" = TRUE,
     "clust_prob_on" = TRUE,
-    "clust_typ" = "test",
-    "ndim_typ" = "test",
+    "clust_typ" = paste0("test_", clust_typ, space_typ),
+    "ndim_typ" = paste0("test_", ndim_typ),
+    "how_cent" = how_cents,
     "pc_type" = pc_type,
     "num_paths" = num_path,
     "res_dir" = paste0("PC_TestResults/")

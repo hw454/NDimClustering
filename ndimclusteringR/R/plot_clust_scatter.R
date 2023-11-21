@@ -49,43 +49,55 @@ plot_clust_scatter <- function(cluster_df, b_mat,
   ymax <- max(res_df$by, na.rm = TRUE)
   # Create the strings for the filename and labels
   pnme <- paste0(iter_traits$res_dir,
-                "scatter",
-                c1,
-                "_vs_",
-                c2,
-                "_naxis",
-                num_axis,
-                ".png")
+                 "scatter",
+                 c1,
+                 "_vs_",
+                 c2,
+                 "_naxis",
+                 num_axis,
+                 ".png")
 
   title_str <- paste("Clusters plotted against the", c1, "and", c2, "traits.")
   caption_str <- paste("The clustering type used is", iter_traits$clust_typ)
-  ggplot2::ggplot(data = res_df,
-                  ggplot2::aes(x = bx, y = by)) + # nolint: object_usage_linter.
-  ggplot2::geom_point(ggplot2::aes(
-                  color = clust_num, # nolint: object_usage_linter.
-                  size = clust_prob  # nolint: object_usage_linter.
-                  ), shape = 1) + # nolint: object_usage_linter.
-  ggplot2::geom_point(ggplot2::aes(
-                  color = clust_num, # nolint: object_usage_linter.
-                  size = clust_prob, # nolint: object_usage_linter.
-                  alpha = alp), shape = 20) + # nolint: object_usage_linter.
-                                 
-  ggplot2::geom_errorbarh(
-    ggplot2::aes(xmin = res_df$bx - 1.96 * res_df$bxse,
-                 xmax = res_df$bx + 1.96 * res_df$bxse,
-                 color = clust_num,
-                 alpha = alp), linetype = "solid") +
-  ggplot2::geom_errorbar(
-    ggplot2::aes(ymin = res_df$by - 1.96 * res_df$byse,
-                 ymax = res_df$by + 1.96 * res_df$byse,
-                 color = clust_num,
-                 alpha = alp), linetype = "solid") +
-  ggplot2::xlim(xmin, xmax) +
-  ggplot2::ylim(ymin, ymax) +
-  ggplot2::ylab(paste("Association with", c2)) +
-  ggplot2::xlab(paste("Association with", c1)) +
-  ggplot2::ggtitle(title_str) +
-  ggplot2::labs(caption = caption_str)
+  clust_scatter <- ggplot2::ggplot(data = res_df,
+    ggplot2::aes(x = bx, y = by) # nolint: object_usage_linter.
+  ) +
+    ggplot2::geom_point(ggplot2::aes(
+      color = clust_num, # nolint: object_usage_linter.
+      size = clust_prob  # nolint: object_usage_linter.
+    ),
+    shape = 1
+    ) + # nolint: object_usage_linter.
+    ggplot2::geom_point(ggplot2::aes(
+      color = clust_num, # nolint: object_usage_linter.
+      size = clust_prob, # nolint: object_usage_linter.
+      alpha = alp # nolint: object_usage_linter.
+    ),
+    shape = 20
+    ) +
+    ggplot2::geom_errorbarh(
+      ggplot2::aes(xmin = res_df$bx - 1.96 * res_df$bxse,
+        xmax = res_df$bx + 1.96 * res_df$bxse,
+        color = clust_num,
+        alpha = alp
+      ),
+      linetype = "solid"
+    ) +
+    ggplot2::geom_errorbar(
+      ggplot2::aes(ymin = res_df$by - 1.96 * res_df$byse,
+        ymax = res_df$by + 1.96 * res_df$byse,
+        color = clust_num,
+        alpha = alp
+      ),
+      linetype = "solid"
+    ) +
+    ggplot2::xlim(xmin, xmax) +
+    ggplot2::ylim(ymin, ymax) +
+    ggplot2::ylab(paste("Association with", c2)) +
+    ggplot2::xlab(paste("Association with", c1)) +
+    ggplot2::ggtitle(title_str) +
+    ggplot2::labs(caption = caption_str)
   ggplot2::ggsave(filename = pnme, width = pw, height = ph)
-  return()
+  clust_scatter
+  return(clust_scatter)
 }

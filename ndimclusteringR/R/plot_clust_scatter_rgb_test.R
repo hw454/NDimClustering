@@ -78,6 +78,9 @@ plot_clust_scatter_rgb_test <- function(clust_dist_df, b_mat,
   caption_str <- paste("Test case with", np,
                        "pathways. \n The method for PCA that will be used is",
                        iter_traits$pc_type, ".",
+                       "\n The method for allocating centroids is",
+                       iter_traits$how_cents,
+                       "\n The clustering method is", iter_traits$clust_typ,
                        "\n r score given by weighting to", clust_names[1],
                        "\n g score given by weighting to", clust_names[2],
                        "\n b score given by weighting to", clust_names[3])
@@ -92,17 +95,21 @@ plot_clust_scatter_rgb_test <- function(clust_dist_df, b_mat,
     show.legend = FALSE) + # nolint: object_usage_linter.
     # Set the error bars
     ggplot2::geom_errorbarh(
-                            ggplot2::aes(xmin = res_df$bx - 1.96 * res_df$bxse,
-                                         xmax = res_df$bx + 1.96 * res_df$bxse,
-                                         col = cols),
-                            linetype = "solid",
-                            show.legend = FALSE) +
+      ggplot2::aes(xmin = res_df$bx - 1.96 * res_df$bxse,
+        xmax = res_df$bx + 1.96 * res_df$bxse,
+        col = cols
+      ),
+      linetype = "solid",
+      show.legend = FALSE
+    ) +
     ggplot2::geom_errorbar(
-                           ggplot2::aes(ymin = res_df$by - 1.96 * res_df$byse,
-                                        ymax = res_df$by + 1.96 * res_df$byse,
-                                        col = cols),
-                           linetype = "solid",
-                           show.legend = FALSE) +
+      ggplot2::aes(ymin = res_df$by - 1.96 * res_df$byse,
+        ymax = res_df$by + 1.96 * res_df$byse,
+        col = cols
+      ),
+      linetype = "solid",
+      show.legend = FALSE
+    ) +
     # Add the colour scale
     ggplot2::scale_color_manual(values = my_col_vec) +
     # Add the labels
