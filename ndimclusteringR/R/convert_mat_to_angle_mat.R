@@ -15,16 +15,16 @@
 #' @family clustering_components
 #'
 #' @export
-mat_to_angle_mat <- function(mat) {
+convert_mat_to_angle_mat <- function(mat) {
   nc <- ncol(mat)
   nr <- nrow(mat)
   unit_mat <- diag(nc)
   p_list <- lapply(1:nr, convert_point_to_angles_all,
-                  mat = mat,
-                  unit_mat = unit_mat)
+                   mat = mat,
+                   unit_mat = unit_mat)
   ang_mat <- Reduce(rbind, p_list)
   ang_mat <- as.matrix(ang_mat)
-  row.names(ang_mat) <- row.names(mat)
+  rownames(ang_mat) <- rownames(mat)
   colnames(ang_mat) <- colnames(mat)
   return(ang_mat)
 }

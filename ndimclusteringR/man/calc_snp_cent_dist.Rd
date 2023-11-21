@@ -44,7 +44,7 @@ Other clustering_components:
 \code{\link{calc_clust_dist}()},
 \code{\link{calc_member_dist_cent}()},
 \code{\link{check_clust_cent}()},
-\code{\link{mat_to_angle_mat}()}
+\code{\link{convert_mat_to_angle_mat}()}
 }
 \concept{centroid functions}
 \concept{clustering_components}
