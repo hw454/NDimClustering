@@ -3,32 +3,43 @@ title: Testing Clustering methods.
 author: Hayley Wragg
 date: "21st Nov 2023"
 output: md_document
+editor_options: 
+  markdown: 
+    wrap: sentence
 ---
+
 Load the "ndimclusteringR" package
+
 ```{r}
 devtools::install("../ndimclusteringR/R")
 library("ndimclusteringR")
 ```
+
 Load the functions for testing
+
 ```{r}
 source("test_clust_kmeans.r")
 ```
+
 # Step by step
+
 If all the steps are included then they are performed in the following order.
-1. Crop data to complete cases and lowest se.
-2. Convert data to angles.
-3. Perform PCA on angle data.
-4. Cluster on the PCA
-  * Set cluster centres
-  * Converge cluster centres
-  * if min then rerun for different number of clusters and choose set with min-aic.
-  
+1.
+Crop data to complete cases and lowest se.
+2.
+Convert data to angles.
+3.
+Perform PCA on angle data.
+4.
+Cluster on the PCA \* Set cluster centres \* Converge cluster centres \* if min then rerun for different number of clusters and choose set with min-aic.
+
 ### Test 1
-Run the tests with:
-* No PCA
-* basic k-means clustering. k is set to the number of pathways.
-* no angles calculated before clustering.
-* number of pathways 2.
+
+Run the tests with: \* No PCA \* basic k-means clustering.
+k is set to the number of pathways.
+\* no angles calculated before clustering.
+\* number of pathways 2.
+
 ```{r}
 pc_type <- "No_pca"
 np <- 1
@@ -41,12 +52,14 @@ test_clust_kmeans_function(d,
                            clust_typ = clust_typ,
                            space_typ = space_typ)
 ```
+
 ### Test 2
-Run the tests with:
-* No PCA
-* basic k-means clustering. k is set to the number of pathways.
-* no angles calculated before clustering.
-* number of pathways 4.
+
+Run the tests with: \* No PCA \* basic k-means clustering.
+k is set to the number of pathways.
+\* no angles calculated before clustering.
+\* number of pathways 4.
+
 ```{r}
 pc_type <- "No_pca"
 np <- 3
@@ -59,12 +72,14 @@ test_clust_kmeans_function(d,
                            clust_typ = clust_typ,
                            space_typ = space_typ)
 ```
+
 ### Test 3
-Run the tests with:
-* No PCA
-* basic k-means clustering. k is set to the number of pathways.
-* angles calculated before pca and before clustering.
-* number of pathways 2.
+
+Run the tests with: \* No PCA \* basic k-means clustering.
+k is set to the number of pathways.
+\* angles calculated before pca and before clustering.
+\* number of pathways 2.
+
 ```{r}
 pc_type <- "No_pca"
 np <- 1
@@ -77,12 +92,14 @@ test_clust_kmeans_function(d,
                            clust_typ = clust_typ,
                            space_typ = space_typ)
 ```
+
 ### Test 4
-Run the tests with:
-* No PCA
-* basic k-means clustering. k is set to the number of pathways.
-* angles calculated before clustering.
-* number of pathways 4.
+
+Run the tests with: \* No PCA \* basic k-means clustering.
+k is set to the number of pathways.
+\* angles calculated before clustering.
+\* number of pathways 4.
+
 ```{r}
 pc_type <- "No_pca"
 np <- 3
@@ -95,12 +112,14 @@ test_clust_kmeans_function(d,
                            clust_typ = clust_typ,
                            space_typ = space_typ)
 ```
+
 ### Test 5
-Run the tests with:
-* No PCA
-* min-aic k-means clustering. Maximum k is set to the number of pathways.
-* no angles calculated before clustering.
-* number of pathways 2.
+
+Run the tests with: \* No PCA \* min-aic k-means clustering.
+Maximum k is set to the number of pathways.
+\* no angles calculated before clustering.
+\* number of pathways 2.
+
 ```{r}
 pc_type <- "No_pca"
 np <- 1
@@ -113,12 +132,14 @@ test_clust_kmeans_function(d,
                            clust_typ = clust_typ,
                            space_typ = space_typ)
 ```
+
 ### Test 6
-Run the tests with:
-* No PCA
-* min-aic k-means clustering. Maximum k is set to the number of pathways.
-* no angles calculated before clustering.
-* number of pathways 4.
+
+Run the tests with: \* No PCA \* min-aic k-means clustering.
+Maximum k is set to the number of pathways.
+\* no angles calculated before clustering.
+\* number of pathways 4.
+
 ```{r}
 pc_type <- "No_pca"
 np <- 3
@@ -131,12 +152,14 @@ test_clust_kmeans_function(d,
                            clust_typ = clust_typ,
                            space_typ = space_typ)
 ```
+
 ### Test 7
-Run the tests with:
-* No PCA
-* min k-means clustering. Maximum k is set to the number of pathways.
-* angles calculated before clustering.
-* number of pathways 2.
+
+Run the tests with: \* No PCA \* min k-means clustering.
+Maximum k is set to the number of pathways.
+\* angles calculated before clustering.
+\* number of pathways 2.
+
 ```{r}
 pc_type <- "No_pca"
 np <- 1
@@ -149,12 +172,14 @@ test_clust_kmeans_function(d,
                            clust_typ = clust_typ,
                            space_typ = space_typ)
 ```
+
 ### Test 8
-Run the tests with:
-* No PCA
-* min-aic k-means clustering. Maximum k is set to the number of pathways.
-* angles calculated before clustering.
-* number of pathways 4.
+
+Run the tests with: \* No PCA \* min-aic k-means clustering.
+Maximum k is set to the number of pathways.
+\* angles calculated before clustering.
+\* number of pathways 4.
+
 ```{r}
 pc_type <- "No_pca"
 np <- 3
@@ -167,16 +192,20 @@ test_clust_kmeans_function(d,
                            clust_typ = clust_typ,
                            space_typ = space_typ)
 ```
-## Consider the location of the centroids. 
-The previous tests used centroids assigned randomly within the ranges on each axis. Instead we will initialise the centroids using randomly selected points from out dataset.
+
+## Consider the location of the centroids.
+
+The previous tests used centroids assigned randomly within the ranges on each axis.
+Instead we will initialise the centroids using randomly selected points from out dataset.
 
 ### Test 9
-Run the tests with:
-* No PCA
-* basic k-means clustering. k is set to the number of pathways.
-* no angles calculated before clustering.
-* number of pathways 4.
-* Centroids assigned using points
+
+Run the tests with: \* No PCA \* basic k-means clustering.
+k is set to the number of pathways.
+\* no angles calculated before clustering.
+\* number of pathways 4.
+\* Centroids assigned using points
+
 ```{r}
 pc_type <- "No_pca"
 np <- 3
