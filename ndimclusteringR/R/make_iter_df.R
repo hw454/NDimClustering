@@ -39,6 +39,7 @@ make_iter_df <- function(clust_typ_list,
           iter_traits <- data.frame(
                                     "pc_type" = "testing_only",
                                     "num_paths" = "testing_only",
+                                    "how_cents" = "points",
                                     "bp_on" = bp_on,
                                     "clust_prob_on" = clust_prob_on,
                                     "clust_typ" = clust_typ_str,
