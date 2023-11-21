@@ -49,8 +49,13 @@ clust_pca_compare_single <- function(df_list,
                                      nums) {
   # Extract the trait_df dataframe from df_list
   trait_df <- df_list$trait
+  if (grepl("angle", iter_traits$clust_typ, fixed = TRUE)) {
+    st <- "angle"
+  } else {
+    st <- "regular"
+  }
   # If the trait is not all NaN then run clustering.
-  print(paste("PCA on", num_axis, "axes"))
+  print(paste("Number of axes for this iteration", num_axis))
   # Get the data upto this axis
   b_iter_mat <- data_matrices$beta[, trait_df$label]
   b_iter_mat <- stats::na.omit(b_iter_mat)
@@ -58,6 +63,14 @@ clust_pca_compare_single <- function(df_list,
   se_iter_mat <- stats::na.omit(se_iter_mat)
   pval_iter_mat <- data_matrices$pval[, trait_df$label]
   pval_iter_mat <- stats::na.omit(pval_iter_mat)
+  # If angle the transform before PCA
+  if (st == "angle") {
+    # For each point in b_df_comp convert the score to the angle
+    # between the vectors to the origin and the unit vectors on the axis.
+    b_iter_mat <- convert_mat_to_angle_mat(b_iter_mat)
+    se_iter_mat <- convert_mat_to_angle_mat(se_iter_mat)
+    pval_iter_mat <- convert_mat_to_angle_mat(pval_iter_mat)
+  }
   # Cluster the data on these axes
   pca_beta <- stats::prcomp(b_iter_mat,
                             center = TRUE,
@@ -65,6 +78,7 @@ clust_pca_compare_single <- function(df_list,
                             rank = nums$np)
   t_mat <- pca_beta$rotation
   b_pc_mat <- pca_beta$x
+  # DEBUG PLOT
   plot_scatter(b_pc_mat,
                iter_traits,
                num_axis = num_axis)
@@ -82,11 +96,6 @@ clust_pca_compare_single <- function(df_list,
   # Get column names for PCs
   pc_cols <- colnames(b_pc_mat)
   # Cluster the data on these axes
-  if (grepl("angle", iter_traits$clust_typ, fixed = TRUE)) {
-    st <- "angle"
-  } else {
-    st <- "regular"
-  }
   cluster_out <- cluster_kmeans(pca_list,
                                 iter_traits = iter_traits,
                                 nclust = nums$nr,
