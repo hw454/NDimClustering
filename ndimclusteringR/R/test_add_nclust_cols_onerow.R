@@ -18,7 +18,7 @@ test_add_nclust_cols_onerow <- function() {
   expect_cols <- c(c_1, c_2, c_3, c_4, c_5)
   print("... Testing one row, no col")
   testit::assert("Add clust has found the wrong column names with one row",
-    colnames(df) == expect_cols)
+                 colnames(df) == expect_cols)
   testit::assert("Add clust has found the wrong row names with one row",
-    rownames(df) == c("A"))
+                 rownames(df) == c("A"))
 }

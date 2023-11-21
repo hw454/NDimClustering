@@ -15,7 +15,7 @@ test_calc_member_dist_cent <- function() {
   snp_id <- "rs35662"
   dummy_traits <- c("T1", "T2", "T3")
   dummy_snps <- c(snp_id, "rs301884", "rs69696",
-                     "rs4096", "rs646464", "rs1234")
+                  "rs4096", "rs646464", "rs1234")
   expec_cols <- c("clust_dist")
   num_axis <- length(dummy_traits)
   nsnps <- length(dummy_snps)
@@ -37,11 +37,11 @@ test_calc_member_dist_cent <- function() {
   )
   dist_df <- calc_member_dist_cent(snp_id, b_mat, cluster_df, centres_df)
   testit::assert("... Output is not a dataframe",
-    is.data.frame(dist_df))
+                 is.data.frame(dist_df))
   testit::assert("... Wrong number of rows",
-    nrow(dist_df) == 1)
+                 nrow(dist_df) == 1)
   testit::assert("... Wrong number of columns",
-    ncol(dist_df) == 1)
+                 ncol(dist_df) == 1)
   testit::assert("... Wrong column label",
-    colnames(dist_df) == expec_cols)
+                 colnames(dist_df) == expec_cols)
 }

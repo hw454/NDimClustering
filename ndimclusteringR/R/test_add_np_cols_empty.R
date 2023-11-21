@@ -18,5 +18,5 @@ test_add_np_cols_empty <- function() {
   expect_cols <- c(pc_1, pc_2, pc_3, pc_4, pc_5)
   print("... Testing empty case")
   testit::assert("Add np has found the wrong column names when empty",
-    all(colnames(df) == expect_cols))
+                 all(colnames(df) == expect_cols))
 }

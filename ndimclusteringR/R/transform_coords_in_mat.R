@@ -14,11 +14,10 @@
 #' @export
 transform_coords_in_mat <- function(p_mat, t_mat) {
   vec_list <- lapply(row.names(p_mat), transform_vec_by_mat,
-                   p_mat = p_mat, t_mat = t_mat)
+                     p_mat = p_mat, t_mat = t_mat)
   vec_mat <- Reduce(rbind, vec_list)
   colnames(vec_mat) <- lapply(seq_len(ncol(vec_mat)),
-                          make_pc_col_name
-                          )
+                              make_pc_col_name)
   rownames(vec_mat) <- rownames(p_mat)
   return(vec_mat)
 }

@@ -8,13 +8,12 @@
 #' @export
 test_find_aic <- function() {
   print("... Testing aic columns")
-  set.seed(240) # setting seed
   # The row names will get overridden in rbind so assign rownames to column
   # then reassign when ncents has been chosen
   nclust <- 5
   dummy_traits <- c("T1", "T2", "T3")
   dummy_snps <- c("rs35662", "rs301884", "rs69696",
-                     "rs4096", "rs646464", "rs1234")
+                  "rs4096", "rs646464", "rs1234")
   num_axis <- length(dummy_traits)
   nsnps <- length(dummy_snps)
   c_dist_rnd <- runif(nsnps, 0, 10)
@@ -38,5 +37,5 @@ test_find_aic <- function() {
   expect_cols <- c("snp_id", colnames(cluster_df), "aic", "bic")
   clust_re <- find_all_ic(clust_re, num_axis)
   testit::assert("find_all_aic has found the wrong row names",
-    colnames(clust_re) == expect_cols)
+                 colnames(clust_re) == expect_cols)
 }

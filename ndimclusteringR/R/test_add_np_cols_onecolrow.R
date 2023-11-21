@@ -21,7 +21,7 @@ test_add_np_cols_onecolrow <- function() {
   print(expect_cols)
   print("... Testing one col one row")
   testit::assert("Add np has found the wrong column names with one col",
-    all(colnames(df) == expect_cols))
+                 all(colnames(df) == expect_cols))
   testit::assert("Add np has found the wrong row names when empty",
-    rownames(df) == c("A"))
+                 rownames(df) == c("A"))
 }

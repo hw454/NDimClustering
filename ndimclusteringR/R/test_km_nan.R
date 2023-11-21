@@ -27,7 +27,7 @@
 test_km_nan <- function() {
   dummy_traits <- c("T1", "T2", "T3")
   dummy_snps <- c("rs35662", "rs301884", "rs69696",
-                     "rs4096", "rs646464", "rs1234")
+                  "rs4096", "rs646464", "rs1234")
   num_axis <- length(dummy_traits)
   nsnps <- length(dummy_snps)
   b_mat <- matrix(runif(nsnps * num_axis, 0, 10), nrow = nsnps)
@@ -47,21 +47,22 @@ test_km_nan <- function() {
   print("... test with full matrix")
   expect_cols <- c("clusters", "centres", "clust_dist")
   testit::assert("... not dataframe clusters",
-    is.data.frame(cluster_df$clusters))
+                 is.data.frame(cluster_df$clusters))
   testit::assert("... not dataframe centres",
-    is.data.frame(cluster_df$centres))
+                 is.data.frame(cluster_df$centres))
   testit::assert("... not dataframe clust_dist",
-    is.data.frame(cluster_df$clust_dist))
+                 is.data.frame(cluster_df$clust_dist))
   testit::assert("...km_nan has found the wrong list names",
-    names(cluster_df) == expect_cols)
+                 names(cluster_df) == expect_cols)
   testit::assert("...km_nan has found the wrong clust numbers",
-    unique(cluster_df$clusters$clust_num) %in% rownames(cluster_df$centres))
+                 unique(cluster_df$clusters$clust_num)
+                 %in% rownames(cluster_df$centres))
   testit::assert("...km_nan has found the wrong centres column names",
-    colnames(cluster_df$centres) == dummy_traits)
+                 colnames(cluster_df$centres) == dummy_traits)
   testit::assert("...km_nan has found the wrong clusters row names",
-    rownames(cluster_df$clusters) == dummy_snps)
+                 rownames(cluster_df$clusters) == dummy_snps)
   testit::assert("...km_nan has found the wrong clust_dist row names",
-    rownames(cluster_df$clust_dist) == dummy_snps)
+                 rownames(cluster_df$clust_dist) == dummy_snps)
   dummy_traits <- c("T1", "T2", "T3")
   dummy_snps <- c("rs35662", "rs301884", "rs69696",
                      "rs4096", "rs646464", "rs1234")
@@ -83,13 +84,14 @@ test_km_nan <- function() {
                        na_rm = na_rm)
   print("... test with NaN terms")
   testit::assert("...km_nan has found the wrong list names",
-    names(cluster_df) == expect_cols)
+                 names(cluster_df) == expect_cols)
   testit::assert("...km_nan has found the wrong clust numbers",
-    unique(cluster_df$clusters$clust_num) %in% rownames(cluster_df$centres))
+                 unique(cluster_df$clusters$clust_num)
+                 %in% rownames(cluster_df$centres))
   testit::assert("...km_nan has found the wrong centres column names",
-    colnames(cluster_df$centres) == dummy_traits)
+                 colnames(cluster_df$centres) == dummy_traits)
   testit::assert("...km_nan has found the wrong clusters row names",
-    rownames(cluster_df$clusters) == dummy_snps)
+                 rownames(cluster_df$clusters) == dummy_snps)
   testit::assert("...km_nan has found the wrong clust_dist row names",
-    rownames(cluster_df$clust_dist) == dummy_snps)
+                 rownames(cluster_df$clust_dist) == dummy_snps)
 }

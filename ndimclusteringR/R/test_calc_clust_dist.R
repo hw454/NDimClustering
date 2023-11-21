@@ -14,7 +14,7 @@ test_calc_clust_dist <- function() {
   nclust <- 3
   dummy_traits <- c("T1", "T2", "T3")
   dummy_snps <- c("rs35662", "rs301884", "rs69696",
-                     "rs4096", "rs646464", "rs1234")
+                  "rs4096", "rs646464", "rs1234")
   c_1 <- make_clust_col_name(1)
   c_2 <- make_clust_col_name(2)
   c_3 <- make_clust_col_name(3)
@@ -30,11 +30,11 @@ test_calc_clust_dist <- function() {
   }
   dist_df <- calc_clust_dist(b_mat, centres_df)
   testit::assert("... Output is not a dataframe",
-    is.data.frame(dist_df))
+                 is.data.frame(dist_df))
   testit::assert("... Wrong number of rows",
-    nrow(dist_df) == nrow(b_mat))
+                 nrow(dist_df) == nrow(b_mat))
   testit::assert("... Wrong number of columns",
-    ncol(dist_df) == nclust)
+                 ncol(dist_df) == nclust)
   testit::assert("... Wrong column label",
-    colnames(dist_df) == expec_cols)
+                 colnames(dist_df) == expec_cols)
 }

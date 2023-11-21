@@ -18,5 +18,5 @@ test_add_nclust_cols_empty <- function() {
   expect_cols <- c(c_1, c_2, c_3, c_4, c_5)
   print("... Testing empty case")
   testit::assert("Add clust has found the wrong column names when empty",
-    all(colnames(df) == expect_cols))
+                 all(colnames(df) == expect_cols))
 }

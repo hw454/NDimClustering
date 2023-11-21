@@ -25,7 +25,7 @@ test_find_closest_clust_snp <- function() {
   nclust <- 5
   dummy_traits <- c("T1", "T2", "T3")
   dummy_snps <- c("rs35662", "rs301884", "rs69696",
-                     "rs4096", "rs646464", "rs1234")
+                  "rs4096", "rs646464", "rs1234")
   num_axis <- length(dummy_traits)
   nsnps <- length(dummy_snps)
   b_mat <- matrix(runif(nsnps * num_axis, 0, 10), nrow = nsnps)
@@ -45,20 +45,20 @@ test_find_closest_clust_snp <- function() {
     centres_df[dummy_traits[i]] <- runif(nclust, 0, 10)
   }
   snp_clust_list <- lapply(dummy_snps, find_closest_clust_snp,
-                            b_mat = b_mat,
-                            cluster_df = cluster_df,
-                            centroids_df = centres_df,
-                            )
+    b_mat = b_mat,
+    cluster_df = cluster_df,
+    centroids_df = centres_df,
+  )
   # Combine the list of dataframes into one dataframe.
   # Override Cluster_df with the new assignment
   cluster_df_list <- lapply(snp_clust_list,
-                          df_cols,
-                          col = "clusters")
+                            df_cols,
+                            col = "clusters")
   cluster_df <- Reduce(rbind, cluster_df_list)
   expect_cols_clust <- c("clust_num", "clust_dist", "clust_prob")
   clust_dist_df_list <- lapply(snp_clust_list,
-                          df_cols,
-                          col = "clust_dist")
+                               df_cols,
+                               col = "clust_dist")
   clust_dist_df <- Reduce(rbind, clust_dist_df_list)
   c_1 <- make_clust_col_name(1)
   c_2 <- make_clust_col_name(2)
@@ -67,14 +67,14 @@ test_find_closest_clust_snp <- function() {
   c_5 <- make_clust_col_name(5)
   expect_cols_dist <- c(c_1, c_2, c_3, c_4, c_5)
   testit::assert("find_closest_clust_snp wrong labels cluster_df",
-    all(names(cluster_df) == expect_cols_clust))
+                 all(names(cluster_df) == expect_cols_clust))
   testit::assert("find_closest_clust_snp wrong labels clust_dist_df",
-    all(names(clust_dist_df) == expect_cols_dist))
+                 all(names(clust_dist_df) == expect_cols_dist))
   testit::assert("find_closest_clust_snp wrong type",
-    is.data.frame(cluster_df))
+                 is.data.frame(cluster_df))
 }
 df_cols <- function(df, col) {
   testit::assert("not dataframe in function",
-  is.data.frame(df[[col]]))
+                 is.data.frame(df[[col]]))
   return(df[[col]])
 }

@@ -16,21 +16,21 @@ plot_sngl_mxdf <- function(plot_iter, max_df_list, iter_df, plotter) {
   max_df["cp_on"] <- iter_df$clust_prob_on[plot_iter]
   plotter +
     ggplot2::geom_line(data = max_df,
-              ggplot2::aes(x = "num_axis",
-                            y = "diff",
-                            col = "clust_typ",
-                            linetype = "cp_on")
+      ggplot2::aes(x = "num_axis",
+                   y = "diff",
+                   col = "clust_typ",
+                   linetype = "cp_on")
     ) +
     ggplot2::geom_point(data = max_df,
-              ggplot2::aes(x = "num_axis",
-                          y = "diff",
-                          col = "clust_typ",
-                          shape = "bp_on")
+      ggplot2::aes(x = "num_axis",
+                   y = "diff",
+                   col = "clust_typ",
+                   shape = "bp_on")
     ) +
     ggplot2::labs(x = "Number of iterations",
-                           y = "Maximum difference",
-                           shape = "bp_on",
-                           color = "clust type",
-                           linetype = "clust prob on")
+                  y = "Maximum difference",
+                  shape = "bp_on",
+                  color = "clust type",
+                  linetype = "clust prob on")
   return(plotter)
 }

@@ -10,5 +10,5 @@
 #'
 #' @export
 make_clust_col_name <- function(c_num) {
-return(paste0("clust_", c_num))
+  return(paste0("clust_", c_num))
 }

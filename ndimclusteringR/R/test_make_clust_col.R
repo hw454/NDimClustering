@@ -16,10 +16,10 @@ test_make_clust_col <- function() {
   expect_cols <- c(make_clust_col_name(c_num))
   print("... test case with rows")
   testit::assert("make_clust_col has found the wrong column names",
-    all(colnames(df) == expect_cols))
+                 all(colnames(df) == expect_cols))
   testit::assert("make_clust_col has found the wrong row names",
-    all(rownames(df) == ex_rows))
+                 all(rownames(df) == ex_rows))
   print("... test empty case")
   testit::assert("make_clust_col has found the wrong row names when empty",
-    all(length(rownames(df2)) == 0))
+                 all(length(rownames(df2)) == 0))
 }
