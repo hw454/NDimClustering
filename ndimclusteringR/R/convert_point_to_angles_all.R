@@ -20,8 +20,8 @@ convert_point_to_angles_all <- function(p, mat, unit_mat) {
   vec <- as.matrix(mat[p, ])
   nc <- ncol(mat)
   ang_list <- lapply(1:nc, convert_point_to_angle,
-                    unit_mat = unit_mat,
-                    p = vec)
+                     unit_mat = unit_mat,
+                     p = vec)
   ang_vec <- Reduce(cbind, ang_list)
   return(ang_vec)
 }
