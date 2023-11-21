@@ -1,6 +1,3 @@
-devtools::install(("ndimclusteringR"))
-library("ndimclusteringR")
-
 number_row_col_names <- function(mat) {
   colnames(mat) <- seq_len(ncol(mat))
   rownames(mat) <- seq_len(nrow(mat))
@@ -20,7 +17,10 @@ create_pc <- function(i) {
 test_clust_kmeans_function <- function(d = 10,
                                        num_path = 0,
                                        pc_type = "prcomp",
-                                       n_pc = 2) {
+                                       n_pc = 2,
+                                       space_typ = "angle",
+                                       clust_typ = "min",
+                                       how_cents = "rand") {
   print(paste("Test", pc_type, "with", num_path, "pathways"))
   iter_traits <- data.frame("bp_on" = TRUE,
     "clust_prob_on" = TRUE,
@@ -31,10 +31,10 @@ test_clust_kmeans_function <- function(d = 10,
     "res_dir" = paste0("PC_TestResults/")
   )
   print(iter_traits)
-  rand_mat <- matrix(runif(d * d, 0.1, 1), nrow = d)
+  rand_mat <- matrix(runif(d * d, -1, 1), nrow = d)
   if (num_path > 0) {
-    a_list <- runif(num_path + 1, -3, 3)
-    b_list <- runif(num_path + 1, 0, d)
+    a_list <- runif(num_path + 1, 0, 3)
+    b_list <- runif(num_path + 1, 0, 0)
     mat_list <- lapply(1:(num_path + 1),
                        form_beta_corr,
                        d = d,
@@ -45,18 +45,15 @@ test_clust_kmeans_function <- function(d = 10,
   } else {
     dummy_beta <- rand_mat
   }
-  print("preplot")
   dummy_se <- matrix(runif((num_path + 1) * d * d, 0, 1),
                      nrow = (num_path + 1) * d)
   dummy_p <- matrix(runif((num_path + 1) * d * d),
                     nrow = (num_path + 1) * d)
-  print("prenumber")
   dummy_beta <- number_row_col_names(dummy_beta)
   dummy_se <- number_row_col_names(dummy_se)
   dummy_p <- number_row_col_names(dummy_p)
   # Compute the Sample SE with na_rm
   num_axis <- ncol(dummy_beta)
-  print("pre pca")
   if (pc_type == "prcomp") {
     pca_beta <- stats::prcomp(dummy_beta,
                               center = TRUE,
@@ -65,10 +62,10 @@ test_clust_kmeans_function <- function(d = 10,
                               rank = n_pc)
     t_mat <- pca_beta$rotation
     b_pc_mat <- pca_beta$x
-    p_pc_mat <- transform_coords_in_mat(dummy_p, t_mat)
-    se_pc_mat <- transform_coords_in_mat(dummy_se, t_mat)
+    p_pc_mat <- ndimclusteringR::transform_coords_in_mat(dummy_p, t_mat)
+    se_pc_mat <- ndimclusteringR::transform_coords_in_mat(dummy_se, t_mat)
     # Rescale se so it is within (0,1)
-    se_pc_mat <- calc_scale_mat(se_pc_mat)
+    se_pc_mat <- ndimclusteringR::calc_scale_mat(se_pc_mat)
     pc_cols <- lapply(1:n_pc, create_pc)
     colnames(se_pc_mat) <- pc_cols
     out_list <- list("beta" = b_pc_mat,
@@ -83,42 +80,28 @@ test_clust_kmeans_function <- function(d = 10,
                      "se" = dummy_se,
                      "transform" = t_mat)
   }
-  print("Cluster")
-  cluster_out <- cluster_kmeans(out_list,
-                                iter_traits = iter_traits,
-                                nclust = 3,
-                                max_dist = 10.0,
-                                space_typ = "angle",
-                                clust_typ = "min")
+  cluster_out <- ndimclusteringR::cluster_kmeans(out_list,
+                                                 iter_traits = iter_traits,
+                                                 nclust = num_path + 1,
+                                                 max_dist = 10.0,
+                                                 space_typ = space_typ,
+                                                 clust_typ = clust_typ,
+                                                 how_cents = how_cents)
   cluster_df <- cluster_out$clusters
   cluster_df["num_axis"] <- num_axis
   cluster_df <- tibble::rownames_to_column(cluster_df, "snp_id")
   c1 <- colnames(dummy_beta)[1]
   c2 <- colnames(dummy_beta)[2]
-  print("Plot")
-  plot_clust_scatter_test(cluster_df,
-                          out_list$beta,
-                          out_list$se,
-                          iter_traits,
-                          num_axis = num_axis)
-  plot_clust_expout_scatter_test(cluster_df,
-                                 dummy_beta,
-                                 dummy_se,
-                                 iter_traits,
-                                 exp_pheno = c1,
-                                 out_pheno = c2,
-                                 num_axis = num_axis)
+  ndimclusteringR::plot_clust_scatter_test(cluster_df,
+                                           out_list$beta,
+                                           out_list$se,
+                                           iter_traits,
+                                           num_axis = num_axis)
+  ndimclusteringR::plot_clust_expout_scatter_test(cluster_df,
+                                                  dummy_beta,
+                                                  dummy_se,
+                                                  iter_traits,
+                                                  exp_pheno = c1,
+                                                  out_pheno = c2,
+                                                  num_axis = num_axis)
 }
-pc_type_1 <- "No_pca"
-pc_type_2 <- "prcomp"
-num_paths_list <- 2:3
-pc_list <- list(pc_type_1, pc_type_2)
-d <- 30
-for (p_type in pc_list){
-  for (np in num_paths_list){
-    test_clust_kmeans_function(d,
-                               num_path = np,
-                               pc_type = p_type)
-  }
-}
-print("Complete")
