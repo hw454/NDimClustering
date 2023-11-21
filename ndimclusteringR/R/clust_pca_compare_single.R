@@ -67,9 +67,9 @@ clust_pca_compare_single <- function(df_list,
   if (st == "angle") {
     # For each point in b_df_comp convert the score to the angle
     # between the vectors to the origin and the unit vectors on the axis.
-    b_iter_mat <- convert_mat_to_angle_mat(b_iter_mat)
-    se_iter_mat <- convert_mat_to_angle_mat(se_iter_mat)
-    pval_iter_mat <- convert_mat_to_angle_mat(pval_iter_mat)
+    b_iter_mat <- ndimclusteringR::convert_mat_to_angle_mat(b_iter_mat)
+    se_iter_mat <- ndimclusteringR::convert_mat_to_angle_mat(se_iter_mat)
+    pval_iter_mat <- ndimclusteringR::convert_mat_to_angle_mat(pval_iter_mat)
   }
   # Cluster the data on these axes
   pca_beta <- stats::prcomp(b_iter_mat,
