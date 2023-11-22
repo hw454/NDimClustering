@@ -33,8 +33,8 @@
 #'
 #' @export
 check_clust_cent <- function(c_num, clustnum_df, b_mat, centroids_df,
-                            na_rm = TRUE, norm_typ = "F",
-                            clust_threshold = 1e-5) {
+  na_rm = TRUE, norm_typ = "F", clust_threshold = 1e-5
+) {
   sub_snp_list <- which(clustnum_df == c_num)
   snp_scores <- b_mat[sub_snp_list, ]
   nterms <- length(sub_snp_list)
@@ -52,7 +52,9 @@ check_clust_cent <- function(c_num, clustnum_df, b_mat, centroids_df,
     }
     # Calculate how much the centroid has moved.
     centroiddiff <- data.matrix(stats::na.omit(new_centroids_df[c_num, ]
-                                - centroids_df[c_num, ]))
+      - centroids_df[c_num, ]
+    )
+    )
     centroidchange <- norm(centroiddiff, norm_typ)
     # Check if the diff between new and old centres is below the threshold
   } else {
@@ -68,4 +70,4 @@ check_clust_cent <- function(c_num, clustnum_df, b_mat, centroids_df,
     out_centroid_df <- cbind(check_df, new_centroids_df[c_num, ])
   }
   return(out_centroid_df)
- }
+}

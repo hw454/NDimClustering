@@ -49,13 +49,10 @@ plot_clust_scatter <- function(cluster_df, b_mat,
   ymax <- max(res_df$by, na.rm = TRUE)
   # Create the strings for the filename and labels
   pnme <- paste0(iter_traits$res_dir,
-                 "scatter",
-                 c1,
-                 "_vs_",
-                 c2,
-                 "_naxis",
-                 num_axis,
-                 ".png")
+    "scatter", c1, "_vs_", c2,
+    "_naxis", num_axis,
+    ".png"
+  )
 
   title_str <- paste("Clusters plotted against the", c1, "and", c2, "traits.")
   caption_str <- paste("The clustering type used is", iter_traits$clust_typ)

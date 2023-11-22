@@ -120,13 +120,14 @@ clust_pca_compare_iterative <- function(data_matrices,
       }
       # Run program for this trait list
       df_list <- clust_pca_compare_single(df_list,
-                                    iter_traits = iter_traits,
-                                    num_axis = ai,
-                                    data_matrices = data_matrices,
-                                    na_handling = na_handling,
-                                    thresholds = thresholds,
-                                    norm_typs = norm_typs,
-                                    nums = nums)
+        iter_traits = iter_traits,
+        num_axis = ai,
+        data_matrices = data_matrices,
+        na_handling = na_handling,
+        thresholds = thresholds,
+        norm_typs = norm_typs,
+        nums = nums
+      )
     }
   }
   return(df_list)

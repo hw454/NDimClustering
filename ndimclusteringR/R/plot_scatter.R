@@ -12,11 +12,9 @@
 #' @param ph The plot heigh, default\:4
 #'
 #' @export
-plot_scatter <- function(b_mat,
-                          iter_traits,
-                          num_axis = 2,
-                          pw = 8,
-                          ph = 4) {
+plot_scatter <- function(b_mat, iter_traits,
+  num_axis = 2, pw = 8, ph = 4
+) {
   c1 <- colnames(b_mat)[1]
   c2 <- colnames(b_mat)[2]
   snp_list <- row.names(b_mat)
@@ -30,20 +28,19 @@ plot_scatter <- function(b_mat,
   ymin <- min(res_df$by, na.rm = TRUE)
   ymax <- max(res_df$by, na.rm = TRUE)
   pnme <- paste0(iter_traits$res_dir,
-                "scatter",
-                c1,
-                "_vs_",
-                c2,
-                ".png")
+    "scatter", c1, "_vs_", c2,
+    ".png"
+  )
   title_str <- paste("Before clustering, scatter ", c1, "vs", c2)
   ggplot2::ggplot(data = res_df,
-                  ggplot2::aes(x = bx, y = by)) + # nolint: object_usage_linter.
-  ggplot2::geom_point() +
-  ggplot2::xlim(xmin, xmax) +
-  ggplot2::ylim(ymin, ymax) +
-  ggplot2::ylab(paste("Association with", c2)) +
-  ggplot2::xlab(paste("Association with", c1)) +
-  ggplot2::ggtitle(title_str)
+    ggplot2::aes(x = bx, y = by) # nolint: object_usage_linter.
+  ) +
+    ggplot2::geom_point() +
+    ggplot2::xlim(xmin, xmax) +
+    ggplot2::ylim(ymin, ymax) +
+    ggplot2::ylab(paste("Association with", c2)) +
+    ggplot2::xlab(paste("Association with", c1)) +
+    ggplot2::ggtitle(title_str)
   ggplot2::ggsave(filename = pnme, width = pw, height = ph)
   return()
 }

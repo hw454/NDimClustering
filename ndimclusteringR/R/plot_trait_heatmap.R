@@ -25,7 +25,8 @@
 #'
 #' @export
 plot_trait_heatmap <- function(c_scores, iter_traits,
-                               pw = 16, ph = 4, prefix = "") {
+  pw = 16, ph = 4, prefix = ""
+) {
   ignore_cols <- c("num_axis")
   full_trait_list <- colnames(c_scores)
   full_trait_list <- full_trait_list[!(full_trait_list %in% ignore_cols)]
@@ -43,9 +44,10 @@ plot_trait_heatmap <- function(c_scores, iter_traits,
                        "\n The traits are:", full_trait_list)
   for (i in unique(c_scores$num_axis)){
     # Get the traits for this iteration
-      caption_str <- paste("Cluster type", d_str,
-                          " The traits are", prefix,
-                          "The number of axis are ", i)
+    caption_str <- paste("Cluster type", d_str,
+      " The traits are", prefix,
+      "The number of axis are ", i
+    )
     trait_list <- crop_col_names(c_scores, "num_axis", i, ignore_cols)
     # FIXME calculate total score for each cluster an add as trait.
     # Extract the association scores for each clust trait pair.
@@ -62,18 +64,20 @@ plot_trait_heatmap <- function(c_scores, iter_traits,
                                   x = clust_num, #nolint
                                   fill = score)) + #nolint
       ggplot2::theme(axis.text.x =
-                    ggplot2::element_text(angle = 90, vjust = 0.5)) +
+          ggplot2::element_text(angle = 90, vjust = 0.5)
+      ) +
       ggplot2::geom_tile() +
       # The limits are fixed but the colour change points are moving
       # FIXME
       # Mark the two clusters with the highest difference at each step
       ggplot2::scale_fill_gradient2(low = "cyan", high = "blue", mid = "purple",
-                      midpoint = colmid,
-                      breaks = seq(vmin, vmax, break_width),
-                      limits = c(vmin, vmax)) +
+        midpoint = colmid,
+        breaks = seq(vmin, vmax, break_width),
+        limits = c(vmin, vmax)
+      ) +
       ggplot2::ggtitle(title_iter) +
       ggplot2::labs(caption = caption_str)
     ggplot2::ggsave(filename = pnme, width = pw, height = ph)
   }
-return(p)
+  return(p)
 }

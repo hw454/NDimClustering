@@ -27,11 +27,13 @@
 #'
 #' @export
 calc_member_dist_cent <- function(snp_id, b_mat, cluster_df, centroids_df,
-                           norm_typ = "F") {
-   c_num <- cluster_df[snp_id, "clust_num"]
-   cent <- centroids_df[c_num, ]
-   c_dist <- calc_snp_cent_dist(snp_id, data_mat = b_mat, cent = cent)
-   snp_clust_df <- data.frame(row.names = snp_id,
-                       "clust_dist" = c_dist)
+  norm_typ = "F"
+) {
+  c_num <- cluster_df[snp_id, "clust_num"]
+  cent <- centroids_df[c_num, ]
+  c_dist <- calc_snp_cent_dist(snp_id, data_mat = b_mat, cent = cent)
+  snp_clust_df <- data.frame(row.names = snp_id,
+    "clust_dist" = c_dist
+  )
   return(snp_clust_df)
 }
