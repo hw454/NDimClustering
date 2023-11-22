@@ -16,18 +16,12 @@
 #' @param ph The plot heigh, default\:4
 #'
 #' @export
-plot_clust_angle_scatter_test <- function(cluster_df, b_mat,
-                                          se_mat,
-                                          iter_traits,
-                                          exp_pheno,
-                                          out_pheno,
-                                          num_axis = 2,
-                                          pw = 8,
-                                          ph = 4) {
+plot_clust_angle_scatter <- function(cluster_df, b_mat,
+  se_mat, iter_traits, col1, col2,
+  num_axis = 2, pw = 8, ph = 4
+) {
   crop_cluster_df <- cluster_df[cluster_df$num_axis == num_axis, ]
   crop_cluster_df <- tibble::column_to_rownames(crop_cluster_df, "snp_id")
-  c1 <- exp_pheno
-  c2 <- out_pheno
   se_max <- apply(se_mat, 2, max)
   se_min <- apply(se_mat, 2, min)
   norm_se <- rowSums((se_mat - se_min) / (se_max - se_min))
@@ -35,23 +29,23 @@ plot_clust_angle_scatter_test <- function(cluster_df, b_mat,
   snp_list <- row.names(b_mat)
   res_df <- data.frame(
     row.names = snp_list,
-    bx = b_mat[, c1],
-    by = b_mat[, c2],
-    bxse = se_mat[, c1],
-    byse = se_mat[, c2],
+    bx = b_mat[, col1],
+    by = b_mat[, col2],
+    bxse = se_mat[, col1],
+    byse = se_mat[, col2],
     clust_num = crop_cluster_df[snp_list, "clust_num"],
     clust_prob = crop_cluster_df[snp_list, "clust_prob"],
     alp = alpha_vec
   )
   pnme <- paste0(iter_traits$res_dir,
-    "scatter_angles_withclusts", c1, "_vs_", c2,
+    "scatter_angles_withclusts", col1, "_vs_", col2,
     "_pctype", iter_traits$pc_type,
     "_clust", iter_traits$clust_typ,
     "_howcents", iter_traits$how_cents,
     ".png"
   )
   title_str <- paste("Clusters plotted against the angles to",
-                     c1, "and", c2, ".")
+                     col1, "and", col2, ".")
   caption_str <- paste(
     "The method for PCA that will be used is", iter_traits$pc_type,
     "\n The method for allocating centroids is", iter_traits$how_cents,
@@ -67,8 +61,8 @@ plot_clust_angle_scatter_test <- function(cluster_df, b_mat,
     ),
     shape = 21
     ) +
-    ggplot2::xlab(paste("Association with angle to ", c1)) +
-    ggplot2::ylab(paste("Association with angle to", c2)) +
+    ggplot2::xlab(paste("Association with angle to ", col1)) +
+    ggplot2::ylab(paste("Association with angle to", col2)) +
     ggplot2::ggtitle(title_str) +
     ggplot2::labs(caption = caption_str)
   ggplot2::ggsave(filename = pnme, width = pw, height = ph)
