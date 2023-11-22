@@ -65,9 +65,9 @@ check_clust_cent <- function(c_num, clustnum_df, b_mat, centroids_df,
     thresh_check = (centroidchange < clust_threshold)
   )
   if (check_df[c_num, "thresh_check"]) {
-    out_centroid_df <- cbind(check_df, centroids_df[c_num, ])
+    out_centroid_df <- cbind(check_df, centroids_df)
   } else {
-    out_centroid_df <- cbind(check_df, new_centroids_df[c_num, ])
+    out_centroid_df <- cbind(check_df, new_centroids_df)
   }
-  return(out_centroid_df)
+  return(out_centroid_df[c_num, ])
 }
