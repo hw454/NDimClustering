@@ -45,23 +45,20 @@ plot_clust_angle_scatter_test <- function(cluster_df, b_mat,
   )
   np <- iter_traits$num_paths + 1
   pnme <- paste0(iter_traits$res_dir,
-                 "scatter_angles_withclusts",
-                 c1,
-                 "_vs_",
-                 c2,
-                 "_pctype",
-                 iter_traits$pc_type,
-                 "_numpaths",
-                 np,
-                 ".png")
+    "scatter_angles_withclusts", c1, "_vs_", c2,
+    "_pctype", iter_traits$pc_type,
+    "_numpaths", np,
+    "_clust", iter_traits$clust_typ,
+    "_howcents", iter_traits$how_cents,
+    ".png"
+  )
   title_str <- paste("Clusters plotted against the angles to",
                      c1, "and", c2, ".")
-  caption_str <- paste("Test case with", np,
-                       "pathways. \n The method for PCA that will be used is",
-                       iter_traits$pc_type,
-                       "\n The method for allocating centroids is",
-                       iter_traits$how_cents,
-                       "\n The clustering method is", iter_traits$clust_typ)
+  caption_str <- paste("Test case with", np, "pathways.",
+    "\n The method for PCA that will be used is", iter_traits$pc_type,
+    "\n The method for allocating centroids is", iter_traits$how_cents,
+    "\n The clustering method is", iter_traits$clust_typ
+  )
   angleplot <- ggplot2::ggplot(data = res_df,
     ggplot2::aes(x = bx, y = by) # nolint: object_usage_linter.
   ) +

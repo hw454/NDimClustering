@@ -73,6 +73,10 @@ plot_clust_scatter_rgb_test <- function(clust_dist_df, b_mat,
                  iter_traits$pc_type,
                  "_numpaths",
                  np,
+                 "_clust",
+                 iter_traits$clust_typ,
+                 "_howcents",
+                 iter_traits$how_cents,
                  ".png")
   title_str <- paste("Clusters plotted against the", c1, "and", c2, "traits.")
   caption_str <- paste("Test case with", np,

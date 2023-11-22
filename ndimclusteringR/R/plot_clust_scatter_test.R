@@ -40,6 +40,7 @@ plot_clust_scatter_test <- function(cluster_df, b_mat,
     clust_prob = crop_cluster_df[snp_list, "clust_prob"],
     alp = alpha_vec
   )
+  np <- iter_traits$num_paths + 1
   pnme <- paste0(iter_traits$res_dir,
                  "scatter_withclusts",
                  c1,
@@ -48,10 +49,14 @@ plot_clust_scatter_test <- function(cluster_df, b_mat,
                  "_pctype",
                  iter_traits$pc_type,
                  "_numpaths",
-                 iter_traits$num_paths,
+                 np,
+                 "_clust",
+                 iter_traits$clust_typ,
+                 "_howcents",
+                 iter_traits$how_cents,
                  ".png")
   title_str <- paste("Clusters plotted against the", c1, "and", c2, "traits.")
-  caption_str <- paste("Test case with", iter_traits$num_paths,
+  caption_str <- paste("Test case with", np,
     "pathways. \n The method for PCA used is",
     iter_traits$pc_type, ".",
     "\n The method for allocating centroids is",
