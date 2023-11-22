@@ -142,7 +142,7 @@ full_cluster_and_plot <- function(data_matrices, exp_pheno, out_pheno,
     c_scores_tr <- out$clust_trait_scores
     plot_trait_heatmap(c_scores_tr, iter_traits)
     print("Heatmap plot done")
-    plot_max_diff(max_diff_df, iter_traits)
+    plot_mxdf(max_diff_df, iter_traits)
     print("Diff plot done")
   }
   return(out)
