@@ -101,6 +101,7 @@ clust_pca_compare_single <- function(df_list,
                                 nclust = nums$nr,
                                 space_typ = st,
                                 clust_typ = iter_traits$clust_typ,
+                                how_cents = iter_traits$how_cents,
                                 clust_prob_on = iter_traits$clust_prob_on, # nolint
                                 norm_typ = norm_typs$clust,
                                 threshold = thresholds$clust,
