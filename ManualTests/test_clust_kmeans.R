@@ -76,13 +76,14 @@ test_clust_kmeans_function <- function(d = 10,
   }
   print("Cluster")
   print(out_list)
-  cluster_out <- cluster_kmeans(out_list,
-                                iter_traits = iter_traits,
-                                nclust = num_path + 1,
-                                max_dist = 10.0,
-                                space_typ = "angle",
-                                clust_typ = "mrclust",
-                                how_cents = how_cents)
+  cluster_out <- ndimclusteringR::cluster_kmeans(out_list,
+    iter_traits = iter_traits,
+    nclust = num_path + 1,
+    max_dist = 10.0,
+    space_typ = "angle",
+    clust_typ = "mrclust",
+    how_cents = how_cents
+  )
   cluster_df <- cluster_out$clusters
   cluster_df["num_axis"] <- num_axis
   cluster_df <- tibble::rownames_to_column(cluster_df, "snp_id")
