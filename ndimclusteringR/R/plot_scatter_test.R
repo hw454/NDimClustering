@@ -37,12 +37,14 @@ plot_scatter_test <- function(b_mat,
                  np,
                  ".png")
   title_str <- paste("Before clustering, scatter ", c1, "vs", c2)
-  ggplot2::ggplot(data = res_df,
-                  ggplot2::aes(x = bx, y = by)) + # nolint: object_usage_linter.
+  scatter_plot <- ggplot2::ggplot(data = res_df,
+    ggplot2::aes(x = bx, y = by) # nolint: object_usage_linter.
+  ) +
     ggplot2::geom_point() +
     ggplot2::ylab(paste("Association with", c2)) +
     ggplot2::xlab(paste("Association with", c1)) +
     ggplot2::ggtitle(title_str)
   ggplot2::ggsave(filename = pnme, width = pw, height = ph)
+  print(scatter_plot)
   return()
 }

@@ -80,6 +80,6 @@ plot_clust_expout_scatter_test <- function(cluster_df, b_mat,
     ggplot2::ggtitle(title_str) +
     ggplot2::labs(caption = caption_str)
   ggplot2::ggsave(filename = pnme, width = pw, height = ph)
-  expout_plot
+  print(expout_plot)
   return(expout_plot)
 }

@@ -89,8 +89,9 @@ plot_clust_scatter_rgb_test <- function(clust_dist_df, b_mat,
                        "\n g score given by weighting to", clust_names[2],
                        "\n b score given by weighting to", clust_names[3])
   # Set the main plotting data
-  ggplot2::ggplot(data = res_df,
-                  ggplot2::aes(x = bx, y = by)) + # nolint: object_usage_linter.
+  rgb_plot <- ggplot2::ggplot(data = res_df,
+    ggplot2::aes(x = bx, y = by)# nolint: object_usage_linter.
+  ) +
     # Set the colour
     ggplot2::geom_point(ggplot2::aes(
       col = cols # nolint: object_usage_linter.
@@ -123,5 +124,6 @@ plot_clust_scatter_rgb_test <- function(clust_dist_df, b_mat,
     ggplot2::labs(caption = caption_str)
   # Save
   ggplot2::ggsave(filename = pnme, width = pw, height = ph)
-  return()
+  print(rgb_plot)
+  return(rgb_plot)
 }

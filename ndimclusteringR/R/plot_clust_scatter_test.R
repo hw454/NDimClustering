@@ -93,6 +93,6 @@ plot_clust_scatter_test <- function(cluster_df, b_mat,
     ggplot2::ggtitle(title_str) +
     ggplot2::labs(caption = caption_str)
   ggplot2::ggsave(filename = pnme, width = pw, height = ph)
-  clust_scatter
+  print(clust_scatter)
   return(clust_scatter)
 }
