@@ -2,7 +2,7 @@
 title: Testing Clustering methods.
 author: Hayley Wragg
 date: "21st Nov 2023"
-output: md_document
+output: [md_document, html_document, pdf_document]
 editor_options: 
   markdown: 
     wrap: sentence
@@ -213,6 +213,161 @@ np <- 3
 d <- 30
 clust_typ <- "basic"
 space_typ <- "regular"
+how_cents <- "points"
+test_clust_kmeans_function(d,
+                           num_path = np,
+                           pc_type = pc_type,
+                           clust_typ = clust_typ,
+                           space_typ = space_typ,
+                           how_cents = how_cents)
+```
+### Test 10
+
+Run the tests with: \* No PCA \* basic k-means clustering.
+k is set to the number of pathways.
+\* angles calculated before clustering.
+\* number of pathways 4.
+\* Centroids assigned using points
+
+```{r}
+pc_type <- "No_pca"
+np <- 3
+d <- 30
+clust_typ <- "basic"
+space_typ <- "angle"
+how_cents <- "points"
+test_clust_kmeans_function(d,
+                           num_path = np,
+                           pc_type = pc_type,
+                           clust_typ = clust_typ,
+                           space_typ = space_typ,
+                           how_cents = how_cents)
+```
+### Test 11
+
+Run the tests with: \* PCA with prcomp \* basic k-means clustering.
+k is set to the number of pathways.
+\* no angles calculated before clustering.
+\* number of pathways 4.
+\* Centroids assigned using points
+
+```{r}
+pc_type <- "prcomp"
+np <- 3
+d <- 30
+clust_typ <- "basic"
+space_typ <- "regular"
+how_cents <- "points"
+test_clust_kmeans_function(d,
+                           num_path = np,
+                           pc_type = pc_type,
+                           clust_typ = clust_typ,
+                           space_typ = space_typ,
+                           how_cents = how_cents)
+```
+### Test 12
+
+Run the tests with: \* PCA with prcomp \* basic k-means clustering.
+k is set to the number of pathways.
+\* angles calculated before PCA and clustering.
+\* number of pathways 4.
+\* Centroids assigned using points
+
+```{r}
+pc_type <- "prcomp"
+np <- 3
+d <- 30
+clust_typ <- "basic"
+space_typ <- "angle"
+how_cents <- "points"
+test_clust_kmeans_function(d,
+                           num_path = np,
+                           pc_type = pc_type,
+                           clust_typ = clust_typ,
+                           space_typ = space_typ,
+                           how_cents = how_cents)
+```
+
+### Test 13
+
+Run the tests with: \* No PCA \* min-aic k-means clustering.
+k is set to the number of pathways.
+\* no angles calculated before clustering.
+\* number of pathways 4.
+\* Centroids assigned using points
+
+```{r}
+pc_type <- "No_pca"
+np <- 3
+d <- 30
+clust_typ <- "min"
+space_typ <- "regular"
+how_cents <- "points"
+test_clust_kmeans_function(d,
+                           num_path = np,
+                           pc_type = pc_type,
+                           clust_typ = clust_typ,
+                           space_typ = space_typ,
+                           how_cents = how_cents)
+```
+### Test 14
+
+Run the tests with: \* No PCA \* min-aic k-means clustering.
+k is set to the number of pathways.
+\* angles calculated before clustering.
+\* number of pathways 4.
+\* Centroids assigned using points
+
+```{r}
+pc_type <- "No_pca"
+np <- 3
+d <- 30
+clust_typ <- "min"
+space_typ <- "angle"
+how_cents <- "points"
+test_clust_kmeans_function(d,
+                           num_path = np,
+                           pc_type = pc_type,
+                           clust_typ = clust_typ,
+                           space_typ = space_typ,
+                           how_cents = how_cents)
+```
+### Test 15
+
+Run the tests with: \* PCA with prcomp \* min-aic k-means clustering.
+k is set to the number of pathways.
+\* no angles calculated before clustering.
+\* number of pathways 4.
+\* Centroids assigned using points
+
+```{r}
+pc_type <- "prcomp"
+np <- 3
+d <- 30
+clust_typ <- "min"
+space_typ <- "regular"
+how_cents <- "points"
+test_clust_kmeans_function(d,
+                           num_path = np,
+                           pc_type = pc_type,
+                           clust_typ = clust_typ,
+                           space_typ = space_typ,
+                           how_cents = how_cents)
+```
+### Test 16
+
+Run the tests with: \* PCA with prcomp \* min-aic k-means clustering.
+k is set to the number of pathways.
+\* angles calculated before PCA and clustering.
+\* number of pathways 4.
+\* Centroids assigned using points
+
+```{r}
+pc_type <- "prcomp"
+np <- 3
+d <- 30
+clust_typ <- "min"
+space_typ <- "angle"
 how_cents <- "points"
 test_clust_kmeans_function(d,
                            num_path = np,
