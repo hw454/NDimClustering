@@ -11,7 +11,7 @@ library("ndimclusteringR")
 ```
 Load the functions for testing
 ```{r}
-source("test_clust_kmeans.r")
+source("test_clust_kmeans.R")
 ```
 # Step by step
 If all the steps are included then they are performed in the following order.
