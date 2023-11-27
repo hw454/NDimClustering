@@ -65,21 +65,15 @@ km_nan <- function(b_mat,
                             n_cents = nclust, min_max_df = min_max_df)
     centroids_df <- Reduce(cbind, centroid_list)
   } else if (grepl("point", how_cents)) {
+    b_mat_tmp <- as.data.frame(b_mat)
     if (nclust == 1) {
       init_cent_id <- sample(snp_list, nclust, replace = FALSE)
-      centroids_df <- as.data.frame(b_mat[init_cent_id],
-                                    optional = TRUE,
-                                    row.names = 1:nclust,
-                                    col.names = colnames(b_mat),
-                                    stringsAsFactors = TRUE)
+      centroids_df <- b_mat_tmp[init_cent_id, ]
+      row.names(centroids_df) <- 1
     } else {
       init_cent_id <- sample(snp_list, nclust, replace = FALSE)
-      centroids_df <- as.data.frame(b_mat[init_cent_id, ],
-                                    optional = TRUE,
-                                    row.names = 1:nclust,
-                                    col.names = colnames(b_mat),
-                                    stringsAsFactors = TRUE)
-
+      centroids_df <- b_mat_tmp[init_cent_id, ]
+      row.names(centroids_df) <- 1:nclust
     }
   }
   # Randomly assign cluster to snps
