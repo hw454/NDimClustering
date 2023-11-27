@@ -95,6 +95,11 @@ test_clust_kmeans_function <- function(d = 10,
   cluster_df <- tibble::rownames_to_column(cluster_df, "snp_id")
   c1 <- colnames(dummy_beta)[1]
   c2 <- colnames(dummy_beta)[2]
+  ndimclusteringR::plot_clust_scatter_rgb_test(cluster_df,
+                                               out_list$beta,
+                                               out_list$se,
+                                               iter_traits,
+                                               num_axis = num_axis)
   ndimclusteringR::plot_clust_scatter_test(cluster_df,
                                            out_list$beta,
                                            out_list$se,
