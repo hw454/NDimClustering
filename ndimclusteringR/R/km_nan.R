@@ -63,16 +63,19 @@ km_nan <- function(b_mat,
     # Randomly assign centroids coords per cluster.
     centroid_list <- lapply(rownames(min_max_df), make_rand_cent,
                             n_cents = nclust, min_max_df = min_max_df)
-    print(centroid_list)
     centroids_df <- Reduce(cbind, centroid_list)
   } else if (grepl("point", how_cents)) {
-    init_cent_id <- sample(snp_list, nclust, replace = FALSE)
-    centroids_df <- b_mat[init_cent_id, ]
-    rownames(centroids_df) <- seq_len(nclust)
+    if (nclust == 1) {
+      b_mat_tmp <- as.data.frame(b_mat)
+      init_cent_id <- sample(snp_list, nclust, replace = FALSE)
+      centroids_df <- b_mat_tmp[init_cent_id, ]
+      rownames(centroids_df) <- 1
+    } else {
+      init_cent_id <- sample(snp_list, nclust, replace = FALSE)
+      centroids_df <- as.data.frame(b_mat[init_cent_id, ])
+      rownames(centroids_df) <- seq_len(nclust)
+    }
   }
-  print(how_cents)
-  print(centroids_df)
-  print(rownames(centroids_df))
   # Randomly assign cluster to snps
   nsnps <- length(snp_list)
   clust_samp <- sample(rownames(centroids_df), nsnps, replace = TRUE)
@@ -88,8 +91,6 @@ km_nan <- function(b_mat,
                                 norm_typ = norm_typ)
   clust_dist_mem_df <- Reduce(rbind, clust_dist_mem_list)
   cluster_df <- cbind(cluster_df, clust_dist_mem_df)
-  print("initial clusts")
-  print(cluster_df)
   for (iter in 1:iter_max){
     # For each SNP find the cluster with the closest centre.
     snp_clust_list <- lapply(snp_list, find_closest_clust_snp,
@@ -135,7 +136,5 @@ km_nan <- function(b_mat,
   cluster_df <- dplyr::mutate(cluster_df, "ncents" = nclust)
   clust_out <- list("clusters" = cluster_df, "centres" = centroids_df,
                     "clust_dist" = clust_dist_df)
-  print("out")
-  print(clust_out)
   return(clust_out)
 }
