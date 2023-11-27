@@ -12,7 +12,7 @@ km_nan(
   norm_typ = "F",
   na_rm = TRUE,
   prob_on = TRUE,
-  how_cents = "rand"
+  how_cents = "point"
 )
 }
 \arguments{
