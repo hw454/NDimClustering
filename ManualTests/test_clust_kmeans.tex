@@ -1,0 +1,1000 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Testing Clustering methods.},
+  pdfauthor={Hayley Wragg},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Testing Clustering methods.}
+\author{Hayley Wragg}
+\date{21st Nov 2023}
+
+\begin{document}
+\maketitle
+
+\hypertarget{install-package}{%
+\section{Install package}\label{install-package}}
+
+Load the ``ndimclusteringR'' package
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{devtools}\SpecialCharTok{::}\FunctionTok{install}\NormalTok{(}\StringTok{"../ndimclusteringR/R"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## scales (1.2.1 -> 1.3.0) [CRAN]
+\end{verbatim}
+
+\begin{verbatim}
+## Installing 1 packages: scales
+\end{verbatim}
+
+\begin{verbatim}
+## Installing package into '/home/hayley/R/x86_64-pc-linux-gnu-library/4.3'
+## (as 'lib' is unspecified)
+\end{verbatim}
+
+\begin{verbatim}
+## -- R CMD build -----------------------------------------------------------------
+##      checking for file ‘/home/hayley/Code/ICEP/NDimClustering/ndimclusteringR/DESCRIPTION’ ...  v  checking for file ‘/home/hayley/Code/ICEP/NDimClustering/ndimclusteringR/DESCRIPTION’ (339ms)
+##   -  preparing ‘ndimclusteringR’:
+##    checking DESCRIPTION meta-information ...  v  checking DESCRIPTION meta-information
+##   -  checking for LF line-endings in source and make files and shell scripts
+##   -  checking for empty or unneeded directories
+##   -  building ‘ndimclusteringR_0.0.1.tar.gz’
+##      
+## Running /usr/lib/R/bin/R CMD INSTALL \
+##   /tmp/RtmpCiHeeC/ndimclusteringR_0.0.1.tar.gz --install-tests 
+## * installing to library ‘/home/hayley/R/x86_64-pc-linux-gnu-library/4.3’
+## * installing *source* package ‘ndimclusteringR’ ...
+## ** using staged installation
+## ** R
+## ** data
+## *** moving datasets to lazyload DB
+## ** byte-compile and prepare package for lazy loading
+## ** help
+## *** installing help indices
+## ** building package indices
+## ** testing if installed package can be loaded from temporary location
+## ** testing if installed package can be loaded from final location
+## ** testing if installed package keeps a record of temporary installation path
+## * DONE (ndimclusteringR)
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(}\StringTok{"ndimclusteringR"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{source-test}{%
+\section{Source test}\label{source-test}}
+
+Load the functions for testing
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{source}\NormalTok{(}\StringTok{"test\_clust\_kmeans.R"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{step-by-step}{%
+\section{Step by step}\label{step-by-step}}
+
+If all the steps are included then they are performed in the following
+order.
+
+1. Crop data to complete cases and lowest se.
+
+2. Convert data to angles.
+
+3. Perform PCA on angle data.
+
+4. Cluster on the PCA
+
+\begin{itemize}
+\tightlist
+\item
+  Set cluster centres
+\item
+  Converge cluster centres
+\item
+  if min then rerun for different number of clusters and choose set with
+  min-aic.
+\end{itemize}
+
+\hypertarget{test-1}{%
+\subsubsection{Test 1}\label{test-1}}
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  No PCA
+\item
+  basic k-means clustering. k is set to the number of pathways.
+\item
+  no angles calculated before clustering.
+\item
+  number of pathways 2.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pc\_type }\OtherTok{\textless{}{-}} \StringTok{"No\_pca"}
+\NormalTok{np }\OtherTok{\textless{}{-}} \DecValTok{1}
+\NormalTok{d }\OtherTok{\textless{}{-}} \DecValTok{30}
+\NormalTok{clust\_typ }\OtherTok{\textless{}{-}} \StringTok{"basic"}
+\NormalTok{space\_typ }\OtherTok{\textless{}{-}} \StringTok{"regular"}
+\FunctionTok{test\_clust\_kmeans\_function}\NormalTok{(d,}
+                           \AttributeTok{num\_path =}\NormalTok{ np,}
+                           \AttributeTok{pc\_type =}\NormalTok{ pc\_type,}
+                           \AttributeTok{clust\_typ =}\NormalTok{ clust\_typ,}
+                           \AttributeTok{space\_typ =}\NormalTok{ space\_typ)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Test No_pca with 2 pathways"
+##   bp_on clust_prob_on         clust_typ ndim_typ how_cents pc_type num_paths
+## 1  TRUE          TRUE test_basicregular test_all      rand  No_pca         1
+##           res_dir
+## 1 PC_TestResults/
+## [1] "Clusters converged 5"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-3-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-3-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-3-3.pdf}
+
+\hypertarget{test-2}{%
+\subsubsection{Test 2}\label{test-2}}
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  No PCA
+\item
+  basic k-means clustering. k is set to the number of pathways.
+\item
+  no angles calculated before clustering.
+\item
+  number of pathways 4.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pc\_type }\OtherTok{\textless{}{-}} \StringTok{"No\_pca"}
+\NormalTok{np }\OtherTok{\textless{}{-}} \DecValTok{3}
+\NormalTok{d }\OtherTok{\textless{}{-}} \DecValTok{30}
+\NormalTok{clust\_typ }\OtherTok{\textless{}{-}} \StringTok{"basic"}
+\NormalTok{space\_typ }\OtherTok{\textless{}{-}} \StringTok{"regular"}
+\FunctionTok{test\_clust\_kmeans\_function}\NormalTok{(d,}
+                           \AttributeTok{num\_path =}\NormalTok{ np,}
+                           \AttributeTok{pc\_type =}\NormalTok{ pc\_type,}
+                           \AttributeTok{clust\_typ =}\NormalTok{ clust\_typ,}
+                           \AttributeTok{space\_typ =}\NormalTok{ space\_typ)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Test No_pca with 4 pathways"
+##   bp_on clust_prob_on         clust_typ ndim_typ how_cents pc_type num_paths
+## 1  TRUE          TRUE test_basicregular test_all      rand  No_pca         3
+##           res_dir
+## 1 PC_TestResults/
+## [1] "Clusters converged 3"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-4-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-4-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-4-3.pdf}
+
+\hypertarget{test-3}{%
+\subsubsection{Test 3}\label{test-3}}
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  No PCA
+\item
+  basic k-means clustering. k is set to the number of pathways.
+\item
+  angles calculated before pca and before clustering.
+\item
+  number of pathways 2.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pc\_type }\OtherTok{\textless{}{-}} \StringTok{"No\_pca"}
+\NormalTok{np }\OtherTok{\textless{}{-}} \DecValTok{1}
+\NormalTok{d }\OtherTok{\textless{}{-}} \DecValTok{30}
+\NormalTok{clust\_typ }\OtherTok{\textless{}{-}} \StringTok{"basic"}
+\NormalTok{space\_typ }\OtherTok{\textless{}{-}} \StringTok{"angle"}
+\FunctionTok{test\_clust\_kmeans\_function}\NormalTok{(d,}
+                           \AttributeTok{num\_path =}\NormalTok{ np,}
+                           \AttributeTok{pc\_type =}\NormalTok{ pc\_type,}
+                           \AttributeTok{clust\_typ =}\NormalTok{ clust\_typ,}
+                           \AttributeTok{space\_typ =}\NormalTok{ space\_typ)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Test No_pca with 2 pathways"
+##   bp_on clust_prob_on       clust_typ ndim_typ how_cents pc_type num_paths
+## 1  TRUE          TRUE test_basicangle test_all      rand  No_pca         1
+##           res_dir
+## 1 PC_TestResults/
+## [1] "Clusters converged 3"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-5-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-5-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-5-3.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-5-4.pdf}
+
+\hypertarget{test-4}{%
+\subsubsection{Test 4}\label{test-4}}
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  No PCA
+\item
+  basic k-means clustering. k is set to the number of pathways.
+\item
+  angles calculated before clustering.
+\item
+  number of pathways 4.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pc\_type }\OtherTok{\textless{}{-}} \StringTok{"No\_pca"}
+\NormalTok{np }\OtherTok{\textless{}{-}} \DecValTok{3}
+\NormalTok{d }\OtherTok{\textless{}{-}} \DecValTok{30}
+\NormalTok{clust\_typ }\OtherTok{\textless{}{-}} \StringTok{"basic"}
+\NormalTok{space\_typ }\OtherTok{\textless{}{-}} \StringTok{"angle"}
+\FunctionTok{test\_clust\_kmeans\_function}\NormalTok{(d,}
+                           \AttributeTok{num\_path =}\NormalTok{ np,}
+                           \AttributeTok{pc\_type =}\NormalTok{ pc\_type,}
+                           \AttributeTok{clust\_typ =}\NormalTok{ clust\_typ,}
+                           \AttributeTok{space\_typ =}\NormalTok{ space\_typ)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Test No_pca with 4 pathways"
+##   bp_on clust_prob_on       clust_typ ndim_typ how_cents pc_type num_paths
+## 1  TRUE          TRUE test_basicangle test_all      rand  No_pca         3
+##           res_dir
+## 1 PC_TestResults/
+## [1] "Clusters converged 6"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-6-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-6-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-6-3.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-6-4.pdf}
+
+\hypertarget{test-5}{%
+\subsubsection{Test 5}\label{test-5}}
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  No PCA
+\item
+  min-aic k-means clustering. Maximum k is set to the number of
+  pathways.
+\item
+  no angles calculated before clustering.
+\item
+  number of pathways 2.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pc\_type }\OtherTok{\textless{}{-}} \StringTok{"No\_pca"}
+\NormalTok{np }\OtherTok{\textless{}{-}} \DecValTok{1}
+\NormalTok{d }\OtherTok{\textless{}{-}} \DecValTok{30}
+\NormalTok{clust\_typ }\OtherTok{\textless{}{-}} \StringTok{"min"}
+\NormalTok{space\_typ }\OtherTok{\textless{}{-}} \StringTok{"regular"}
+\FunctionTok{test\_clust\_kmeans\_function}\NormalTok{(d,}
+                           \AttributeTok{num\_path =}\NormalTok{ np,}
+                           \AttributeTok{pc\_type =}\NormalTok{ pc\_type,}
+                           \AttributeTok{clust\_typ =}\NormalTok{ clust\_typ,}
+                           \AttributeTok{space\_typ =}\NormalTok{ space\_typ)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Test No_pca with 2 pathways"
+##   bp_on clust_prob_on       clust_typ ndim_typ how_cents pc_type num_paths
+## 1  TRUE          TRUE test_minregular test_all      rand  No_pca         1
+##           res_dir
+## 1 PC_TestResults/
+## [1] "Clusters converged 2"
+## [1] "Clusters converged 5"
+## [1] "Clusters converged 3"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-7-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-7-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-7-3.pdf}
+
+\hypertarget{test-6}{%
+\subsubsection{Test 6}\label{test-6}}
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  No PCA
+\item
+  min-aic k-means clustering. Maximum k is set to the number of
+  pathways.
+\item
+  no angles calculated before clustering.
+\item
+  number of pathways 4.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pc\_type }\OtherTok{\textless{}{-}} \StringTok{"No\_pca"}
+\NormalTok{np }\OtherTok{\textless{}{-}} \DecValTok{3}
+\NormalTok{d }\OtherTok{\textless{}{-}} \DecValTok{30}
+\NormalTok{clust\_typ }\OtherTok{\textless{}{-}} \StringTok{"min"}
+\NormalTok{space\_typ }\OtherTok{\textless{}{-}} \StringTok{"regular"}
+\FunctionTok{test\_clust\_kmeans\_function}\NormalTok{(d,}
+                           \AttributeTok{num\_path =}\NormalTok{ np,}
+                           \AttributeTok{pc\_type =}\NormalTok{ pc\_type,}
+                           \AttributeTok{clust\_typ =}\NormalTok{ clust\_typ,}
+                           \AttributeTok{space\_typ =}\NormalTok{ space\_typ)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Test No_pca with 4 pathways"
+##   bp_on clust_prob_on       clust_typ ndim_typ how_cents pc_type num_paths
+## 1  TRUE          TRUE test_minregular test_all      rand  No_pca         3
+##           res_dir
+## 1 PC_TestResults/
+## [1] "Clusters converged 2"
+## [1] "Clusters converged 4"
+## [1] "Clusters converged 3"
+## [1] "Clusters converged 6"
+## [1] "Clusters converged 5"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-8-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-8-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-8-3.pdf}
+
+\hypertarget{test-7}{%
+\subsubsection{Test 7}\label{test-7}}
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  No PCA
+\item
+  min k-means clustering. Maximum k is set to the number of pathways.
+\item
+  angles calculated before clustering.
+\item
+  number of pathways 2.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pc\_type }\OtherTok{\textless{}{-}} \StringTok{"No\_pca"}
+\NormalTok{np }\OtherTok{\textless{}{-}} \DecValTok{1}
+\NormalTok{d }\OtherTok{\textless{}{-}} \DecValTok{30}
+\NormalTok{clust\_typ }\OtherTok{\textless{}{-}} \StringTok{"min"}
+\NormalTok{space\_typ }\OtherTok{\textless{}{-}} \StringTok{"angle"}
+\FunctionTok{test\_clust\_kmeans\_function}\NormalTok{(d,}
+                           \AttributeTok{num\_path =}\NormalTok{ np,}
+                           \AttributeTok{pc\_type =}\NormalTok{ pc\_type,}
+                           \AttributeTok{clust\_typ =}\NormalTok{ clust\_typ,}
+                           \AttributeTok{space\_typ =}\NormalTok{ space\_typ)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Test No_pca with 2 pathways"
+##   bp_on clust_prob_on     clust_typ ndim_typ how_cents pc_type num_paths
+## 1  TRUE          TRUE test_minangle test_all      rand  No_pca         1
+##           res_dir
+## 1 PC_TestResults/
+## [1] "Clusters converged 2"
+## [1] "Clusters converged 4"
+## [1] "Clusters converged 3"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-9-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-9-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-9-3.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-9-4.pdf}
+
+\hypertarget{test-8}{%
+\subsubsection{Test 8}\label{test-8}}
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  No PCA
+\item
+  min-aic k-means clustering. Maximum k is set to the number of
+  pathways.
+\item
+  angles calculated before clustering.
+\item
+  number of pathways 4.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pc\_type }\OtherTok{\textless{}{-}} \StringTok{"No\_pca"}
+\NormalTok{np }\OtherTok{\textless{}{-}} \DecValTok{3}
+\NormalTok{d }\OtherTok{\textless{}{-}} \DecValTok{30}
+\NormalTok{clust\_typ }\OtherTok{\textless{}{-}} \StringTok{"min"}
+\NormalTok{space\_typ }\OtherTok{\textless{}{-}} \StringTok{"angle"}
+\FunctionTok{test\_clust\_kmeans\_function}\NormalTok{(d,}
+                           \AttributeTok{num\_path =}\NormalTok{ np,}
+                           \AttributeTok{pc\_type =}\NormalTok{ pc\_type,}
+                           \AttributeTok{clust\_typ =}\NormalTok{ clust\_typ,}
+                           \AttributeTok{space\_typ =}\NormalTok{ space\_typ)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Test No_pca with 4 pathways"
+##   bp_on clust_prob_on     clust_typ ndim_typ how_cents pc_type num_paths
+## 1  TRUE          TRUE test_minangle test_all      rand  No_pca         3
+##           res_dir
+## 1 PC_TestResults/
+## [1] "Clusters converged 2"
+## [1] "Clusters converged 4"
+## [1] "Clusters converged 3"
+## [1] "Clusters converged 6"
+## [1] "Clusters converged 5"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-10-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-10-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-10-3.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-10-4.pdf}
+
+\hypertarget{consider-the-location-of-the-centroids.}{%
+\subsection{Consider the location of the
+centroids.}\label{consider-the-location-of-the-centroids.}}
+
+The previous tests used centroids assigned randomly within the ranges on
+each axis. Instead we will initialise the centroids using randomly
+selected points from out dataset.
+
+\hypertarget{test-9}{%
+\subsubsection{Test 9}\label{test-9}}
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  No PCA
+\item
+  basic k-means clustering. k is set to the number of pathways.
+\item
+  no angles calculated before clustering.
+\item
+  number of pathways 4.
+\item
+  Centroids assigned using points
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pc\_type }\OtherTok{\textless{}{-}} \StringTok{"No\_pca"}
+\NormalTok{np }\OtherTok{\textless{}{-}} \DecValTok{3}
+\NormalTok{d }\OtherTok{\textless{}{-}} \DecValTok{30}
+\NormalTok{clust\_typ }\OtherTok{\textless{}{-}} \StringTok{"basic"}
+\NormalTok{space\_typ }\OtherTok{\textless{}{-}} \StringTok{"regular"}
+\NormalTok{how\_cents }\OtherTok{\textless{}{-}} \StringTok{"points"}
+\FunctionTok{test\_clust\_kmeans\_function}\NormalTok{(d,}
+                           \AttributeTok{num\_path =}\NormalTok{ np,}
+                           \AttributeTok{pc\_type =}\NormalTok{ pc\_type,}
+                           \AttributeTok{clust\_typ =}\NormalTok{ clust\_typ,}
+                           \AttributeTok{space\_typ =}\NormalTok{ space\_typ,}
+                           \AttributeTok{how\_cents =}\NormalTok{ how\_cents)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Test No_pca with 4 pathways"
+##   bp_on clust_prob_on         clust_typ ndim_typ how_cents pc_type num_paths
+## 1  TRUE          TRUE test_basicregular test_all    points  No_pca         3
+##           res_dir
+## 1 PC_TestResults/
+## [1] "Clusters converged 6"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-11-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-11-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-11-3.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-11-4.pdf}
+
+\hypertarget{test-10}{%
+\subsubsection{Test 10}\label{test-10}}
+
+Run the tests with: - No PCA - basic k-means clustering. k is set to the
+number of pathways. - angles calculated before clustering. - number of
+pathways 4. - Centroids assigned using points
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pc\_type }\OtherTok{\textless{}{-}} \StringTok{"No\_pca"}
+\NormalTok{np }\OtherTok{\textless{}{-}} \DecValTok{3}
+\NormalTok{d }\OtherTok{\textless{}{-}} \DecValTok{30}
+\NormalTok{clust\_typ }\OtherTok{\textless{}{-}} \StringTok{"basic"}
+\NormalTok{space\_typ }\OtherTok{\textless{}{-}} \StringTok{"angle"}
+\NormalTok{how\_cents }\OtherTok{\textless{}{-}} \StringTok{"points"}
+\FunctionTok{test\_clust\_kmeans\_function}\NormalTok{(d,}
+                           \AttributeTok{num\_path =}\NormalTok{ np,}
+                           \AttributeTok{pc\_type =}\NormalTok{ pc\_type,}
+                           \AttributeTok{clust\_typ =}\NormalTok{ clust\_typ,}
+                           \AttributeTok{space\_typ =}\NormalTok{ space\_typ,}
+                           \AttributeTok{how\_cents =}\NormalTok{ how\_cents)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Test No_pca with 4 pathways"
+##   bp_on clust_prob_on       clust_typ ndim_typ how_cents pc_type num_paths
+## 1  TRUE          TRUE test_basicangle test_all    points  No_pca         3
+##           res_dir
+## 1 PC_TestResults/
+## [1] "Clusters converged 2"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-12-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-12-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-12-3.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-12-4.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-12-5.pdf}
+
+\hypertarget{test-11}{%
+\subsubsection{Test 11}\label{test-11}}
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  PCA with prcomp
+\item
+  basic k-means clustering. k is set to the number of pathways.
+\item
+  no angles calculated before clustering.
+\item
+  number of pathways 4.
+\item
+  Centroids assigned using points
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pc\_type }\OtherTok{\textless{}{-}} \StringTok{"prcomp"}
+\NormalTok{np }\OtherTok{\textless{}{-}} \DecValTok{3}
+\NormalTok{d }\OtherTok{\textless{}{-}} \DecValTok{30}
+\NormalTok{clust\_typ }\OtherTok{\textless{}{-}} \StringTok{"basic"}
+\NormalTok{space\_typ }\OtherTok{\textless{}{-}} \StringTok{"regular"}
+\NormalTok{how\_cents }\OtherTok{\textless{}{-}} \StringTok{"points"}
+\FunctionTok{test\_clust\_kmeans\_function}\NormalTok{(d,}
+                           \AttributeTok{num\_path =}\NormalTok{ np,}
+                           \AttributeTok{pc\_type =}\NormalTok{ pc\_type,}
+                           \AttributeTok{clust\_typ =}\NormalTok{ clust\_typ,}
+                           \AttributeTok{space\_typ =}\NormalTok{ space\_typ,}
+                           \AttributeTok{how\_cents =}\NormalTok{ how\_cents)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Test prcomp with 4 pathways"
+##   bp_on clust_prob_on         clust_typ ndim_typ how_cents pc_type num_paths
+## 1  TRUE          TRUE test_basicregular test_all    points  prcomp         3
+##           res_dir
+## 1 PC_TestResults/
+## [1] "Clusters converged 6"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-13-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-13-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-13-3.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-13-4.pdf}
+
+\hypertarget{test-12}{%
+\subsubsection{Test 12}\label{test-12}}
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  PCA with prcomp
+\item
+  basic k-means clustering. k is set to the number of pathways.
+\item
+  angles calculated before PCA and clustering.
+\item
+  number of pathways 4.
+\item
+  Centroids assigned using points
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pc\_type }\OtherTok{\textless{}{-}} \StringTok{"prcomp"}
+\NormalTok{np }\OtherTok{\textless{}{-}} \DecValTok{3}
+\NormalTok{d }\OtherTok{\textless{}{-}} \DecValTok{30}
+\NormalTok{clust\_typ }\OtherTok{\textless{}{-}} \StringTok{"basic"}
+\NormalTok{space\_typ }\OtherTok{\textless{}{-}} \StringTok{"angle"}
+\NormalTok{how\_cents }\OtherTok{\textless{}{-}} \StringTok{"points"}
+\FunctionTok{test\_clust\_kmeans\_function}\NormalTok{(d,}
+                           \AttributeTok{num\_path =}\NormalTok{ np,}
+                           \AttributeTok{pc\_type =}\NormalTok{ pc\_type,}
+                           \AttributeTok{clust\_typ =}\NormalTok{ clust\_typ,}
+                           \AttributeTok{space\_typ =}\NormalTok{ space\_typ,}
+                           \AttributeTok{how\_cents =}\NormalTok{ how\_cents)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Test prcomp with 4 pathways"
+##   bp_on clust_prob_on       clust_typ ndim_typ how_cents pc_type num_paths
+## 1  TRUE          TRUE test_basicangle test_all    points  prcomp         3
+##           res_dir
+## 1 PC_TestResults/
+## [1] "Clusters converged 5"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-14-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-14-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-14-3.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-14-4.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-14-5.pdf}
+
+\hypertarget{test-13}{%
+\subsubsection{Test 13}\label{test-13}}
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  No PCA
+\item
+  min-aic k-means clustering. k is set to the number of pathways.
+\item
+  no angles calculated before clustering.
+\item
+  number of pathways 4.
+\item
+  Centroids assigned using points
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pc\_type }\OtherTok{\textless{}{-}} \StringTok{"No\_pca"}
+\NormalTok{np }\OtherTok{\textless{}{-}} \DecValTok{3}
+\NormalTok{d }\OtherTok{\textless{}{-}} \DecValTok{30}
+\NormalTok{clust\_typ }\OtherTok{\textless{}{-}} \StringTok{"min"}
+\NormalTok{space\_typ }\OtherTok{\textless{}{-}} \StringTok{"regular"}
+\NormalTok{how\_cents }\OtherTok{\textless{}{-}} \StringTok{"points"}
+\FunctionTok{test\_clust\_kmeans\_function}\NormalTok{(d,}
+                           \AttributeTok{num\_path =}\NormalTok{ np,}
+                           \AttributeTok{pc\_type =}\NormalTok{ pc\_type,}
+                           \AttributeTok{clust\_typ =}\NormalTok{ clust\_typ,}
+                           \AttributeTok{space\_typ =}\NormalTok{ space\_typ,}
+                           \AttributeTok{how\_cents =}\NormalTok{ how\_cents)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Test No_pca with 4 pathways"
+##   bp_on clust_prob_on       clust_typ ndim_typ how_cents pc_type num_paths
+## 1  TRUE          TRUE test_minregular test_all    points  No_pca         3
+##           res_dir
+## 1 PC_TestResults/
+## [1] "Clusters converged 2"
+## [1] "Clusters converged 2"
+## [1] "Clusters converged 4"
+## [1] "Clusters converged 3"
+## [1] "Clusters converged 4"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-15-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-15-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-15-3.pdf}
+
+\hypertarget{test-14}{%
+\subsubsection{Test 14}\label{test-14}}
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  No PCA
+\item
+  min-aic k-means clustering. k is set to the number of pathways.
+\item
+  angles calculated before clustering.
+\item
+  number of pathways 4.
+\item
+  Centroids assigned using points
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pc\_type }\OtherTok{\textless{}{-}} \StringTok{"No\_pca"}
+\NormalTok{np }\OtherTok{\textless{}{-}} \DecValTok{3}
+\NormalTok{d }\OtherTok{\textless{}{-}} \DecValTok{30}
+\NormalTok{clust\_typ }\OtherTok{\textless{}{-}} \StringTok{"min"}
+\NormalTok{space\_typ }\OtherTok{\textless{}{-}} \StringTok{"angle"}
+\NormalTok{how\_cents }\OtherTok{\textless{}{-}} \StringTok{"points"}
+\FunctionTok{test\_clust\_kmeans\_function}\NormalTok{(d,}
+                           \AttributeTok{num\_path =}\NormalTok{ np,}
+                           \AttributeTok{pc\_type =}\NormalTok{ pc\_type,}
+                           \AttributeTok{clust\_typ =}\NormalTok{ clust\_typ,}
+                           \AttributeTok{space\_typ =}\NormalTok{ space\_typ,}
+                           \AttributeTok{how\_cents =}\NormalTok{ how\_cents)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Test No_pca with 4 pathways"
+##   bp_on clust_prob_on     clust_typ ndim_typ how_cents pc_type num_paths
+## 1  TRUE          TRUE test_minangle test_all    points  No_pca         3
+##           res_dir
+## 1 PC_TestResults/
+## [1] "Clusters converged 2"
+## [1] "Clusters converged 7"
+## [1] "Clusters converged 3"
+## [1] "Clusters converged 3"
+## [1] "Clusters converged 5"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-16-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-16-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-16-3.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-16-4.pdf}
+
+\hypertarget{test-15}{%
+\subsubsection{Test 15}\label{test-15}}
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  PCA with prcomp
+\item
+  min-aic k-means clustering. k is set to the number of pathways.
+\item
+  no angles calculated before clustering.
+\item
+  number of pathways 4.
+\item
+  Centroids assigned using points
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pc\_type }\OtherTok{\textless{}{-}} \StringTok{"prcomp"}
+\NormalTok{np }\OtherTok{\textless{}{-}} \DecValTok{3}
+\NormalTok{d }\OtherTok{\textless{}{-}} \DecValTok{30}
+\NormalTok{clust\_typ }\OtherTok{\textless{}{-}} \StringTok{"min"}
+\NormalTok{space\_typ }\OtherTok{\textless{}{-}} \StringTok{"regular"}
+\NormalTok{how\_cents }\OtherTok{\textless{}{-}} \StringTok{"points"}
+\FunctionTok{test\_clust\_kmeans\_function}\NormalTok{(d,}
+                           \AttributeTok{num\_path =}\NormalTok{ np,}
+                           \AttributeTok{pc\_type =}\NormalTok{ pc\_type,}
+                           \AttributeTok{clust\_typ =}\NormalTok{ clust\_typ,}
+                           \AttributeTok{space\_typ =}\NormalTok{ space\_typ,}
+                           \AttributeTok{how\_cents =}\NormalTok{ how\_cents)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Test prcomp with 4 pathways"
+##   bp_on clust_prob_on       clust_typ ndim_typ how_cents pc_type num_paths
+## 1  TRUE          TRUE test_minregular test_all    points  prcomp         3
+##           res_dir
+## 1 PC_TestResults/
+## [1] "Clusters converged 2"
+## [1] "Clusters converged 6"
+## [1] "Clusters converged 4"
+## [1] "Clusters converged 5"
+## [1] "Clusters converged 3"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-17-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-17-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-17-3.pdf}
+
+\hypertarget{test-16}{%
+\subsubsection{Test 16}\label{test-16}}
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  PCA with prcomp
+\item
+  min-aic k-means clustering. k is set to the number of pathways.
+\item
+  angles calculated before PCA and clustering.
+\item
+  number of pathways 4.
+\item
+  Centroids assigned using points
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pc\_type }\OtherTok{\textless{}{-}} \StringTok{"prcomp"}
+\NormalTok{np }\OtherTok{\textless{}{-}} \DecValTok{3}
+\NormalTok{d }\OtherTok{\textless{}{-}} \DecValTok{30}
+\NormalTok{clust\_typ }\OtherTok{\textless{}{-}} \StringTok{"min"}
+\NormalTok{space\_typ }\OtherTok{\textless{}{-}} \StringTok{"angle"}
+\NormalTok{how\_cents }\OtherTok{\textless{}{-}} \StringTok{"points"}
+\FunctionTok{test\_clust\_kmeans\_function}\NormalTok{(d,}
+                           \AttributeTok{num\_path =}\NormalTok{ np,}
+                           \AttributeTok{pc\_type =}\NormalTok{ pc\_type,}
+                           \AttributeTok{clust\_typ =}\NormalTok{ clust\_typ,}
+                           \AttributeTok{space\_typ =}\NormalTok{ space\_typ,}
+                           \AttributeTok{how\_cents =}\NormalTok{ how\_cents)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Test prcomp with 4 pathways"
+##   bp_on clust_prob_on     clust_typ ndim_typ how_cents pc_type num_paths
+## 1  TRUE          TRUE test_minangle test_all    points  prcomp         3
+##           res_dir
+## 1 PC_TestResults/
+## [1] "Clusters converged 2"
+## [1] "Clusters converged 6"
+## [1] "Clusters converged 4"
+## [1] "Clusters converged 5"
+## [1] "Clusters converged 3"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-18-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-18-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-18-3.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-18-4.pdf}
+
+\end{document}
