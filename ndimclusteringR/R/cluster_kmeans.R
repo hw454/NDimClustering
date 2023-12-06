@@ -156,7 +156,7 @@ cluster_kmeans <- function(data_list, iter_traits,
   num_axis <- ncol(b_mat_crop)
   clust_out$clusters["num_axis"] <- num_axis
   if (space_typ == "angle") {
-    plot_clust_angle_scatter(clust_out$clusters, b_mat, se_mat,
+    plot_clust_angle_scatter_test(clust_out$clusters, b_mat, se_mat,
       iter_traits = iter_traits,
       col1 = c1,
       col2 = c2,
