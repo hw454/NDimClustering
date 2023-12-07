@@ -102,25 +102,6 @@ plot_clust_scatter_rgb_test <- function(clust_dist_df, b_mat,
       shape = 21,
       show.legend = FALSE
     ) + # nolint: object_usage_linter.
-    # Set the error bars
-    ggplot2::geom_errorbarh(
-      ggplot2::aes(
-        xmin = res_df$bx - 1.96 * res_df$bxse,
-        xmax = res_df$bx + 1.96 * res_df$bxse,
-        col = cols
-      ),
-      linetype = "solid",
-      show.legend = FALSE
-    ) +
-    ggplot2::geom_errorbar(
-      ggplot2::aes(
-        ymin = res_df$by - 1.96 * res_df$byse,
-        ymax = res_df$by + 1.96 * res_df$byse,
-        col = cols
-      ),
-      linetype = "solid",
-      show.legend = FALSE
-    ) +
     # Add the colour scale
     ggplot2::scale_color_manual(values = my_col_vec) +
     # Add the labels

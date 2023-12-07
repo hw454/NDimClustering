@@ -80,14 +80,6 @@ plot_clust_scatter_test <- function(cluster_df, b_mat,
       ),
       linetype = "solid"
     ) +
-    ggplot2::geom_errorbar(
-      ggplot2::aes(ymin = res_df$by - 1.96 * res_df$byse,
-        ymax = res_df$by + 1.96 * res_df$byse,
-        color = clust_num,
-        alpha = alp
-      ),
-      linetype = "solid"
-    ) +
     ggplot2::ylab(paste("Association with", c2)) +
     ggplot2::xlab(paste("Association with", c1)) +
     ggplot2::ggtitle(title_str) +

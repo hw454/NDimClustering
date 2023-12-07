@@ -9,8 +9,8 @@ plot_clust_angle_scatter_test(
   b_mat,
   se_mat,
   iter_traits,
-  exp_pheno,
-  out_pheno,
+  col1,
+  col2,
   num_axis = 2,
   pw = 8,
   ph = 4
@@ -25,15 +25,15 @@ plot_clust_angle_scatter_test(
 
 \item{iter_traits}{The iteration variables for the type of iteration.}
 
-\item{exp_pheno}{The label for the exposure phenotype}
-
-\item{out_pheno}{The label for the output phenotype}
-
 \item{num_axis}{The number of trait axis, default\:0}
 
 \item{pw}{The plot width, default\:8}
 
 \item{ph}{The plot heigh, default\:4}
+
+\item{exp_pheno}{The label for the exposure phenotype}
+
+\item{out_pheno}{The label for the output phenotype}
 }
 \description{
 Colour by cluster number.
