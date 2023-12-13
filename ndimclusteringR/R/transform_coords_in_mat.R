@@ -13,6 +13,9 @@
 #'
 #' @export
 transform_coords_in_mat <- function(p_mat, t_mat) {
+  make_pc_col_name <- function(i) {
+    return(paste0("PC", i))
+  }
   vec_list <- lapply(row.names(p_mat), transform_vec_by_mat,
                      p_mat = p_mat, t_mat = t_mat)
   vec_mat <- Reduce(rbind, vec_list)
