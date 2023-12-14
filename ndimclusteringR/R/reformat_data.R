@@ -18,16 +18,15 @@
 #'
 #' @export
 #' @family transform_data
-
 reformat_data <- function(data_matrices,
   bin_angles = 1, pca_type = "none", np = 1
 ) {
   # If the angles switch is set convert the data to the angles.
   # The is only done for the main beta data matrix.
   if (bin_angles) {
-    data_matrices$beta <- convert_mat_to_angle_mat(data_matrices$beta)
-    data_matrices$pval <- rescale_by_end_col(data_matrices$pval)
-    data_matrices$se <- rescale_by_end_col(data_matrices$se)
+    data_matrices$beta_ang <- convert_mat_to_angle_mat(data_matrices$beta)
+    data_matrices$pval_ang <- rescale_by_end_col(data_matrices$pval)
+    data_matrices$se_ang <- rescale_by_end_col(data_matrices$se)
   }
   # If pca_type is "none" then return data
   # If pca_type is "prcomp" then find the pca vectors using prcomp and transform
@@ -37,18 +36,35 @@ reformat_data <- function(data_matrices,
   if (pca_type == "none") {
     # If there's no pca found then the pc matrices are the same as the input.
     # This ensures consistent naming later.
-    nc <- ncol(data_matrices$beta)
-    pca_list <- list("beta_pc" = data_matrices$beta,
-                     "pval_pc" = data_matrices$pval,
-                     "se_pc" = data_matrices$se,
-                     "transform" = diag(nc))
-    data_matrices <- append(data_matrices, pca_list)
+    if (bin_angles){
+      nc <- ncol(data_matrices$beta_ang)
+      pca_list <- list("beta_pc" = data_matrices$beta_ang,
+                       "pval_pc" = data_matrices$pval_Ang,
+                       "se_pc" = data_matrices$se_ang,
+                       "transform" = diag(nc))
+      data_matrices <- append(data_matrices, pca_list)
+    } else {
+      nc <- ncol(data_matrices$beta)
+      pca_list <- list("beta_pc" = data_matrices$beta,
+                       "pval_pc" = data_matrices$pval,
+                       "se_pc" = data_matrices$se,
+                       "transform" = diag(nc))
+      data_matrices <- append(data_matrices, pca_list)
+    }
   } else if (pca_type == "prcomp") {
-    pca_beta <- stats::prcomp(data_matrices$beta,
-      center = TRUE,
-      scale = TRUE,
-      rank = np
-    )
+    if (bin_angles){
+      pca_beta <- stats::prcomp(data_matrices$beta_ang,
+        center = TRUE,
+        scale = TRUE,
+        rank = np
+      )
+    } else{
+      pca_beta <- stats::prcomp(data_matrices$beta,
+        center = TRUE,
+        scale = TRUE,
+        rank = np
+      )
+    }
     t_mat <- pca_beta$rotation
     b_pc_mat <- pca_beta$x
     # Transform remaining matrices onto the same space as the beta_pc matrix.
