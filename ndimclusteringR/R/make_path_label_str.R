@@ -16,15 +16,22 @@
 #' @export
 make_path_label_str <- function(iter_traits) {
   # Create the string that describes the type of method for filenames
-  if (iter_traits$bp_on) {
+  if (iter_traits$bin_p_clust) {
     bp_str <- "_bpON"
   } else {
     bp_str <- "_bpOFF"
   }
-  if (iter_traits$clust_prob_on) {
-    clust_prob_str <- "_clustprobON"
+  if (iter_traits$bin_angles) {
+    angle_str <- "_anglesON"
   } else {
-    clust_prob_str <- "_clustprobOFF"
+    angle_str <- "_anglesOFF"
   }
-  return(paste0(iter_traits$clust_typ, bp_str, clust_prob_str))
+  dir_name <- paste0(iter_traits$clust_typ,
+    bp_str,
+    angle_str,
+    how_cents,
+    "_", n_pcs, "pcs",
+    "_", nclust, "clusts"
+  )
+  return(dir_name)
 }
