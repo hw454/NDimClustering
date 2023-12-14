@@ -40,23 +40,23 @@ setup_matrices <- function(data_dir,
   # write_csv in R will assign X to the row.names. IF the data was
   # created elsewhere then the row.names will have no column label
   # instead. The unlabelled column is the default for loading the row names.
-  if ("X" %in% colnames(beta_df)){
+  if ("X" %in% colnames(beta_df)) {
     beta_df <- tibble::column_to_rownames(beta_df, var = "X")
     beta_mat <- as.matrix(beta_df)
   } else {
     beta_mat <- as.matrix(beta_df)
   }
-  if ("X" %in% colnames(se_df)){
+  if ("X" %in% colnames(se_df)) {
     se_df <- tibble::column_to_rownames(se_df, var = "X")
-    se_mat <- as.data.frame(se_df)
+    se_mat <- as.matrix(se_df)
   } else {
-    se_mat <- as.data.frame(se_df)
+    se_mat <- as.matrix(se_df)
   }
-  if ("X" %in% colnames(pv_df)){
+  if ("X" %in% colnames(pv_df)) {
     pv_df <- tibble::column_to_rownames(pv_df, var = "X")
     pv_mat <- as.matrix(pv_df)
   } else {
-    se_mat <- as.data.frame(se_df)
+    pv_mat <- as.matrix(pv_df)
   }
   # Find the label for the Outcome trait and the first Exposure trait
   out_row <- which(trait_info$pheno_category == "Outcome")
