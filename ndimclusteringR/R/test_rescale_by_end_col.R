@@ -11,13 +11,9 @@ test_rescale_by_end_col <- function() {
   num_axis <- length(dummy_traits)
   nsnps <- length(dummy_snps)
   b_mat <- matrix(stats::runif(nsnps * num_axis, 0, 10), nrow = nsnps)
-  se_mat <- matrix(stats::runif(nsnps * num_axis, 0, 10), nrow = nsnps)
   colnames(b_mat) <- dummy_traits
   rownames(b_mat) <- dummy_snps
-  colnames(se_mat) <- dummy_traits
-  rownames(se_mat) <- dummy_snps
-  mat_list <- list("beta" = b_mat, "se" = se_mat)
-  test1 <- rescale_by_end_col(mat_list$beta)
+  test1 <- rescale_by_end_col(b_mat)
   expec_ncols <- ncol(b_mat) - 1
   expec_nrows <- nsnps
   testit::assert("Wrong number of columns after crop", {

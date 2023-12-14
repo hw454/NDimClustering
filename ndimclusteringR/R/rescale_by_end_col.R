@@ -3,8 +3,8 @@
 #'
 #' @export
 #' @family utility
-rescale_by_end_col <- function(mat){
-  rescale_row <- function(r, mat){
+rescale_by_end_col <- function(mat) {
+  rescale_row <- function(r, mat) {
     nc <- ncol(mat)
     nfin <- nc - 1
     row_new <- mat[r, 1:nfin] * mat[r, nc]
