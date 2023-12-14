@@ -30,7 +30,7 @@ clustering_program <- function(iter_traits, test = 1) {
     pca_type = iter_traits$pca_type,
     np = iter_traits$n_pcs
   )
-
+  print("after reformating")
   print(data_matrices)
   # Cluster the data
   # - `basic`: kmeans clustering
