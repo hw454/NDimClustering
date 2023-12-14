@@ -12,6 +12,7 @@ test_convert_point_to_angle <- function() {
   dummy_points_t2 <- Reduce(rbind, lapply(dummy_angles, sin))
   dummy_points <- as.matrix(cbind(dummy_points_t1, dummy_points_t2))
   unit_mat <- diag(nc)
+  expec_nang <- ncol(dummy_points) - 1
   ang <- convert_point_to_angle(col = 1,
     unit_mat = unit_mat,
     p = as.matrix(dummy_points[1, ])
@@ -77,7 +78,7 @@ test_convert_point_to_angle <- function() {
     err[5, ] < 1e-8
   })
   testit::assert("Ang_mat has wrong number of columns", {
-    ncol(ang_mat) == ncol(dummy_points) - 1
+    ncol(ang_mat) == expec_nang
   })
   testit::assert("Ang_mat has wrong number of rows", {
     nrow(ang_mat) == nrow(dummy_points)
