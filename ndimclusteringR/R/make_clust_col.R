@@ -1,6 +1,8 @@
 #' Function for making the columns for clusters
 #'
 #' @param i the cluster number
+#' @param rows Optional input of the row names for the dataframe
+#' @param col_val Default value for the column. default \:NA
 #'
 #' @export
 #'

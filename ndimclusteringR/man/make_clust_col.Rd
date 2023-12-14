@@ -8,6 +8,10 @@ make_clust_col(i, rows = character(), col_val = NA)
 }
 \arguments{
 \item{i}{the cluster number}
+
+\item{rows}{Optional input of the row names for the dataframe}
+
+\item{col_val}{Default value for the column. default \:NA}
 }
 \description{
 Function for making the columns for clusters
