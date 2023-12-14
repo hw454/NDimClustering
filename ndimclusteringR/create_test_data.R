@@ -43,11 +43,13 @@ create_test_data <- function(d = 10, num_path = 0) {
   for (i in seq_len(ncol(dummy_beta))){
     trait_list[i] <- paste0(trait_list[i], i)
   }
+  colnames(dummy_beta) <- trait_list
+  colnames(dummy_se) <- trait_list
+  colnames(dummy_p) <- trait_list
   cat_list <- rep("Exposure", ncol(dummy_beta))
   cat_list[1] <- "Outcome"
   trait_info <- list("pheno_category" = cat_list,
                      "phenotype" = trait_list)
-  print(trait_info)
   maindir <- "TestData/"
   betafilename <- "unstdBeta_df.csv"
   sefilename <- "unstdSE_df.csv"
@@ -59,25 +61,38 @@ create_test_data <- function(d = 10, num_path = 0) {
   if (!file.exists(paste0(maindir, iter_dir))) {
     dir.create(paste0(maindir, iter_dir))
   }
+  print(dummy_beta)
   write.csv(dummy_beta,
     paste0(maindir, iter_dir, betafilename),
-    row.names = TRUE
+    row.names = TRUE,
+    col.names = TRUE,
+    eol = "\n",
+    sep = ","
   )
   write.csv(dummy_se,
     paste0(maindir, iter_dir, sefilename),
-    row.names = TRUE
+    row.names = TRUE,
+    col.names = TRUE,
+    eol = "\n",
+    sep = ","
   )
   write.csv(dummy_p,
     paste0(maindir, iter_dir, pvalfilename),
-    row.names = TRUE
+    row.names = TRUE,
+    col.names = TRUE,
+    eol = "\n",
+    sep = ","
   )
   write.csv(trait_info,
     paste0(maindir, iter_dir, traitfilename),
-    row.names = FALSE
+    row.names = FALSE,
+    quote = FALSE,
+    eol = "\n",
+    sep = ","
   )
 }
 
 num_path_list <- 0:3
-for(np in num_path_list){
+for (np in num_path_list){
   create_test_data(num_path = np)
 }
