@@ -1,7 +1,7 @@
 Package: ndimclusteringR
 Type: Package
 Title: N-dimensional Clustering Package
-Version: 0.0.1
+Version: 0.0.2
 Author: Hayley Wragg
 Maintainer: Hayley Wragg <es21851@bristol.ac.uk>
 Description: A longer description would go here.
