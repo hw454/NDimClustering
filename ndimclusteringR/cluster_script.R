@@ -3,7 +3,7 @@ library("ndimclusteringR")
 
 # Script for running the cluster program setting the program inputs
 data_dir <- "./TestData/paths"
-for (i in 0:4){
+for (i in 0:3){
   iter_traits <- list(
     dname = paste0(data_dir, i, "/"),
     clust_type = "basic",
