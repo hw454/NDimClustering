@@ -7,12 +7,11 @@
 #' @param centroids_df The dataframe of the centroids for each cluster on
 #'   the previous iteration. The rows are the cluster numbers and the
 #'   columns are the centroid value on that trait axis.
-#' @param na_rm Boolean. If TRUE (default) then remove NaNs in means.
-#' @param norm_typ String indicating the type of norm to be used when
-#'   calculating the distance between the centroids. Default is the Froebenius
-#'   norm "F".
+#' @param p_mat Matrix of p-values corresponding to b_mat
 #' @param clust_threshold The threshold for how close the clusters should
 #'   be to be considered converged. default \:1e-5
+#' @param bin_p_clust Bool switch 1 if pvalues should be used to weight averages
+#' of snps
 #'
 #' @details
 #'   The check can only be made if there are snps which are members of the
@@ -32,11 +31,12 @@
 #' @family centroid_functions
 #'
 #' @export
-check_clust_cent <- function(c_num, clustnum_df, b_mat, centroids_df,
-  norm_typ = "F", clust_threshold = 1e-5
+check_clust_cent <- function(c_num, clustnum_df, b_mat, centroids_df, p_mat,
+  clust_threshold = 1e-5, bin_p_clust = TRUE
 ) {
   sub_snp_list <- which(clustnum_df == c_num)
   snp_scores <- b_mat[sub_snp_list, ]
+  snp_ps <- p_mat[sub_snp_list, ]
   nterms <- length(sub_snp_list)
   # Initialise the centroids checking dataframe
   new_centroids_df <- centroids_df
@@ -48,14 +48,22 @@ check_clust_cent <- function(c_num, clustnum_df, b_mat, centroids_df,
     if (nterms == 1) {
       new_centroids_df[c_num, ] <- snp_scores
     } else {
-      new_centroids_df[c_num, ] <- colMeans(snp_scores, na.rm = TRUE)
+      if (bin_p_clust) {
+        for (col in colnames(snp_scores)){
+          sp_col <- snp_scores[col] * (1 - snp_ps[col])
+          tot_ps <- sum(1 - snp_ps[col])
+          new_centroids_df[c_num, col] <- sp_col / tot_ps
+        }
+      } else{
+        new_centroids_df[c_num, ] <- colMeans(snp_scores, na.rm = TRUE)
+      }
     }
     # Calculate how much the centroid has moved.
     centroiddiff <- data.matrix(stats::na.omit(new_centroids_df[c_num, ]
       - centroids_df[c_num, ]
     )
     )
-    centroidchange <- norm(centroiddiff, norm_typ)
+    centroidchange <- norm(centroiddiff)
     # Check if the diff between new and old centres is below the threshold
   } else {
     centroidchange <- 0

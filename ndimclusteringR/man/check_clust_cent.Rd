@@ -9,8 +9,9 @@ check_clust_cent(
   clustnum_df,
   b_mat,
   centroids_df,
-  norm_typ = "F",
-  clust_threshold = 1e-05
+  p_mat,
+  clust_threshold = 1e-05,
+  bin_p_clust = TRUE
 )
 }
 \arguments{
@@ -25,14 +26,13 @@ The columns are "clust_num".}
 the previous iteration. The rows are the cluster numbers and the
 columns are the centroid value on that trait axis.}
 
-\item{norm_typ}{String indicating the type of norm to be used when
-calculating the distance between the centroids. Default is the Froebenius
-norm "F".}
+\item{p_mat}{Matrix of p-values corresponding to b_mat}
 
 \item{clust_threshold}{The threshold for how close the clusters should
 be to be considered converged. default \:1e-5}
 
-\item{na_rm}{Boolean. If TRUE (default) then remove NaNs in means.}
+\item{bin_p_clust}{Bool switch 1 if pvalues should be used to weight averages
+of snps}
 }
 \value{
 out_centroid_df
