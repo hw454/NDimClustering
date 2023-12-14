@@ -13,21 +13,14 @@
 #'    * Rows correspond to snps, columns to traits
 #' @param nclust The maximum number of clusters to consider. default\:10
 #' @param max_dist The maximum distance between any two points.
-#' @param clust_typ String describing the clsutering method.
-#'  * "basic" then find fixed number of clusters
-#'  * "min" then minimise the aic
 #' @param how_cents How the centroids will be initialised. If "rand (default)"
 #'   then the coordinates are created using a uniform distribution on the range
 #'   of each axis. If "points" then the centroid coordinates are assign to
 #'   nclust random points from the dataspace.
 #' @param bin_p_clust Bool switch. If TRUE (default) then cluster
 #'   probability if used to weight the cluster scores.
-#' @param norm_typ The type of norm to be used for distance calculations.
-#'   The default is the Froebenius norm "F".
 #' @param threshold The threshold for distance between cluster centres
 #'   for clusters to be considered converged.
-#' @param narm Bool to indicate how to handle NaNs. If TRUE (default)
-#'   NaNs are ignored in calculations.
 #'
 #' @description
 #'   If space_typ == "angle" then data is converted to angles.
@@ -47,32 +40,32 @@
 #' @family cluster_functions
 #'
 #' @export
-cluster_kmeans <- function(data_list,
-                           nclust = 10,
-                           max_dist = 10.0,
-                           clust_typ = "basic",
-                           how_cents = "rand",
-                           bin_p_clust = TRUE,
-                           norm_typ = "F",
-                           threshold = 1e-5,
-                           narm = TRUE) {
+cluster_kmeans <- function(data_matrices,
+  nclust = 10,
+  max_dist = 10.0,
+  how_cents = "rand",
+  bin_p_clust = TRUE,
+  threshold = 1e-5
+) {
   # Using the association scores for each SNP accross traits cluster the traits
   # using kmeans. Return the cluster setup which minimises AIC.
-  b_mat <- data_list$beta
-  se_mat <- data_list$se
+  b_mat <- data_matrices$beta
+  se_mat <- data_matrices$se
+  p_mat <- data_matrices$pval
   # Crop the data to the complete cases
-  crop_se <- crop_se[stats::complete.cases(crop_se), ]
+  crop_se <- se_mat[stats::complete.cases(se_mat), ]
   crop_snp_list <- rownames(crop_se)
 
   # Crop the data to focus on the snps with the lowest standard error
   b_mat_crop <- b_mat[crop_snp_list, ]
+  p_mat_crop <- p_mat[crop_snp_list, ]
 
   # Cluster the data
   clust_out <- km_nan(b_mat_crop,
+    p_mat = p_mat_crop,
     nclust = nclust,
     clust_threshold = threshold,
-    norm_typ = norm_typ,
-    prob_on = bin_p_clust,
+    bin_p_clust = bin_p_clust,
     how_cents = how_cents
   )
 
@@ -81,8 +74,7 @@ cluster_kmeans <- function(data_list,
                          find_closest_clust_snp,
                          b_mat = b_mat,
                          cluster_df = clust_out$clusters,
-                         centroids_df = clust_out$centres,
-                         norm_typ = norm_typ)
+                         centroids_df = clust_out$centres)
   f1 <- function(x) {
     x$clusters
   }
@@ -93,12 +85,12 @@ cluster_kmeans <- function(data_list,
   snp_c_dist_list <- lapply(nan_snp_list, f2)
   nan_cluster_df <- Reduce(rbind, snp_cluster_list)
   nan_clust_dist_df <- Reduce(rbind, snp_c_dist_list)
-  if (clust_prob_on) {
+  if (bin_p_clust) {
     nan_cluster_df$clust_prob <- calc_clust_prob(nan_cluster_df$clust_dist)
   }
   clust_out$clusters <- rbind(clust_out$clusters, nan_cluster_df)
   clust_out$clust_dist <- rbind(clust_out$clust_dist, nan_clust_dist_df)
-  # Add the number of axis to the dataframe to combine outputs from iterative case.
+  # Add number of axis to the dataframe to combine outputs from iterative case.
   num_axis <- ncol(b_mat_crop)
   clust_out$clusters["num_axis"] <- num_axis
   clust_out$clust_dist["num_axis"] <- num_axis

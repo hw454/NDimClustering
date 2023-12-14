@@ -5,43 +5,15 @@
 \title{Cluster the data using kmeans then minimising aic.}
 \usage{
 cluster_kmeans(
-  data_list,
+  data_matrices,
   nclust = 10,
   max_dist = 10,
-  clust_typ = "basic",
   how_cents = "rand",
   bin_p_clust = TRUE,
-  norm_typ = "F",
-  threshold = 1e-05,
-  narm = TRUE
+  threshold = 1e-05
 )
 }
 \arguments{
-\item{nclust}{The maximum number of clusters to consider. default\:10}
-
-\item{max_dist}{The maximum distance between any two points.}
-
-\item{clust_typ}{String describing the clsutering method.
-* "basic" then find fixed number of clusters
-* "min" then minimise the aic}
-
-\item{how_cents}{How the centroids will be initialised. If "rand (default)"
-then the coordinates are created using a uniform distribution on the range
-of each axis. If "points" then the centroid coordinates are assign to
-nclust random points from the dataspace.}
-
-\item{bin_p_clust}{Bool switch. If TRUE (default) then cluster
-probability if used to weight the cluster scores.}
-
-\item{norm_typ}{The type of norm to be used for distance calculations.
-The default is the Froebenius norm "F".}
-
-\item{threshold}{The threshold for distance between cluster centres
-for clusters to be considered converged.}
-
-\item{narm}{Bool to indicate how to handle NaNs. If TRUE (default)
-NaNs are ignored in calculations.}
-
 \item{data_matrices}{List of the matrices of data.
 Conatins the\:
   * "beta" initial matrix of assocaition data
@@ -53,6 +25,21 @@ Conatins the\:
   * "pval" reformatted matrix of p-value data
   * "transform" matrix used for the pca transformation
   * Rows correspond to snps, columns to traits}
+
+\item{nclust}{The maximum number of clusters to consider. default\:10}
+
+\item{max_dist}{The maximum distance between any two points.}
+
+\item{how_cents}{How the centroids will be initialised. If "rand (default)"
+then the coordinates are created using a uniform distribution on the range
+of each axis. If "points" then the centroid coordinates are assign to
+nclust random points from the dataspace.}
+
+\item{bin_p_clust}{Bool switch. If TRUE (default) then cluster
+probability if used to weight the cluster scores.}
+
+\item{threshold}{The threshold for distance between cluster centres
+for clusters to be considered converged.}
 }
 \value{
 clusters_df
