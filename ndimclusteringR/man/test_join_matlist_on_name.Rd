@@ -12,6 +12,8 @@ Test the `crop_matrices` function
 \seealso{
 Other tests: 
 \code{\link{test_convert_point_to_angle}()},
-\code{\link{test_crop_matrices}()}
+\code{\link{test_crop_matrices}()},
+\code{\link{test_reformat_data}()},
+\code{\link{test_rescale_by_end_col}()}
 }
 \concept{tests}
