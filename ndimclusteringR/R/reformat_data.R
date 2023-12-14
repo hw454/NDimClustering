@@ -6,6 +6,7 @@
 #'  angle data or not. 1 is angles, 0 is not.
 #' @param pca_type Method for principal components to use. Options are
 #'  "manual", "prcomp" or "none"
+#' @param np The number of principal components to find
 #'
 #' @description
 #'   1. If the angles switch is set convert the data to the angles.
@@ -25,12 +26,15 @@ reformat_data <- function(data_matrices,
   # The is only done for the main beta data matrix.
   if (bin_angles) {
     data_matrices$beta <- convert_mat_to_angle_mat(data_matrices$beta)
+    data_matrices$pval <- rescale_by_end_col(data_matrices$pval)
   }
   # If pca_type is "none" then return data
   # If pca_type is "prcomp" then find the pca vectors using prcomp and transform
   # all the data.
   # If pca_type is "manual" then find the pca vectors using the manual pca
   # algorithm. This method is not currently supported.
+  print("before pca")
+  print(data_matrices)
   if (pca_type == "none") {
     nc <- ncol(data_matrices$beta)
     pca_list <- list("beta_pc" = data_matrices$beta,
@@ -45,6 +49,7 @@ reformat_data <- function(data_matrices,
       rank = np
     )
     t_mat <- pca_beta$rotation
+    print(t_mat)
     b_pc_mat <- pca_beta$x
     p_pc_mat <- transform_coords_in_mat(
       data_matrices$pval, t_mat

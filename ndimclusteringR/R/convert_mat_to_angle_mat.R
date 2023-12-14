@@ -37,6 +37,6 @@ convert_mat_to_angle_mat <- function(mat) {
   # Convert list of rows to matrix
   ang_mat <- as.matrix(Reduce(rbind, p_list))
   rownames(ang_mat) <- rownames(mat)
-  colnames(ang_mat) <- colnames(mat)
+  colnames(ang_mat, prefix = "Ang_to_") <- colnames(mat)[1:nang]
   return(ang_mat)
 }
