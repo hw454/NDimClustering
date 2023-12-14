@@ -14,8 +14,6 @@
 #'    * "clust_prob" probability the snp is in the assigned cluster.
 #' @param centroids_df dataframe of the centroid co-ordinates. Each row
 #'   corresponds to a cluster number and the columns are the trait axes.
-#' @param norm_typ The type of norm to be used to calculate distance. The
-#'    default is the Froebenius norm "F".
 #' @param max_dist The maximum distance between any two points. Used
 #'   for initialisation if snp is not already in the cluster assignment.
 #'
@@ -35,7 +33,7 @@
 #'
 #' @export
 find_closest_clust_snp <- function(snp_id, b_mat, cluster_df, centroids_df,
-  norm_typ = "F", max_dist = 10.0
+  max_dist = 10.0
 ) {
   # Initialise cluster distance dataframe
   snp_clust_dist_df <- data.frame(
@@ -61,7 +59,7 @@ find_closest_clust_snp <- function(snp_id, b_mat, cluster_df, centroids_df,
   for (c_num in rownames(centroids_df)) {
     dist <- norm(data.matrix(
       stats::na.omit(centroids_df[c_num, ] - snp_score)
-    ), norm_typ)
+    ))
     c_col <- make_clust_col_name(c_num)
     snp_clust_dist_df[snp_id, c_col] <- dist
     if (dist < snp_dist) {

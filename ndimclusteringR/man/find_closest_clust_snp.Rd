@@ -4,14 +4,7 @@
 \alias{find_closest_clust_snp}
 \title{Find the cluster whose centroid is closest to snp_id}
 \usage{
-find_closest_clust_snp(
-  snp_id,
-  b_mat,
-  cluster_df,
-  centroids_df,
-  norm_typ = "F",
-  max_dist = 10
-)
+find_closest_clust_snp(snp_id, b_mat, cluster_df, centroids_df, max_dist = 10)
 }
 \arguments{
 \item{snp_id}{the label for the snp}
@@ -26,9 +19,6 @@ it has columns for\:
 
 \item{centroids_df}{dataframe of the centroid co-ordinates. Each row
 corresponds to a cluster number and the columns are the trait axes.}
-
-\item{norm_typ}{The type of norm to be used to calculate distance. The
-default is the Froebenius norm "F".}
 
 \item{max_dist}{The maximum distance between any two points. Used
 for initialisation if snp is not already in the cluster assignment.}
