@@ -21,9 +21,9 @@ test_rescale_by_end_col <- function() {
   expec_ncols <- ncol(b_mat) - 1
   expec_nrows <- nsnps
   testit::assert("Wrong number of columns after crop", {
-    ncol(test1$beta) == expec_ncols
+    ncol(test1) == expec_ncols
   })
   testit::assert("Wrong number of rows after crop", {
-    nrow(test1$beta) == expec_nrows
+    nrow(test1) == expec_nrows
   })
 }
