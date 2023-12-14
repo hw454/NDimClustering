@@ -30,11 +30,49 @@ clustering_program <- function(iter_traits, test = 1) {
     pca_type = iter_traits$pca_type,
     np = iter_traits$n_pcs
   )
-  print("after reformating")
-  print(data_matrices)
   # Cluster the data
   # - `basic`: kmeans clustering
   # - `min`: minimise aic
-
+  if (iter_traits$clust_type == "basic") {
+    clust_out <- cluster_kmeans(data_matrices,
+      nclust = iter_traits$nclust,
+      how_cents = iter_traits$how_cents,
+      bin_p_clust = iter_traits$bin_p_clust
+    )
+  } else if (iter_traits$clust_type == "min") {
+    clust_out <- cluster_kmeans_min(data_matrices,
+      nclust = iter_traits$nclust,
+      how_cents = iter_traits$how_cents,
+      bin_p_clust = iter_traits$bin_p_clust
+      )
+  }
   # Plot any final outputs
+  # -Plot the original data
+  c1 <- colnames(data_matrices$beta)[1]
+  c2 <- colnames(data_matrices$beta)[1]
+  plot_clust_scatter_test(clusters,
+    data_matrices$beta,
+    iter_traits,
+    c1,
+    c2)
+  # -Plot the reformatted data
+  c1 <- colnames(data_matrices$beta_pc)[1]
+  c2 <- colnames(data_matrices$beta_pc)[2]
+  plot_clust_scatter_test(clusters,
+    data_matrices$beta_pc,
+    iter_traits,
+    c1,
+    c2,
+    save_suffix = "_pc"
+  )
+  # If angles then plot the angles
+  if (iter_traits$bin_p_clust) {
+    c1 <- colnames(data_matrices$beta_ang)[1]
+    c2 <- colnames(data_matrices$beta_ang)[2]
+    plot_clust_scatter_test(clust_out$clusters,
+      data_matrices$beta_pc,
+      c1,
+      c2,
+      save_suffix = "_ang")
+  }
 }
