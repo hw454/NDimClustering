@@ -5,7 +5,10 @@
 \title{Multiply all by the final terms in a row by the final term.
 Repeat for all rows.}
 \usage{
-rescale_by_end_col(mat)
+rescale_by_end_col(matin)
+}
+\arguments{
+\item{matin}{matrix whose rows are to be rescaled by the final column}
 }
 \description{
 Multiply all by the final terms in a row by the final term.

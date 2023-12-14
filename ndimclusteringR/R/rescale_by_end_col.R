@@ -1,18 +1,20 @@
 #' Multiply all by the final terms in a row by the final term.
 #' Repeat for all rows.
 #'
+#' @param matin matrix whose rows are to be rescaled by the final column
 #' @export
 #' @family utility
-rescale_by_end_col <- function(mat) {
-  rescale_row <- function(r, mat) {
-    nc <- ncol(mat)
+rescale_by_end_col <- function(matin) {
+  rescale_row <- function(r, matin) {
+    nc <- ncol(matin)
     nfin <- nc - 1
-    row_new <- mat[r, 1:nfin] * mat[r, nc]
+    row_new <- matin[r, 1:nfin] * matin[r, nc]
     return(row_new)
   }
-  nr <- nrow(mat)
+  nr <- nrow(matin)
   new_row_list <- lapply(1:nr, rescale_row,
-                         mat = mat)
+                         mat = matin)
   mat <- Reduce(rbind, new_row_list)
+  rownames(mat) <- rownames(matin)
   return(mat)
 }
