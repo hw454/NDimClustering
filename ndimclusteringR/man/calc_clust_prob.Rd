@@ -4,10 +4,10 @@
 \alias{calc_clust_prob}
 \title{Calculate the probability the snp is in the cluster}
 \usage{
-calc_clust_prob(d)
+calc_clust_prob(cluster_df)
 }
 \arguments{
-\item{d}{The snp distance to the cluster centre}
+\item{cluster_df}{The cluster dataframe.}
 }
 \value{
 p
