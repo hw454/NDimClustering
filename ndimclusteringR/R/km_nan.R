@@ -13,8 +13,6 @@
 #'   centres need to be to be considered converged. default\:1e-5
 #' @param norm_typ The type of norm to be used in distance calculation.
 #'   The default is the Froebenius norm "F".
-#' @param na_rm Bool to indicate how to deal with NaNs. If TRUE (default)
-#'   then NaNs are ignored.
 #' @param prob_on Bool to indicate whether cluster probability is to be
 #'   assign. default\:TRUE
 #' @param how_cents How the centroids will be initialised. If "rand (default)"
@@ -47,7 +45,6 @@ km_nan <- function(b_mat,
                    iter_max = 300,
                    clust_threshold = 1e-5,
                    norm_typ = "F",
-                   na_rm = TRUE,
                    prob_on = TRUE,
                    how_cents = "point") {
   snp_list <- rownames(b_mat)
@@ -117,7 +114,6 @@ km_nan <- function(b_mat,
                           clustnum_df = cluster_df$clust_num,
                           b_mat = b_mat,
                           centroids_df = centroids_df,
-                          na_rm = na_rm,
                           norm_typ = norm_typ,
                           clust_threshold = clust_threshold)
     thresh_check_df <- Reduce(rbind, thresh_list)
