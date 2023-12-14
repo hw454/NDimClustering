@@ -18,7 +18,8 @@ test_reformat_data <- function() {
   mat_list <- list("beta" = b_mat, "se" = se_mat)
   trait_df <- list("phenotype" = dummy_traits)
   data_matrices <- append(mat_list,
-                          "trait_info" = trait_df)
+    list("trait_info" = trait_df)
+  )
 
   print("... Testing with angles off and pca off")
   fmt_mat_list <- reformat_data(data_matrices = data_matrices,

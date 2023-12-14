@@ -27,7 +27,6 @@ reformat_data <- function(data_matrices,
   if (bin_angles) {
     data_matrices$beta <- convert_mat_to_angle_mat(data_matrices$beta)
     data_matrices$pval <- rescale_by_end_col(data_matrices$pval)
-    print(is.data.frame(data_matrices$se))
     data_matrices$se <- rescale_by_end_col(data_matrices$se)
   }
   # If pca_type is "none" then return data
