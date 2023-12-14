@@ -6,17 +6,19 @@
 \usage{
 km_nan(
   b_mat,
+  p_mat,
   nclust = 5,
   iter_max = 300,
   clust_threshold = 1e-05,
-  norm_typ = "F",
-  prob_on = TRUE,
+  bin_p_clust = TRUE,
   how_cents = "point"
 )
 }
 \arguments{
 \item{b_mat}{Matrix of the data, each row is a snp and the columns
 are the traits.}
+
+\item{p_mat}{matrix of p-values corresponding to the scores in b_mat}
 
 \item{nclust}{The number of clusters to allocate. default\:5}
 
@@ -26,10 +28,7 @@ convergence. default\:300}
 \item{clust_threshold}{The threshold for how close cluster
 centres need to be to be considered converged. default\:1e-5}
 
-\item{norm_typ}{The type of norm to be used in distance calculation.
-The default is the Froebenius norm "F".}
-
-\item{prob_on}{Bool to indicate whether cluster probability is to be
+\item{bin_p_clust}{Bool to indicate whether cluster probability is to be
 assign. default\:TRUE}
 
 \item{how_cents}{How the centroids will be initialised. If "rand (default)"
