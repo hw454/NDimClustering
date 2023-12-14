@@ -41,12 +41,6 @@ crop_matrices <- function(mat_list, trait_df,
   names(mat_crop) <- names(mat_list)
   out_check <-  out_pheno %in% trait_df$phenotype[n_col0:n_col1]
   exp_check <- exp_pheno %in% trait_df$phenotype[n_col0:n_col1]
-  print(out_pheno)
-  print(out_check)
-  print(exp_pheno)
-  print(exp_check)
-  print(trait_df$phenotype)
-  print(trait_df$phenotype[n_col0:n_col1])
   if (!out_check || !exp_check) {
     mat_out_exp <- lapply(mat_list, crop_mat_colnames,
       num_rows = n_rows,
