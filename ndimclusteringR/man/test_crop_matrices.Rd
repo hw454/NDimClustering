@@ -11,8 +11,11 @@ Test the `crop_matrices` function
 }
 \seealso{
 Other tests: 
+\code{\link{test_calc_member_dist_cent}()},
+\code{\link{test_cluster_kmeans}()},
 \code{\link{test_convert_point_to_angle}()},
 \code{\link{test_join_matlist_on_name}()},
+\code{\link{test_km_nan}()},
 \code{\link{test_reformat_data}()},
 \code{\link{test_rescale_by_end_col}()}
 }
