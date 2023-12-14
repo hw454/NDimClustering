@@ -7,9 +7,9 @@
 setup_matrices(
   data_dir,
   test = 0,
-  num_rows = 0,
+  num_rows = 5,
   num_trait0 = 0,
-  num_trait1 = 0
+  num_trait1 = 5
 )
 }
 \arguments{

@@ -24,18 +24,40 @@
 #'
 #' @export
 setup_matrices <- function(data_dir,
-  test = 0, num_rows = 0, num_trait0 = 0, num_trait1 = 0
+  test = 0, num_rows = 5, num_trait0 = 0, num_trait1 = 5
 ) {
   be_name <- paste0(data_dir, "unstdBeta_df.csv")
   se_name <- paste0(data_dir, "unstdSE_df.csv")
   pv_name <- paste0(data_dir, "pval_df.csv")
   trait_name <- paste0(data_dir, "trait_info_nfil.csv")
-  beta_mat <- as.matrix(data.table::fread(be_name), rownames = 1)
-  se_mat   <- as.matrix(data.table::fread(se_name), rownames = 1)
-  pv_mat   <- as.matrix(data.table::fread(pv_name), rownames = 1)
-  trait_info   <- as.data.frame(data.table::fread(trait_name, quote = ""))
-  print(trait_info)
-
+  trait_info   <- data.table::fread(trait_name, quote = "")
+  beta_df <- as.data.frame(read.csv(be_name)
+  )
+  se_df   <- as.data.frame(read.csv(se_name)
+  )
+  pv_df   <- as.data.frame(read.csv(pv_name)
+  )
+  # write_csv in R will assign X to the row.names. IF the data was
+  # created elsewhere then the row.names will have no column label
+  # instead. The unlabelled column is the default for loading the row names.
+  if ("X" %in% colnames(beta_df)){
+    beta_df <- tibble::column_to_rownames(beta_df, var = "X")
+    beta_mat <- as.matrix(beta_df)
+  } else {
+    beta_mat <- as.matrix(beta_df)
+  }
+  if ("X" %in% colnames(se_df)){
+    se_df <- tibble::column_to_rownames(se_df, var = "X")
+    se_mat <- as.data.frame(se_df)
+  } else {
+    se_mat <- as.data.frame(se_df)
+  }
+  if ("X" %in% colnames(pv_df)){
+    pv_df <- tibble::column_to_rownames(pv_df, var = "X")
+    pv_mat <- as.matrix(pv_df)
+  } else {
+    se_mat <- as.data.frame(se_df)
+  }
   # Find the label for the Outcome trait and the first Exposure trait
   out_row <- which(trait_info$pheno_category == "Outcome")
   out_pheno <- trait_info$phenotype[out_row]
