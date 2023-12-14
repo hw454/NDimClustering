@@ -23,6 +23,5 @@ make_rand_cent <- function(a, min_max_df, n_cents = 5) {
   cent <- stats::runif(n_cents, min_max_df[a, "min"], min_max_df[a, "max"])
   cent_df <- data.frame(a = cent)
   colnames(cent_df) <- c(a)
-  print(cent_df)
   return(cent_df)
 }
