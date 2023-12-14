@@ -31,11 +31,11 @@ setup_matrices <- function(data_dir,
   pv_name <- paste0(data_dir, "pval_df.csv")
   trait_name <- paste0(data_dir, "trait_info_nfil.csv")
   trait_info   <- data.table::fread(trait_name, quote = "")
-  beta_df <- as.data.frame(read.csv(be_name)
+  beta_df <- as.data.frame(utils::read.csv(be_name)
   )
-  se_df   <- as.data.frame(read.csv(se_name)
+  se_df   <- as.data.frame(utils::read.csv(se_name)
   )
-  pv_df   <- as.data.frame(read.csv(pv_name)
+  pv_df   <- as.data.frame(utils::read.csv(pv_name)
   )
   # write_csv in R will assign X to the row.names. IF the data was
   # created elsewhere then the row.names will have no column label
