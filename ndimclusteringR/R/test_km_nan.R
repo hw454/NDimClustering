@@ -16,15 +16,15 @@ test_km_nan <- function() {
   nclust <- 5
   num_axis <- length(dummy_traits)
   nsnps <- length(dummy_snps)
-  print("Create mat")
   b_mat <- matrix(stats::runif(nsnps * num_axis, 0, 10), nrow = nsnps)
   colnames(b_mat) <- dummy_traits
   rownames(b_mat) <- dummy_snps
+  p_mat <- matrix(stats::runif(nsnps * num_axis, 0, 1), nrow = nsnps)
+  colnames(p_mat) <- dummy_traits
+  rownames(p_mat) <- dummy_snps
   cat_list <- rep("Exposure", ncol(b_mat))
   cat_list[1] <- "Outcome"
-  print("km_nan")
-  clust_out <- km_nan(b_mat, nclust = nclust)
-  print(clust_out)
+  clust_out <- km_nan(b_mat, p_mat, nclust = nclust)
   expec_list <- c("clusters", "clust_dist", "centres")
   testit::assert("km_nan doesn't contain the right terms",
     all(expec_list %in% names(clust_out))
@@ -38,7 +38,7 @@ test_km_nan <- function() {
     make_clust_col(4),
     make_clust_col(5)
   )
-  expec_cent_rows <- seq_len(5)
+  expec_cent_rows <- seq_len(nclust)
   expec_clusterdf_cols <- c("clust_dist", "clust_num", "clust_prob", "ncents")
   testit::assert("Centres are wrong dimension",
     ncol(clust_out$centres) == expec_ncols
