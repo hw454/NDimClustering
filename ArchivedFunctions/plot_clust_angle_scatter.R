@@ -9,8 +9,8 @@
 #' @param b_mat The matrix of the score data
 #' @param se_mat The matrix of the standarad errors associated with the scores.
 #' @param iter_traits The iteration variables for the type of iteration.
-#' @param exp_pheno The label for the exposure phenotype
-#' @param out_pheno The label for the output phenotype
+#' @param col1 The label for the exposure phenotype
+#' @param col2 The label for the output phenotype
 #' @param num_axis The number of trait axis, default\:0
 #' @param pw The plot width, default\:8
 #' @param ph The plot heigh, default\:4
