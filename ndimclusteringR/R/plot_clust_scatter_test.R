@@ -7,7 +7,6 @@
 #'
 #' @param cluster_df The dataframe of cluster_df membership
 #' @param b_mat The matrix of the score data
-#' @param se_mat The matrix of the standarad errors associated with the scores.
 #' @param iter_traits The iteration variables for the type of iteration.
 #' @param c1 The column for the x-axis
 #' @param c2 The column for the y-axis
@@ -26,13 +25,13 @@ plot_clust_scatter_test <- function(cluster_df, b_mat,
 ) {
   crop_cluster_df <- cluster_df[cluster_df$num_axis == num_axis, ]
   crop_cluster_df <- tibble::column_to_rownames(crop_cluster_df, "snp_id")
-  snp_list <- row.names(b_mat)
+  snp_list <- rownames(b_mat)
+  clust_nums <- crop_cluster_df[snp_list, "clust_num"]
   res_df <- data.frame(
     row.names = snp_list,
     bx = b_mat[, c1],
     by = b_mat[, c2],
-    clust_num = crop_cluster_df[snp_list, "clust_num"],
-    clust_prob = crop_cluster_df[snp_list, "clust_prob"],
+    clust_num = clust_nums
   )
   np <- iter_traits$num_paths + 1
   pnme <- paste0(iter_traits$res_dir,
@@ -61,27 +60,9 @@ plot_clust_scatter_test <- function(cluster_df, b_mat,
     ggplot2::aes(x = bx, y = by) # nolint: object_usage_linter.
   ) +
     ggplot2::geom_point(ggplot2::aes(
-      color = clust_num, # nolint: object_usage_linter.
-      size = clust_prob, # nolint: object_usage_linter.
-      alpha = alp # nolint: object_usage_linter.
+      color = clust_num, # nolint: object_usage_linter
     ),
     shape = 21) + # nolint: object_usage_linter.
-    ggplot2::geom_errorbarh(
-      ggplot2::aes(xmin = res_df$bx - 1.96 * res_df$bxse,
-        xmax = res_df$bx + 1.96 * res_df$bxse,
-        color = clust_num,
-        alpha = alp
-      ),
-      linetype = "solid"
-    ) +
-    ggplot2::geom_errorbar(
-      ggplot2::aes(ymin = res_df$by - 1.96 * res_df$byse,
-        ymax = res_df$by + 1.96 * res_df$byse,
-        color = clust_num,
-        alpha = alp
-      ),
-      linetype = "solid"
-    ) +
     ggplot2::ylab(paste("Association with", c2)) +
     ggplot2::xlab(paste("Association with", c1)) +
     ggplot2::ggtitle(title_str) +
