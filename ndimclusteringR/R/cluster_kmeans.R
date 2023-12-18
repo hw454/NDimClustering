@@ -53,10 +53,6 @@ cluster_kmeans <- function(data_matrices,
   se_mat <- data_matrices$se_pc
   p_mat <- data_matrices$pval_pc
   # Crop the data to the complete cases
-  print(data_matrices)
-  print(stats::complete.cases(se_mat))
-  print(se_mat)
-  print(se_mat[stats::complete.cases(se_mat), ])
   crop_se <- se_mat[stats::complete.cases(se_mat), ]
   crop_snp_list <- rownames(crop_se)
 
