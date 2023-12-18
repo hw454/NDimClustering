@@ -34,8 +34,6 @@ plot_clust_scatter_test(
 \item{ph}{The plot heigh, default\:4}
 
 \item{save_suffix}{String to add to plot save name. default \: ""}
-
-\item{se_mat}{The matrix of the standarad errors associated with the scores.}
 }
 \description{
 Colour by cluster number.

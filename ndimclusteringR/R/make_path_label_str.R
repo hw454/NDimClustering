@@ -29,9 +29,9 @@ make_path_label_str <- function(iter_traits) {
   dir_name <- paste0(iter_traits$clust_typ,
     bp_str,
     angle_str,
-    how_cents,
-    "_", n_pcs, "pcs",
-    "_", nclust, "clusts"
+    iter_traits$how_cents,
+    "_", iter_traits$n_pcs, "pcs",
+    "_", iter_traits$nclust, "clusts"
   )
   return(dir_name)
 }

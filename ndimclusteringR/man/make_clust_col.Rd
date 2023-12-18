@@ -21,6 +21,7 @@ Other cluster_labels:
 \code{\link{make_clust_col_name}()}
 
 Other cluster_properties: 
+\code{\link{get_aic}()},
 \code{\link{make_clust_col_name}()}
 }
 \concept{cluster_labels}

@@ -17,6 +17,7 @@ Other cluster_labels:
 \code{\link{make_clust_col}()}
 
 Other cluster_properties: 
+\code{\link{get_aic}()},
 \code{\link{make_clust_col}()}
 }
 \concept{cluster_labels}
