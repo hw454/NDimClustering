@@ -15,6 +15,7 @@ Other tests:
 \code{\link{test_cluster_kmeans_min}()},
 \code{\link{test_cluster_kmeans}()},
 \code{\link{test_crop_matrices}()},
+\code{\link{test_get_aic}()},
 \code{\link{test_join_matlist_on_name}()},
 \code{\link{test_km_nan}()},
 \code{\link{test_reformat_data}()},
