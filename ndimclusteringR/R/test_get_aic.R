@@ -7,7 +7,7 @@
 #'
 #' @export
 #' @family tests
-test_cluster_kmeans <- function() {
+test_get_aic <- function() {
   dummy_traits <- c("T1", "T2", "T3", "T4", "T5", "T6")
   dummy_snps <- c("rs35662", "rs301884", "rs69696",
                   "rs4096", "rs646464", "rs1234")
@@ -31,9 +31,9 @@ test_cluster_kmeans <- function() {
                    "se" = se_mat,
                    "pval" = p_mat,
                    "trait_info" = trait_info,
-                   "beta_pc" = b_mat[1:nang],
-                   "se_pc" = se_mat[1:nang],
-                   "pval_pc" = p_mat[1:nang],
+                   "beta_pc" = b_mat[, 1:nang],
+                   "se_pc" = se_mat[, 1:nang],
+                   "pval_pc" = p_mat[, 1:nang],
                    "tranform" = diag(nang))
   nclust <- 3
   clust_out <- cluster_kmeans(mat_list, nclust = nclust)
