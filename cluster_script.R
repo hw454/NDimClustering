@@ -3,11 +3,11 @@ library("ndimclusteringR")
 
 # Script for running the cluster program setting the program inputs
 data_dir <- "./TestData/paths"
-res_dir <- "./TestResults"
+res_dir <- "./TestResults/"
 for (i in 0:3){
   if (i > 1) {
     nc <- i
-  }
+  } else { nc <- 1}
   iter_traits <- list(
     dname = paste0(data_dir, i, "/"),
     clust_type = "basic",
@@ -21,7 +21,7 @@ for (i in 0:3){
     nan_rm = 1,
     how_cents = "points"
   )
-  res_dir <- math_path_label_str(iter_traits)
+  res_dir <- paste0(res_dir, make_path_label_str(iter_traits))
   iter_traits$res_dir <- res_dir
-  clustering_program(iter_traits, test = 1)
+  clustering_program(iter_traits, test = 0)
 }
