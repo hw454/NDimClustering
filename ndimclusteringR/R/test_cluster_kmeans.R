@@ -26,12 +26,12 @@ test_cluster_kmeans <- function() {
   trait_info <- list("pheno_category" = cat_list,
                      "phenotype" = dummy_traits)
   nang <- num_axis - 1
-  b_pc <- b_mat[, 1:nang]
+  b_mat_pc <- b_mat[, 1:nang]
   mat_list <- list("beta" = b_mat,
                    "se" = se_mat,
                    "pval" = p_mat,
                    "trait_info" = trait_info,
-                   "beta_pc" = b_pc,
+                   "beta_pc" = b_mat_pc,
                    "se_pc" = se_mat[, 1:nang],
                    "pval_pc" = p_mat[, 1:nang],
                    "tranform" = diag(nang))
