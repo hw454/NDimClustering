@@ -55,8 +55,9 @@ test_cluster_kmeans_min <- function() {
                             "num_axis", "ncents")
   expec_ncols <- length(expec_clusterdf_cols)
   expec_clust_dist_ncols <- nclust + 2
+  expec_cents_ncols <- num_axis + 2
   testit::assert("Centres are wrong dimension",
-    ncol(clust_out$centres) == expec_ncols
+    ncol(clust_out$centres) == expec_cents_ncols
   )
   testit::assert("Wrong number of centres",
     nrow(clust_out$centres) <= expec_ncents
@@ -81,6 +82,9 @@ test_cluster_kmeans_min <- function() {
   )
   testit::assert("Cluster_df has wrong number of rows",
     nrow(clust_out$clusters) == expec_nrows
+  )
+  testit::assert("Cluster_df has wrong number of columns",
+    ncol(clust_out$clusters) == expec_ncols
   )
   testit::assert("Cluster_df has wrong axis",
     all(colnames(clust_out$clusters) %in% expec_clusterdf_cols)

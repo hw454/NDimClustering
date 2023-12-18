@@ -49,10 +49,14 @@ cluster_kmeans <- function(data_matrices,
 ) {
   # Using the association scores for each SNP accross traits cluster the traits
   # using kmeans. Return the cluster setup which minimises AIC.
-  b_mat <- data_matrices$beta
-  se_mat <- data_matrices$se
-  p_mat <- data_matrices$pval
+  b_mat <- data_matrices$beta_pc
+  se_mat <- data_matrices$se_pc
+  p_mat <- data_matrices$pval_pc
   # Crop the data to the complete cases
+  print(data_matrices)
+  print(stats::complete.cases(se_mat))
+  print(se_mat)
+  print(se_mat[stats::complete.cases(se_mat), ])
   crop_se <- se_mat[stats::complete.cases(se_mat), ]
   crop_snp_list <- rownames(crop_se)
 
@@ -95,6 +99,16 @@ cluster_kmeans <- function(data_matrices,
   clust_out$clusters["num_axis"] <- num_axis
   clust_out$clust_dist["num_axis"] <- num_axis
   clust_out$centres["num_axis"] <- num_axis
+  clust_out$clusters["ncents"] <- nclust
+  clust_out$clust_dist["ncents"] <- nclust
+  clust_out$centres["ncents"] <- nclust
+  # Convert row names to columns to stacking later results
+  clust_out$clusters <- tibble::rownames_to_column(clust_out$clusters,
+    var = "snp_id"
+  )
+  clust_out$clust_dist <- tibble::rownames_to_column(clust_out$clust_dist,
+    var = "snp_id"
+  )
   # ADDFEATURE - Assign junk clusters.
   return(clust_out)
 }
