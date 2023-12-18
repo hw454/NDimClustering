@@ -14,7 +14,7 @@ form_beta_corr <- function(n_path, d, rand_shift, a_list, b_list) {
 create_pc <- function(i) {
   return(paste0("PC", i))
 }
-create_test_data <- function(d = 10, num_path = 0) {
+create_test_data <- function(d = 50, num_path = 0) {
   np <- num_path + 1
   print(paste("Create test data with", np, "pathways"))
   iter_dir <- paste0("paths", num_path, "/")
@@ -92,7 +92,7 @@ create_test_data <- function(d = 10, num_path = 0) {
   )
 }
 
-num_path_list <- 0:3
+num_path_list <- 0:4
 for (np in num_path_list){
   create_test_data(num_path = np)
 }
