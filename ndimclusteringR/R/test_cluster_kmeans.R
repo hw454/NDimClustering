@@ -27,8 +27,6 @@ test_cluster_kmeans <- function() {
                      "phenotype" = dummy_traits)
   nang <- num_axis - 1
   b_pc <- b_mat[, 1:nang]
-  print("nang")
-  print(nang)
   mat_list <- list("beta" = b_mat,
                    "se" = se_mat,
                    "pval" = p_mat,
@@ -38,9 +36,7 @@ test_cluster_kmeans <- function() {
                    "pval_pc" = p_mat[, 1:nang],
                    "tranform" = diag(nang))
   nclust <- 3
-  # print(mat_list)
   clust_out <- cluster_kmeans(mat_list, nclust = nclust)
-  print(clust_out)
   expec_list <- c("clusters", "clust_dist", "centres")
   testit::assert("km_nan doesn't contain the right terms",
     all(expec_list %in% names(clust_out))
@@ -58,7 +54,7 @@ test_cluster_kmeans <- function() {
                             "clust_prob", "ncents",
                             "num_axis")
   expec_ncols <- length(expec_clusterdf_cols)
-  expec_cent_ncols <- num_axis + 2
+  expec_cent_ncols <- nang + 2
   expec_clust_dist_ncols <- nclust + 2
   testit::assert("Centres are wrong dimension",
     ncol(clust_out$centres) == expec_cent_ncols
@@ -67,7 +63,7 @@ test_cluster_kmeans <- function() {
     nrow(clust_out$centres) == expec_ncents
   )
   testit::assert("Centres have wrong axis",
-    all(colnames(b_mat) %in% colnames(clust_out$centres))
+    all(colnames(b_mat_pc) %in% colnames(clust_out$centres))
   )
   testit::assert("Centres has wrong rows",
     all(rownames(clust_out$centres) %in% expec_cent_rows)

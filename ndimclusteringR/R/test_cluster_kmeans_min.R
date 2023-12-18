@@ -26,11 +26,12 @@ test_cluster_kmeans_min <- function() {
   trait_info <- list("pheno_category" = cat_list,
                      "phenotype" = dummy_traits)
   nang <- num_axis - 1
+  b_mat_pc <- b_mat[, 1:nang]
   mat_list <- list("beta" = b_mat,
                    "se" = se_mat,
                    "pval" = p_mat,
                    "trait_info" = trait_info,
-                   "beta_pc" = b_mat[, 1:nang],
+                   "beta_pc" = b_mat_pc,
                    "se_pc" = se_mat[, 1:nang],
                    "pval_pc" = p_mat[, 1:nang],
                    "tranform" = diag(nang))
@@ -55,7 +56,7 @@ test_cluster_kmeans_min <- function() {
                             "num_axis", "ncents")
   expec_ncols <- length(expec_clusterdf_cols)
   expec_clust_dist_ncols <- nclust + 2
-  expec_cents_ncols <- num_axis + 2
+  expec_cents_ncols <- nang + 2
   testit::assert("Centres are wrong dimension",
     ncol(clust_out$centres) == expec_cents_ncols
   )
@@ -63,7 +64,7 @@ test_cluster_kmeans_min <- function() {
     nrow(clust_out$centres) <= expec_ncents
   )
   testit::assert("Centres have wrong axis",
-    all(colnames(b_mat) %in% colnames(clust_out$centres))
+    all(colnames(b_mat_pc) %in% colnames(clust_out$centres))
   )
   testit::assert("Centres has wrong rows",
     all(rownames(clust_out$centres) %in% expec_cent_rows)
