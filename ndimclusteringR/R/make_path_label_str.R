@@ -31,7 +31,7 @@ make_path_label_str <- function(iter_traits) {
     angle_str,
     iter_traits$how_cents,
     "_", iter_traits$n_pcs, "pcs",
-    "_", iter_traits$nclust, "clusts"
+    "_", iter_traits$nclust, "clusts/"
   )
   return(dir_name)
 }
