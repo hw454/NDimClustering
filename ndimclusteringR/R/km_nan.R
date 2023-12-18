@@ -127,7 +127,6 @@ km_nan <- function(b_mat, p_mat,
   }
   # Calculate the probability each snp is in the cluster
   cluster_df$clust_prob <- calc_clust_prob(cluster_df)
-  cluster_df <- dplyr::mutate(cluster_df, "ncents" = nclust)
   clust_out <- list("clusters" = cluster_df, "centres" = centroids_df,
                     "clust_dist" = clust_dist_df)
   return(clust_out)
