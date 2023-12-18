@@ -36,10 +36,10 @@ reformat_data <- function(data_matrices,
   if (pca_type == "none") {
     # If there's no pca found then the pc matrices are the same as the input.
     # This ensures consistent naming later.
-    if (bin_angles){
+    if (bin_angles) {
       nc <- ncol(data_matrices$beta_ang)
       pca_list <- list("beta_pc" = data_matrices$beta_ang,
-                       "pval_pc" = data_matrices$pval_Ang,
+                       "pval_pc" = data_matrices$pval_ang,
                        "se_pc" = data_matrices$se_ang,
                        "transform" = diag(nc))
       data_matrices <- append(data_matrices, pca_list)
@@ -52,36 +52,46 @@ reformat_data <- function(data_matrices,
       data_matrices <- append(data_matrices, pca_list)
     }
   } else if (pca_type == "prcomp") {
-    if (bin_angles){
+    if (bin_angles) {
       pca_beta <- stats::prcomp(data_matrices$beta_ang,
         center = TRUE,
         scale = TRUE,
         rank = np
       )
-    } else{
+      t_mat <- pca_beta$rotation
+      b_pc_mat <- pca_beta$x
+      p_pc_mat <- transform_coords_in_mat(
+        p_mat = data_matrices$pval_ang,
+        t_mat = t_mat
+      )
+      se_pc_mat <- transform_coords_in_mat(
+        p_mat = data_matrices$se_ang,
+        t_mat = t_mat
+      )
+    } else {
       pca_beta <- stats::prcomp(data_matrices$beta,
         center = TRUE,
         scale = TRUE,
         rank = np
       )
+      t_mat <- pca_beta$rotation
+      b_pc_mat <- pca_beta$x
+      p_pc_mat <- transform_coords_in_mat(
+        p_mat = data_matrices$pval,
+        t_mat = t_mat
+      )
+      se_pc_mat <- transform_coords_in_mat(
+        p_mat = data_matrices$se,
+        t_mat = t_mat
+      )
     }
-    t_mat <- pca_beta$rotation
-    b_pc_mat <- pca_beta$x
     # Transform remaining matrices onto the same space as the beta_pc matrix.
-    p_pc_mat <- transform_coords_in_mat(
-      p_mat = data_matrices$pval,
-      t_mat = t_mat
-    )
-    se_pc_mat <- transform_coords_in_mat(
-      p_mat = data_matrices$se,
-      t_mat = t_mat
-    )
+    pca_list <- list("beta_pc" = b_pc_mat,
+                     "pval_pc" = p_pc_mat,
+                     "se_pc" = se_pc_mat,
+                     "transform" = t_mat)
   }
   # Store the matrices for result output
-  pca_list <- list("beta_pc" = b_pc_mat,
-                   "pval_pc" = p_pc_mat,
-                   "se_pc" = se_pc_mat,
-                   "transform" = t_mat)
   data_matrices <- append(data_matrices, pca_list)
   return(data_matrices)
 }

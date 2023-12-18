@@ -35,5 +35,49 @@ test_reformat_data <- function() {
   testit::assert("Wrong terms in list", {
     all(expec_terms %in% names(fmt_mat_list))
   })
-
+  print("... Testing with angles off and pca prcomp")
+  np <- 3
+  fmt_mat_list <- reformat_data(data_matrices = data_matrices,
+                                bin_angles = 0,
+                                pca_type = "prcomp",
+                                np = np)
+  testit::assert("Wrong number of terms in list", {
+    length(fmt_mat_list) == expec_nterms
+  })
+  expec_terms <- c("beta", "se", "pval", "trait_info",
+    "beta_pc", "se_pc", "pval_pc", "transform"
+  )
+  testit::assert("Wrong terms in list", {
+    all(expec_terms %in% names(fmt_mat_list))
+  })
+  print("... Testing with angles on and pca off")
+  np <- 3
+  fmt_mat_list <- reformat_data(data_matrices = data_matrices,
+                                bin_angles = 1,
+                                pca_type = "none",
+                                np = np)
+  testit::assert("Wrong number of terms in list", {
+    length(fmt_mat_list) == expec_nterms
+  })
+  expec_terms <- c("beta", "se", "pval", "trait_info",
+    "beta_pc", "se_pc", "pval_pc", "transform"
+  )
+  testit::assert("Wrong terms in list", {
+    all(expec_terms %in% names(fmt_mat_list))
+  })
+  print("... Testing with angles on and pca prcomp")
+  np <- 3
+  fmt_mat_list <- reformat_data(data_matrices = data_matrices,
+                                bin_angles = 1,
+                                pca_type = "prcomp",
+                                np = np)
+  testit::assert("Wrong number of terms in list", {
+    length(fmt_mat_list) == expec_nterms
+  })
+  expec_terms <- c("beta", "se", "pval", "trait_info",
+    "beta_pc", "se_pc", "pval_pc", "transform"
+  )
+  testit::assert("Wrong terms in list", {
+    all(expec_terms %in% names(fmt_mat_list))
+  })
 }
