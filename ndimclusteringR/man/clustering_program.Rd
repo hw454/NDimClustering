@@ -4,7 +4,7 @@
 \alias{clustering_program}
 \title{Program for preparing data then clustering it.}
 \usage{
-clustering_program(iter_traits, test = 1)
+clustering_program(iter_traits, test = 0)
 }
 \arguments{
 \item{iter_traits}{dataframe of the indicators for the types of

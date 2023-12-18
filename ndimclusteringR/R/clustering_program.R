@@ -18,7 +18,7 @@
 #'  default \: 1 (test case)
 #'
 #' @export
-clustering_program <- function(iter_traits, test = 1) {
+clustering_program <- function(iter_traits, test = 0) {
   # Load data
   data_matrices <- setup_matrices(iter_traits$dname, test = test)
 
@@ -44,25 +44,29 @@ clustering_program <- function(iter_traits, test = 1) {
       nclust = iter_traits$nclust,
       how_cents = iter_traits$how_cents,
       bin_p_clust = iter_traits$bin_p_clust
-      )
+    )
   }
+  num_axis <- ncol(data_matrices$beta_pc)
   # Plot any final outputs
   # -Plot the original data
   c1 <- colnames(data_matrices$beta)[1]
-  c2 <- colnames(data_matrices$beta)[1]
-  plot_clust_scatter_test(clusters,
+  c2 <- colnames(data_matrices$beta)[2]
+  plot_clust_scatter_test(clust_out$clusters,
     data_matrices$beta,
     iter_traits,
-    c1,
-    c2)
+    c1 = c1,
+    c2 = c2,
+    num_axis = num_axis
+  )
   # -Plot the reformatted data
   c1 <- colnames(data_matrices$beta_pc)[1]
   c2 <- colnames(data_matrices$beta_pc)[2]
-  plot_clust_scatter_test(clusters,
+  plot_clust_scatter_test(clust_out$clusters,
     data_matrices$beta_pc,
     iter_traits,
-    c1,
-    c2,
+    c1 = c1,
+    c2 = c2,
+    num_axis = num_axis,
     save_suffix = "_pc"
   )
   # If angles then plot the angles
@@ -70,9 +74,12 @@ clustering_program <- function(iter_traits, test = 1) {
     c1 <- colnames(data_matrices$beta_ang)[1]
     c2 <- colnames(data_matrices$beta_ang)[2]
     plot_clust_scatter_test(clust_out$clusters,
-      data_matrices$beta_pc,
-      c1,
-      c2,
-      save_suffix = "_ang")
+      data_matrices$beta_ang,
+      iter_traits,
+      c1 = c1,
+      c2 = c2,
+      num_axis = num_axis,
+      save_suffix = "_ang"
+    )
   }
 }
