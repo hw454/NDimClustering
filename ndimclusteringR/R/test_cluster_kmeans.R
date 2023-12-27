@@ -43,19 +43,24 @@ test_cluster_kmeans <- function() {
   )
   expec_ncents <- nclust
   expec_nrows <- nrow(b_mat)
-  expec_clust_dist_cols <- c(make_clust_col_name(1),
+  expec_clust_dist_cols <- c("snp_id",
+    make_clust_col_name(1),
     make_clust_col_name(2),
     make_clust_col_name(3),
     "num_axis",
     "ncents"
   )
   expec_cent_rows <- seq_len(nclust)
-  expec_clusterdf_cols <- c("clust_dist", "clust_num",
-                            "clust_prob", "ncents",
+  expec_clusterdf_cols <- c("snp_id",
+                            "clust_dist",
+                            "clust_num",
+                            "clust_prob",
+                            "ncents",
                             "num_axis")
   expec_ncols <- length(expec_clusterdf_cols)
   expec_cent_ncols <- nang + 2
-  expec_clust_dist_ncols <- nclust + 2
+  extra_label_cols <- 3
+  expec_clust_dist_ncols <- nclust + extra_label_cols
   testit::assert("Centres are wrong dimension",
     ncol(clust_out$centres) == expec_cent_ncols
   )
@@ -74,26 +79,26 @@ test_cluster_kmeans <- function() {
   testit::assert("Clust_dist has wrong number of rows",
     nrow(clust_out$clust_dist) == expec_nrows
   )
-  testit::assert("Clust_dist has wrong number of columns",
-    ncol(clust_out$clust_dist) <= expec_ncols
-  )
   testit::assert("Clust_dist and centres have different number of clusters",
-    {ncol(clust_out$clust_dist) == nrow(clust_out$centres) + 2
+    {ncol(clust_out$clust_dist) == nrow(clust_out$centres) + extra_label_cols
     }
   )
   testit::assert("Clust_dist has wrong axis",
     all(colnames(clust_out$clust_dist) %in% expec_clust_dist_cols)
   )
   testit::assert("Clust_dist has wrong rows",
-    all(rownames(clust_out$clust_dist) %in% rownames(b_mat))
+    all(clust_out$clust_dist$snp_id %in% rownames(b_mat))
   )
   testit::assert("Cluster_df has wrong number of rows",
     nrow(clust_out$clusters) == expec_nrows
   )
+  testit::assert("Cluster_df has wrong number of columns",
+    ncol(clust_out$clusters) == expec_ncols
+  )
   testit::assert("Cluster_df has wrong axis",
     all(colnames(clust_out$clusters) %in% expec_clusterdf_cols)
   )
-  testit::assert("Clust_dist has wrong rows",
-    all(rownames(clust_out$clusters) %in% rownames(b_mat))
+  testit::assert("Cluster_df has wrong rows",
+    all(clust_out$clusters$snp_id %in% rownames(b_mat))
   )
 }

@@ -37,25 +37,29 @@ test_cluster_kmeans_min <- function() {
                    "tranform" = diag(nang))
   nclust <- 3
   clust_out <- cluster_kmeans(mat_list, nclust = nclust)
-  print(clust_out)
   expec_list <- c("clusters", "clust_dist", "centres")
   testit::assert("km_nan doesn't contain the right terms",
     all(expec_list %in% names(clust_out))
   )
   expec_ncents <- nclust
   expec_nrows <- nrow(b_mat)
-  expec_clust_dist_cols <- c(make_clust_col_name(1),
+  extra_label_cols <- 3
+  expec_clust_dist_cols <- c("snp_id",
+    make_clust_col_name(1),
     make_clust_col_name(2),
     make_clust_col_name(3),
     "num_axis",
     "ncents"
   )
   expec_cent_rows <- seq_len(nclust)
-  expec_clusterdf_cols <- c("clust_dist", "clust_num",
+  expec_clusterdf_cols <- c("snp_id",
+                            "clust_dist",
+                            "clust_num",
                             "clust_prob",
-                            "num_axis", "ncents")
+                            "num_axis",
+                            "ncents")
   expec_ncols <- length(expec_clusterdf_cols)
-  expec_clust_dist_ncols <- nclust + 2
+  expec_clust_dist_ncols <- nclust + extra_label_cols
   expec_cents_ncols <- nang + 2
   testit::assert("Centres are wrong dimension",
     ncol(clust_out$centres) == expec_cents_ncols
@@ -79,7 +83,7 @@ test_cluster_kmeans_min <- function() {
     all(colnames(clust_out$clust_dist) %in% expec_clust_dist_cols)
   )
   testit::assert("Clust_dist has wrong rows",
-    all(rownames(clust_out$clust_dist) %in% rownames(b_mat))
+    all(clust_out$clust_dist$snp_id %in% rownames(b_mat))
   )
   testit::assert("Cluster_df has wrong number of rows",
     nrow(clust_out$clusters) == expec_nrows
@@ -91,6 +95,6 @@ test_cluster_kmeans_min <- function() {
     all(colnames(clust_out$clusters) %in% expec_clusterdf_cols)
   )
   testit::assert("Clust_dist has wrong rows",
-    all(rownames(clust_out$clusters) %in% rownames(b_mat))
+    all(clust_out$clusters$snp_id %in% rownames(b_mat))
   )
 }

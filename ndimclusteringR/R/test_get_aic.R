@@ -39,9 +39,13 @@ test_get_aic <- function() {
   clust_out <- cluster_kmeans(mat_list, nclust = nclust)
   aic_df <- get_aic(clust_out)
   expec_nrows <- nrow(b_mat)
-  expec_clusterdf_cols <- c("clust_dist", "clust_num",
-                            "clust_prob", "ncents",
-                            "num_axis", "aic")
+  expec_clusterdf_cols <- c("snp_id",
+                            "clust_dist",
+                            "clust_num",
+                            "clust_prob",
+                            "ncents",
+                            "num_axis",
+                            "aic")
   expec_ncols <- length(expec_clusterdf_cols)
   testit::assert("aic_df has wrong number of rows",
     nrow(aic_df) == expec_nrows
@@ -53,6 +57,6 @@ test_get_aic <- function() {
     all(colnames(aic_df) %in% expec_clusterdf_cols)
   )
   testit::assert("aic_df has wrong rows",
-    all(rownames(aic_df) %in% rownames(b_mat))
+    all(aic_df$snp_id %in% rownames(b_mat))
   )
 }
