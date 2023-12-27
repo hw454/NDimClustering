@@ -8,7 +8,7 @@
 get_aic <- function(clust_out) {
   cluster_df <- clust_out$clusters
   num_axis <- cluster_df[1, "num_axis"]
-  calc_sum_sq <- function(num, data){
+  calc_sum_sq <- function(num, data) {
     sq <- data[data[, "clust_num"] == num, "clust_dist"]**2
     s <- sum(sq)
     return(s)
@@ -19,7 +19,7 @@ get_aic <- function(clust_out) {
   # Log-Likelihood term
   ll <- lapply(unique(cluster_df[, "clust_num"]),
     calc_sum_sq,
-    data = clust_out
+    data = cluster_df
   )
   sig <- as.numeric((stats::var(cluster_df["clust_dist"])))
   l <- Reduce(sum, ll) / sig
