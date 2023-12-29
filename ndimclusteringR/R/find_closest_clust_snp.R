@@ -31,6 +31,8 @@
 #'
 #' @return out_list
 #'
+#' @family distance_functions
+#'
 #' @export
 find_closest_clust_snp <- function(snp_id, b_mat, cluster_df, centroids_df,
   max_dist = 10.0
