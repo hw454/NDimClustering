@@ -60,3 +60,29 @@ whose columns are the traits and rows are the cluster numbers. Additional
 column "thresh_check" contains Bool indicating whether that cluster
 converged.
 }
+\seealso{
+Other k_means: 
+\code{\link{cluster_kmeans_min}()},
+\code{\link{cluster_kmeans}()},
+\code{\link{make_rand_cent}()}
+
+Other clustering_components: 
+\code{\link{calc_clust_cent}()},
+\code{\link{calc_clust_prob}()},
+\code{\link{calc_member_dist_cent}()},
+\code{\link{check_clust_cent}()},
+\code{\link{convert_mat_to_angle_mat}()},
+\code{\link{get_aic}()},
+\code{\link{make_clust_col_name}()},
+\code{\link{make_clust_col}()},
+\code{\link{make_rand_cent}()}
+
+Other cluster_functions: 
+\code{\link{cluster_dbscan}()},
+\code{\link{cluster_kmeans_min}()},
+\code{\link{cluster_kmeans}()},
+\code{\link{get_aic}()}
+}
+\concept{cluster_functions}
+\concept{clustering_components}
+\concept{k_means}

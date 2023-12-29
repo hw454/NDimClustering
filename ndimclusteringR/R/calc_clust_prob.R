@@ -8,7 +8,7 @@
 #' @return p
 #'
 #' @family probability_functions
-#' @family clustering functions
+#' @family clustering_components
 #'
 #' @export
 calc_clust_prob <- function(cluster_df) {

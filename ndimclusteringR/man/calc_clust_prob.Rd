@@ -15,5 +15,17 @@ p
 \description{
 \deqn{p=\frac{1.0}{1.0+d}}
 }
-\concept{clustering functions}
+\seealso{
+Other clustering_components: 
+\code{\link{calc_clust_cent}()},
+\code{\link{calc_member_dist_cent}()},
+\code{\link{check_clust_cent}()},
+\code{\link{convert_mat_to_angle_mat}()},
+\code{\link{get_aic}()},
+\code{\link{km_nan}()},
+\code{\link{make_clust_col_name}()},
+\code{\link{make_clust_col}()},
+\code{\link{make_rand_cent}()}
+}
+\concept{clustering_components}
 \concept{probability_functions}

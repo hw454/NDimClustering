@@ -3,7 +3,7 @@
 #' @param clust_out list of cluster dataframes for number of clusters
 #'
 #' @export
-#' @family cluster_properties
+#' @family clustering_components
 #' @family cluster_functions
 get_aic <- function(clust_out) {
   cluster_df <- clust_out$clusters

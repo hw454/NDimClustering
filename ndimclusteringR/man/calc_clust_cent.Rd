@@ -34,9 +34,14 @@ Other clustering_components:
 \code{\link{calc_member_dist_cent}()},
 \code{\link{check_clust_cent}()},
 \code{\link{convert_mat_to_angle_mat}()},
-\code{\link{get_aic}()}
+\code{\link{get_aic}()},
+\code{\link{km_nan}()},
+\code{\link{make_clust_col_name}()},
+\code{\link{make_clust_col}()},
+\code{\link{make_rand_cent}()}
 
 Other centroid_functions: 
+\code{\link{calc_member_dist_cent}()},
 \code{\link{check_clust_cent}()}
 
 Other dbscan_functions: 

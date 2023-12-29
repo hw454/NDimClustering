@@ -4,7 +4,7 @@
 #'
 #' @export
 #' @family cluster_labels
-#' @family cluster_properties
+#' @family clustering_components
 make_clust_col_name <- function(i) {
   return(paste0("clust_", i))
 }

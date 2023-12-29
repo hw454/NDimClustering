@@ -7,7 +7,7 @@
 #' @export
 #'
 #' @family cluster_labels
-#' @family cluster_properties
+#' @family clustering_components
 make_clust_col <- function(i, rows = character(), col_val = NA) {
   # Create a dataframe with column Pi
   cname <- make_clust_col_name(i)

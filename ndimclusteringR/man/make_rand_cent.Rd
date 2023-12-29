@@ -26,3 +26,22 @@ between the maximum and minimum values on the axis a.
 Create a dataframe "cent_df" with column label "a" and the values are the
 random values created using \link[stats]{runif}.
 }
+\seealso{
+Other clustering_components: 
+\code{\link{calc_clust_cent}()},
+\code{\link{calc_clust_prob}()},
+\code{\link{calc_member_dist_cent}()},
+\code{\link{check_clust_cent}()},
+\code{\link{convert_mat_to_angle_mat}()},
+\code{\link{get_aic}()},
+\code{\link{km_nan}()},
+\code{\link{make_clust_col_name}()},
+\code{\link{make_clust_col}()}
+
+Other k_means: 
+\code{\link{cluster_kmeans_min}()},
+\code{\link{cluster_kmeans}()},
+\code{\link{km_nan}()}
+}
+\concept{clustering_components}
+\concept{k_means}

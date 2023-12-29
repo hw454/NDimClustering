@@ -16,9 +16,16 @@ Function for making the label for a cluster column
 Other cluster_labels: 
 \code{\link{make_clust_col}()}
 
-Other cluster_properties: 
+Other clustering_components: 
+\code{\link{calc_clust_cent}()},
+\code{\link{calc_clust_prob}()},
+\code{\link{calc_member_dist_cent}()},
+\code{\link{check_clust_cent}()},
+\code{\link{convert_mat_to_angle_mat}()},
 \code{\link{get_aic}()},
-\code{\link{make_clust_col}()}
+\code{\link{km_nan}()},
+\code{\link{make_clust_col}()},
+\code{\link{make_rand_cent}()}
 }
 \concept{cluster_labels}
-\concept{cluster_properties}
+\concept{clustering_components}

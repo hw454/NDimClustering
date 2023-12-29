@@ -39,6 +39,10 @@
 #' @return clust_out
 #'
 #' @export
+#'
+#' @family k_means
+#' @family clustering_components
+#' @family cluster_functions
 km_nan <- function(b_mat, p_mat,
   nclust = 5, iter_max = 300, clust_threshold = 1e-5,
   bin_p_clust = TRUE, how_cents = "point"
