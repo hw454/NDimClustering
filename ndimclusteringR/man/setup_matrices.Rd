@@ -40,3 +40,8 @@ the functions on a smaller dataset.
 rows labeled by SNP_id and columns labelled by trait info.
 The entries at each position correspond to the values for beta, se, t, and p
 }
+\seealso{
+Other setup_functions: 
+\code{\link{make_path_label_str}()}
+}
+\concept{setup_functions}

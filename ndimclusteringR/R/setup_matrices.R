@@ -23,6 +23,8 @@
 #' The entries at each position correspond to the values for beta, se, t, and p
 #'
 #' @export
+#'
+#' @family setup_functions
 setup_matrices <- function(data_dir,
   test = 0, num_rows = 5, num_trait0 = 0, num_trait1 = 5
 ) {

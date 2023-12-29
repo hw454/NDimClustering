@@ -14,6 +14,8 @@
 #' @return label_str
 #'
 #' @export
+#'
+#' @family setup_functions
 make_path_label_str <- function(iter_traits) {
   # Create the string that describes the type of method for filenames
   if (iter_traits$bin_p_clust) {

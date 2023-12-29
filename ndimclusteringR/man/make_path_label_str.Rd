@@ -21,3 +21,8 @@ This string will have no space so it is suitable for file and
 The string will start with the clustering type, then the bp switch,
 then the cluster probability switch.
 }
+\seealso{
+Other setup_functions: 
+\code{\link{setup_matrices}()}
+}
+\concept{setup_functions}
