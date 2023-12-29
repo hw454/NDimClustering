@@ -17,7 +17,7 @@
 #' @return data_matrices List of matrices
 #'
 #' @export
-#' @family transform_data
+#' @family preconditioning_functions
 reformat_data <- function(data_matrices,
   bin_angles = 1, pca_type = "none", np = 1
 ) {

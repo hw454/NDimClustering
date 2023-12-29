@@ -27,4 +27,13 @@ data_matrices List of matrices
   2. Find the principal components for the beta matrix. Use the method set
     in pca_type, if none then skip and return the data_matrices.
 }
-\concept{transform_data}
+\seealso{
+Other preconditioning_functions: 
+\code{\link{convert_mat_to_angle_mat}()},
+\code{\link{convert_point_to_angle}()},
+\code{\link{crop_mat_colnames}()},
+\code{\link{crop_mat_colnums}()},
+\code{\link{crop_matrices}()},
+\code{\link{rescale_by_end_col}()}
+}
+\concept{preconditioning_functions}

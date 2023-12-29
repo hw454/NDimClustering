@@ -14,4 +14,13 @@ rescale_by_end_col(matin)
 Multiply all by the final terms in a row by the final term.
 Repeat for all rows.
 }
-\concept{utility}
+\seealso{
+Other preconditioning_functions: 
+\code{\link{convert_mat_to_angle_mat}()},
+\code{\link{convert_point_to_angle}()},
+\code{\link{crop_mat_colnames}()},
+\code{\link{crop_mat_colnums}()},
+\code{\link{crop_matrices}()},
+\code{\link{reformat_data}()}
+}
+\concept{preconditioning_functions}

@@ -17,6 +17,8 @@
 #'
 #' @return \eqn{\theta}
 #'
+#' @family preconditioning_functions
+#'
 #' @export
 convert_point_to_angle <- function(col, unit_mat, p) {
   # Convert the scores on the axis for the point

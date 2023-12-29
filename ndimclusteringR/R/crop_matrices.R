@@ -24,6 +24,8 @@
 #'
 #' @return List of cropped matrices.
 #'
+#' @family preconditioning_functions
+#'
 #' @export
 crop_matrices <- function(mat_list, trait_df,
   out_pheno, exp_pheno, n_rows, n_col0, n_col1

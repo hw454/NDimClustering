@@ -7,6 +7,8 @@
 #'
 #' @return cropped matrix
 #'
+#' @family preconditioning_functions
+#'
 #' @export
 crop_mat_colnums <- function(mat, num_rows, col0, col1) {
   mat_out <- mat[1:num_rows, col0:col1]

@@ -3,7 +3,7 @@
 #'
 #' @param matin matrix whose rows are to be rescaled by the final column
 #' @export
-#' @family utility
+#' @family preconditioning_functions
 rescale_by_end_col <- function(matin) {
   rescale_row <- function(r, matin) {
     nc <- ncol(matin)

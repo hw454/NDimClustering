@@ -39,3 +39,13 @@ include only the first n_rows
   4. Merge the two sets to create a matrix with columns in the n_col
   range and the exposure and outcome columns.
 }
+\seealso{
+Other preconditioning_functions: 
+\code{\link{convert_mat_to_angle_mat}()},
+\code{\link{convert_point_to_angle}()},
+\code{\link{crop_mat_colnames}()},
+\code{\link{crop_mat_colnums}()},
+\code{\link{reformat_data}()},
+\code{\link{rescale_by_end_col}()}
+}
+\concept{preconditioning_functions}

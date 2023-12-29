@@ -13,6 +13,7 @@
 #' @return ang_mat
 #'
 #' @family clustering_components
+#' @family preconditioning_functions
 #'
 #' @export
 convert_mat_to_angle_mat <- function(mat) {
