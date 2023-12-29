@@ -11,7 +11,9 @@ Test the `crop_matrices` function
 }
 \seealso{
 Other tests: 
+\code{\link{test_calc_clust_cent}()},
 \code{\link{test_calc_member_dist_cent}()},
+\code{\link{test_cluster_dbscan}()},
 \code{\link{test_cluster_kmeans_min}()},
 \code{\link{test_cluster_kmeans}()},
 \code{\link{test_convert_point_to_angle}()},
