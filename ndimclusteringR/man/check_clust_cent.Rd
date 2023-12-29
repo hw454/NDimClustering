@@ -45,6 +45,7 @@ The check can only be made if there are snps which are members of the
   cluster.
   If the cluster is not empty then the new centres are found using
     the means of the snps in the cluster.
+  If the bin_p_clust then weight the average by the p-values
   If the new cluster centroid is within "clust_threshold" of the previous
     centroid then "thresh_check"=TRUE.
   If thresh_check then create a dataframe "out_centroid_df" with the
@@ -54,8 +55,20 @@ The check can only be made if there are snps which are members of the
 }
 \seealso{
 Other clustering_components: 
+\code{\link{calc_clust_cent}()},
+\code{\link{calc_clust_prob}()},
 \code{\link{calc_member_dist_cent}()},
-\code{\link{convert_mat_to_angle_mat}()}
+\code{\link{convert_mat_to_angle_mat}()},
+\code{\link{get_aic}()},
+\code{\link{km_nan}()},
+\code{\link{make_clust_col_name}()},
+\code{\link{make_clust_col}()},
+\code{\link{make_rand_cent}()}
+
+Other centroid_functions: 
+\code{\link{calc_clust_cent}()},
+\code{\link{calc_member_dist_cent}()}
 }
 \concept{centroid_functions}
 \concept{clustering_components}
+\concept{k_means functions}

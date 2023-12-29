@@ -18,6 +18,7 @@
 #'   cluster.
 #'   If the cluster is not empty then the new centres are found using
 #'     the means of the snps in the cluster.
+#'   If the bin_p_clust then weight the average by the p-values
 #'   If the new cluster centroid is within "clust_threshold" of the previous
 #'     centroid then "thresh_check"=TRUE.
 #'   If thresh_check then create a dataframe "out_centroid_df" with the
@@ -29,6 +30,7 @@
 #'
 #' @family clustering_components
 #' @family centroid_functions
+#' @family k_means functions
 #'
 #' @export
 check_clust_cent <- function(c_num, clustnum_df, b_mat, centroids_df, p_mat,

@@ -22,7 +22,7 @@
 #' @return snp_clust_df
 #'
 #' @family distance_functions
-#' @family centroid functions
+#' @family centroid_functions
 #' @family clustering_components
 #'
 #' @export
