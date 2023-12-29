@@ -16,6 +16,8 @@
 #' @param save_suffix String to add to plot save name. default \: ""
 #'
 #' @export
+#'
+#' @family plotting_functions
 plot_clust_scatter_test <- function(cluster_df, b_mat,
   iter_traits, c1, c2,
   num_axis = 2,

@@ -40,3 +40,4 @@ Colour by cluster number.
 The x and y axis are the assocation with the principal component
 The width and height of the errorbars are given by the standard error.
 }
+\concept{plotting_functions}
