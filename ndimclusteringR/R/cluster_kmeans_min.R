@@ -1,7 +1,8 @@
 #' Min-aic clustering
 #'
-#' @description Function to run iterations of k-means clustering then
-#' taking the clusters which minimise the aic.
+#' @description Run iterations of k-means clustering using [cluster_kmeans]
+#' then take the clusters which minimise the aic.
+#' AIC calculated using [get_aic].
 #'
 #' @param data_matrices List of the matrices of data.
 #'  Conatins the\:
@@ -25,8 +26,19 @@
 #' @param threshold The threshold for distance between cluster centres
 #'   for clusters to be considered converged.
 #'
+#' @details
+#'   clust_out = [clusters, clust_dist, centres].
+#'   clust_out$clusters is cluster_df.
+#'   The clust_dist dataframe has columns corresponding to the clusters,
+#'     the rows are the datapoints and each value is the distance from that
+#'     point to the cluster centre.
+#'   The centres dataframe has columns corresponding to the axis and the rows
+#'     corresponding to the clusters. Each row is the co-ordinate of the cluster
+#'     centroid.
+#'
 #' @export
 #' @family cluster_functions
+#' @family k_means
 cluster_kmeans_min <- function(data_matrices,
   nclust = 10,
   max_dist = 10.0,
@@ -34,25 +46,29 @@ cluster_kmeans_min <- function(data_matrices,
   bin_p_clust = TRUE,
   threshold = 1e-5
 ) {
-  print("Function is not yet built and will instead run a standard k-means")
+  # Run kmeans clustering for clusters 1 to nclust
   clust_out_list <- lapply(1:nclust,
     cluster_kmeans,
     data_matrices = data_matrices,
-    nclust = nclust,
     max_dist = max_dist,
     how_cents = how_cents,
     bin_p_clust = bin_p_clust,
     threshold = threshold
   )
+  # Get the AIC for each cluster set
   aicdf_list <- lapply(clust_out_list,
     get_aic
   )
+  # Combine all aic results into one dataframe
   ic_df <- Reduce(rbind, aicdf_list)
+  # Find which cluster set minimises the AIC
   min_cents <- ic_df$ncents[which.min(ic_df$aic)]
+  # Get the dataframes for the minimising cluster set.
   cluster_df <- clust_out_list[[min_cents]]$clusters
   centroids_df <- clust_out_list[[min_cents]]$centres
   clust_dist_df <- clust_out_list[[min_cents]]$clust_dist
-  clust_out <- list("clusters" =cluster_df,
+  # Set the resulting dataframes to the output.
+  clust_out <- list("clusters" = cluster_df,
                     "clust_dist" = clust_dist_df,
                     "centres" = centroids_df)
   return(clust_out)

@@ -42,12 +42,31 @@ probability if used to weight the cluster scores.}
 for clusters to be considered converged.}
 }
 \description{
-Function to run iterations of k-means clustering then
-taking the clusters which minimise the aic.
+Run iterations of k-means clustering using [cluster_kmeans]
+then take the clusters which minimise the aic.
+AIC calculated using [get_aic].
+}
+\details{
+clust_out = [clusters, clust_dist, centres].
+  clust_out$clusters is cluster_df.
+  The clust_dist dataframe has columns corresponding to the clusters,
+    the rows are the datapoints and each value is the distance from that
+    point to the cluster centre.
+  The centres dataframe has columns corresponding to the axis and the rows
+    corresponding to the clusters. Each row is the co-ordinate of the cluster
+    centroid.
 }
 \seealso{
 Other cluster_functions: 
+\code{\link{cluster_dbscan}()},
 \code{\link{cluster_kmeans}()},
-\code{\link{get_aic}()}
+\code{\link{get_aic}()},
+\code{\link{km_nan}()}
+
+Other k_means: 
+\code{\link{cluster_kmeans}()},
+\code{\link{km_nan}()},
+\code{\link{make_rand_cent}()}
 }
 \concept{cluster_functions}
+\concept{k_means}

@@ -45,21 +45,35 @@ for clusters to be considered converged.}
 clusters_df
 }
 \description{
-If space_typ == "angle" then data is converted to angles.
-  for i=1:(nr+1)
-     The points are clustered using [km_nan] and i clusters
-     find the aic for each cluster using [find_ic].
-  The set of clusters which minimises the aic is chosen.
-  The "clusters_df" dataframe of the cluster membership with columns\:
+1. Data is cropped to the complete cases.
+2. The points are clustered using a k-means clustering [km_nan].
+3. The data removed in the crop is assigned to the closest cluster.
+4. The "clusters_df" dataframe of the cluster membership with columns\:
     * "clust_num" the number of clusters
     * "clust_dist" the distance from the snp to the cluster centre
       (or distance between angles)
     * "clust_prob" probability the snp is in the cluster. Calculated
       using [calc_clust_prob].
+  clust_out = [clusters, clust_dist, centres].
+  clust_out$clusters is cluster_df.
+  The clust_dist dataframe has columns corresponding to the clusters,
+    the rows are the datapoints and each value is the distance from that
+    point to the cluster centre.
+  The centres dataframe has columns corresponding to the axis and the rows
+    corresponding to the clusters. Each row is the co-ordinate of the cluster
+    centroid.
 }
 \seealso{
 Other cluster_functions: 
+\code{\link{cluster_dbscan}()},
 \code{\link{cluster_kmeans_min}()},
-\code{\link{get_aic}()}
+\code{\link{get_aic}()},
+\code{\link{km_nan}()}
+
+Other k_means: 
+\code{\link{cluster_kmeans_min}()},
+\code{\link{km_nan}()},
+\code{\link{make_rand_cent}()}
 }
 \concept{cluster_functions}
+\concept{k_means}

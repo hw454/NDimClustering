@@ -23,21 +23,28 @@
 #'   for clusters to be considered converged.
 #'
 #' @description
-#'   If space_typ == "angle" then data is converted to angles.
-#'   for i=1:(nr+1)
-#'      The points are clustered using [km_nan] and i clusters
-#'      find the aic for each cluster using [find_ic].
-#'   The set of clusters which minimises the aic is chosen.
-#'   The "clusters_df" dataframe of the cluster membership with columns\:
+#' 1. Data is cropped to the complete cases.
+#' 2. The points are clustered using a k-means clustering [km_nan].
+#' 3. The data removed in the crop is assigned to the closest cluster.
+#' 4. The "clusters_df" dataframe of the cluster membership with columns\:
 #'     * "clust_num" the number of clusters
 #'     * "clust_dist" the distance from the snp to the cluster centre
 #'       (or distance between angles)
 #'     * "clust_prob" probability the snp is in the cluster. Calculated
 #'       using [calc_clust_prob].
+#'   clust_out = [clusters, clust_dist, centres].
+#'   clust_out$clusters is cluster_df.
+#'   The clust_dist dataframe has columns corresponding to the clusters,
+#'     the rows are the datapoints and each value is the distance from that
+#'     point to the cluster centre.
+#'   The centres dataframe has columns corresponding to the axis and the rows
+#'     corresponding to the clusters. Each row is the co-ordinate of the cluster
+#'     centroid.
 #'
 #' @return clusters_df
 #'
 #' @family cluster_functions
+#' @family k_means
 #'
 #' @export
 cluster_kmeans <- function(data_matrices,
@@ -55,8 +62,6 @@ cluster_kmeans <- function(data_matrices,
   # Crop the data to the complete cases
   crop_se <- se_mat[stats::complete.cases(se_mat), ]
   crop_snp_list <- rownames(crop_se)
-
-  # Crop the data to focus on the snps with the lowest standard error
   b_mat_crop <- b_mat[crop_snp_list, ]
   p_mat_crop <- p_mat[crop_snp_list, ]
 
@@ -81,13 +86,16 @@ cluster_kmeans <- function(data_matrices,
   f2 <- function(x) {
     x$clust_dist
   }
+  # Get the cluster assignments
   snp_cluster_list <- lapply(nan_snp_list, f1)
+  # Get the cluster distances
   snp_c_dist_list <- lapply(nan_snp_list, f2)
+  # Convert the lists into dataframes
   nan_cluster_df <- Reduce(rbind, snp_cluster_list)
   nan_clust_dist_df <- Reduce(rbind, snp_c_dist_list)
-  if (bin_p_clust) {
-    nan_cluster_df$clust_prob <- calc_clust_prob(nan_cluster_df$clust_dist)
-  }
+  # Calculate the probability of being in each cluster.
+  nan_cluster_df$clust_prob <- calc_clust_prob(nan_cluster_df$clust_dist)
+  # Combine the kmeans cluster assignment with the additional clusters
   clust_out$clusters <- rbind(clust_out$clusters, nan_cluster_df)
   clust_out$clust_dist <- rbind(clust_out$clust_dist, nan_clust_dist_df)
   # Add number of axis to the dataframe to combine outputs from iterative case.
@@ -98,7 +106,7 @@ cluster_kmeans <- function(data_matrices,
   clust_out$clusters["ncents"] <- nclust
   clust_out$clust_dist["ncents"] <- nclust
   clust_out$centres["ncents"] <- nclust
-  # Convert row names to columns to stacking later results
+  # Convert row names to columns for stacking later results
   clust_out$clusters <- tibble::rownames_to_column(clust_out$clusters,
     var = "snp_id"
   )
