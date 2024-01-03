@@ -4,7 +4,7 @@
 \alias{cluster_dbscan}
 \title{Cluster the data using kmeans then minimising aic.}
 \usage{
-cluster_dbscan(data_matrices, nclust = 10, eps = 0.4)
+cluster_dbscan(data_matrices, nclust = 10, eps = 0.4, bin_p_clust = FALSE)
 }
 \arguments{
 \item{data_matrices}{List of the matrices of data.
@@ -21,7 +21,9 @@ Conatins the\:
 
 \item{nclust}{The maximum number of clusters to consider. default\:10}
 
-\item{eps}{The density deining a cluster}
+\item{eps}{The density deining a cluster. default \: 0.4}
+
+\item{bin_p_clust}{Should the cluster centroid be weighted by p-values. default \: FALSE}
 }
 \value{
 clusters_df

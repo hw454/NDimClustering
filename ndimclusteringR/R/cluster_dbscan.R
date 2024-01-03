@@ -12,7 +12,8 @@
 #'    * "transform" matrix used for the pca transformation
 #'    * Rows correspond to snps, columns to traits
 #' @param nclust The maximum number of clusters to consider. default\:10
-#' @param eps The density deining a cluster
+#' @param eps The density deining a cluster. default \: 0.4
+#' @param bin_p_clust Should the cluster centroid be weighted by p-values. default \: FALSE
 #'
 #' @description
 #'   If space_typ == "angle" then data is converted to angles.
@@ -42,7 +43,8 @@
 #' @export
 cluster_dbscan <- function(data_matrices,
   nclust = 10,
-  eps = 0.4
+  eps = 0.4,
+  bin_p_clust = FALSE
 ) {
   # Using the association scores for each SNP accross traits cluster the traits
   # using dbscan.
@@ -58,47 +60,70 @@ cluster_dbscan <- function(data_matrices,
   # Cluster the data
   clust_dbscan <- dbscan::dbscan(b_mat_crop, eps = eps)
   print(clust_dbscan)
-  cluster_df <- data.frame(row.names = rownames(b_mat_crop),
+  cluster_df <- data.frame(row.names = crop_snp_list,
     clust_num = clust_dbscan$cluster
   )
   print(cluster_df)
-  # Calculate Cluster distances
-  # Calculate Cluster centres
-  clust_out <- list("clusters" = cluster_df)
+  # Calculate cluster centres
+  centroids_df <- calc_clust_cent(cluster_df,
+    b_mat = b_mat_crop,
+    p_mat = p_mat_crop,
+    bin_p_clust = bin_p_clust
+  )
+  # Calculate cluster distances
+  clust_dist_df <- calc_all_clust_dist(centroids_df,
+    b_mat = b_mat_crop
+  )
+  print(clust_dist_df)
+  # Add member distance to clust dataframe
+  mem_dist_list <- calc_member_dist_cent(crop_snp_list,
+    b_mat = b_mat_crop,
+    cluster_df = cluster_df,
+    centroids_df = centroids_df
+  )
+  mem_dist_df <- Reduce(rbind, mem_dist_df)
+  print(mem_dist_df)
+  cluster_df <- cbind(cluster_df, mem_dist_df)
+  print(cluster_df)
+  cluster_df$clust_prob <- calc_clust_prob(cluster_df)
+  # Assign all cluster info to clust_out
+  clust_out <- list("clusters" = cluster_df,
+    "centres" = centroids_df,
+    "clust_dist" = clust_dist_df
+  )
   # Cluster number identification for each observation
-  #nan_snp_list <- lapply(setdiff(rownames(b_mat), crop_snp_list),
-  #                       find_closest_clust_snp,
-  #                       b_mat = b_mat,
-  #                       cluster_df = clust_out$clusters,
-  #                       centroids_df = clust_out$centres)
-  #f1 <- function(x) {
-  #  x$clusters
-  #}
-  #f2 <- function(x) {
-  #  x$clust_dist
-  #}
-  #snp_cluster_list <- lapply(nan_snp_list, f1)
-  #snp_c_dist_list <- lapply(nan_snp_list, f2)
-  #nan_cluster_df <- Reduce(rbind, snp_cluster_list)
-  #nan_clust_dist_df <- Reduce(rbind, snp_c_dist_list)
-  #nan_cluster_df$clust_prob <- calc_clust_prob(nan_cluster_df$clust_dist)
-  #clust_out$clusters <- rbind(clust_out$clusters, nan_cluster_df)
-  #clust_out$clust_dist <- rbind(clust_out$clust_dist, nan_clust_dist_df)
+  nan_snp_list <- lapply(setdiff(rownames(b_mat), crop_snp_list),
+                         find_closest_clust_snp,
+                         b_mat = b_mat,
+                         cluster_df = clust_out$clusters,
+                         centroids_df = clust_out$centres)
+  f1 <- function(x) {
+    x$clusters
+  }
+  f2 <- function(x) {
+    x$clust_dist
+  }
+  snp_cluster_list <- lapply(nan_snp_list, f1)
+  snp_c_dist_list <- lapply(nan_snp_list, f2)
+  nan_cluster_df <- Reduce(rbind, snp_cluster_list)
+  nan_clust_dist_df <- Reduce(rbind, snp_c_dist_list)
+  nan_cluster_df$clust_prob <- calc_clust_prob(nan_cluster_df$clust_dist)
+  clust_out$clusters <- rbind(clust_out$clusters, nan_cluster_df)
+  clust_out$clust_dist <- rbind(clust_out$clust_dist, nan_clust_dist_df)
   # Add number of axis to the dataframe to combine outputs from iterative case.
-  #num_axis <- ncol(b_mat_crop)
-  #clust_out$clusters["num_axis"] <- num_axis
-  #clust_out$clust_dist["num_axis"] <- num_axis
-  #clust_out$centres["num_axis"] <- num_axis
-  #clust_out$clusters["ncents"] <- nclust
-  #clust_out$clust_dist["ncents"] <- nclust
-  #clust_out$centres["ncents"] <- nclust
+  num_axis <- ncol(b_mat_crop)
+  clust_out$clusters["num_axis"] <- num_axis
+  clust_out$clust_dist["num_axis"] <- num_axis
+  clust_out$centres["num_axis"] <- num_axis
+  clust_out$clusters["ncents"] <- nclust
+  clust_out$clust_dist["ncents"] <- nclust
+  clust_out$centres["ncents"] <- nclust
   # Convert row names to columns to stacking later results
-  #clust_out$clusters <- tibble::rownames_to_column(clust_out$clusters,
-  #  var = "snp_id"
-  #)
-  #clust_out$clust_dist <- tibble::rownames_to_column(clust_out$clust_dist,
-  #  var = "snp_id"
-  #)
-  # ADDFEATURE - Assign junk clusters.
+  clust_out$clusters <- tibble::rownames_to_column(clust_out$clusters,
+    var = "snp_id"
+  )
+  clust_out$clust_dist <- tibble::rownames_to_column(clust_out$clust_dist,
+    var = "snp_id"
+  )
   return(clust_out)
 }
