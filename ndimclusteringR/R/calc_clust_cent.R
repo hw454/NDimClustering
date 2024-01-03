@@ -31,22 +31,18 @@ calc_clust_cent <- function(clustnum_df, b_mat, p_mat, bin_p_clust = TRUE
       cent_df <- data.frame(col.names = colnames(b_mat))
     } else if (n_terms == 1) {
       cent_df <- as.data.frame(t(b_mat[clust_snps, ]))
-      print(n_terms)
-      print(cent_df)
       rownames(cent_df) <- c_num
     } else {
       b_clust <- b_mat[clust_snps, ]
       if (bin_p_clust) {
         p_clust <- p_mat[clust_snps, ]
         tot <- colSums(p_clust)
-        scores <- b_clust %*% p_clust
-        cent <- colSums(scores) %/% tot
+        scores <- b_clust * p_clust
+        cent <- colSums(scores) / tot
       } else {
         cent <- colMeans(b_clust)
       }
-      print(n_terms)
       cent_df <- as.data.frame(t(cent))
-      print(cent_df)
       rownames(cent_df) <- c_num
     }
     return(cent_df)
