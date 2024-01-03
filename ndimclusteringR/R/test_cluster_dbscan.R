@@ -8,8 +8,16 @@
 #' @family tests
 test_cluster_dbscan <- function() {
   dummy_traits <- c("T1", "T2", "T3", "T4", "T5", "T6")
-  dummy_snps <- c("rs35662", "rs301884", "rs69696",
-                  "rs4096", "rs646464", "rs1234")
+  snp_id <- "rs35662"
+  dummy_snps <- c(snp_id, "rs301884", "rs69696",
+                  "rs4096", "rs646464", "rs1234",
+                  "rs203052", "rs646416", "rs98765",
+                  "rs124532", "rs161616", "rs001122",
+                  "rs111144", "rs222224", "rs01234",
+                  "rs409664", "rs323223", "rs998877",
+                  "rs309664", "rs453223", "rs668877",
+                  "rs209664", "rs673223", "rs558877",
+                  "rs109664", "rs893223", "rs448877")
   num_axis <- length(dummy_traits)
   nsnps <- length(dummy_snps)
   b_mat <- matrix(stats::runif(nsnps * num_axis, 0, 10), nrow = nsnps)
@@ -59,6 +67,8 @@ test_cluster_dbscan <- function() {
   expec_ncols <- length(expec_clusterdf_cols)
   expec_clust_dist_ncols <- nclust + extra_label_cols
   expec_cents_ncols <- nang + 2
+  print("...Test with complete data")
+  print("...Test with incomplete data")
   # testit::assert("Centres are wrong dimension",
   #   ncol(clust_out$centres) == expec_cents_ncols
   # )

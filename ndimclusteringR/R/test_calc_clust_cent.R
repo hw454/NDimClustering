@@ -12,7 +12,14 @@ test_calc_clust_cent <- function(){
   snp_id <- "rs35662"
   dummy_traits <- c("T1", "T2", "T3")
   dummy_snps <- c(snp_id, "rs301884", "rs69696",
-                  "rs4096", "rs646464", "rs1234")
+                  "rs4096", "rs646464", "rs1234",
+                  "rs203052", "rs646416", "rs98765",
+                  "rs124532", "rs161616", "rs001122",
+                  "rs111144", "rs222224", "rs01234",
+                  "rs409664", "rs323223", "rs998877",
+                  "rs309664", "rs453223", "rs668877",
+                  "rs209664", "rs673223", "rs558877",
+                  "rs109664", "rs893223", "rs448877")
   expec_cols <- c("clust_dist")
   num_axis <- length(dummy_traits)
   nsnps <- length(dummy_snps)
