@@ -13,6 +13,6 @@
 #' @export
 calc_clust_prob <- function(cluster_df) {
   d <- cluster_df$clust_dist
-  dist <- 1.0 / (1.0 + d)
-  return(dist)
+  prob <- 1.0 / (1.0 + d)
+  return(prob)
 }
