@@ -11,7 +11,6 @@
 #'    * "pval" reformatted matrix of p-value data
 #'    * "transform" matrix used for the pca transformation
 #'    * Rows correspond to snps, columns to traits
-#' @param nclust The maximum number of clusters to consider. default\:10
 #' @param eps The density deining a cluster. default \: 0.4
 #' @param bin_p_clust Should the cluster centroid be weighted by p-values. default \: FALSE
 #'
@@ -42,7 +41,6 @@
 #'
 #' @export
 cluster_dbscan <- function(data_matrices,
-  nclust = 10,
   eps = 0.4,
   bin_p_clust = FALSE
 ) {
@@ -59,11 +57,11 @@ cluster_dbscan <- function(data_matrices,
 
   # Cluster the data
   clust_dbscan <- dbscan::dbscan(b_mat_crop, eps = eps)
-  print(clust_dbscan)
   cluster_df <- data.frame(row.names = crop_snp_list,
     clust_num = clust_dbscan$cluster
   )
-  print(cluster_df)
+  # Find the number of clusters identified
+  nclust <- length(unique(cluster_df$clust_num))
   # Calculate cluster centres
   centroids_df <- calc_clust_cent(cluster_df,
     b_mat = b_mat_crop,
@@ -74,17 +72,21 @@ cluster_dbscan <- function(data_matrices,
   clust_dist_df <- calc_all_clust_dist(centroids_df,
     b_mat = b_mat_crop
   )
-  print(clust_dist_df)
   # Add member distance to clust dataframe
-  mem_dist_list <- calc_member_dist_cent(crop_snp_list,
+  mem_dist_list <- lapply(crop_snp_list,
+    calc_member_dist_cent,
     b_mat = b_mat_crop,
     cluster_df = cluster_df,
     centroids_df = centroids_df
   )
-  mem_dist_df <- Reduce(rbind, mem_dist_df)
-  print(mem_dist_df)
-  cluster_df <- cbind(cluster_df, mem_dist_df)
-  print(cluster_df)
+  mem_dist_df <- Reduce(rbind, mem_dist_list)
+  cluster_df <- cbind(
+    rn = rownames(cluster_df),
+    cluster_df,
+    mem_dist_df,
+    row.names = NULL
+  )
+  cluster_df <- tibble::column_to_rownames(cluster_df, var = "rn")
   cluster_df$clust_prob <- calc_clust_prob(cluster_df)
   # Assign all cluster info to clust_out
   clust_out <- list("clusters" = cluster_df,
@@ -107,7 +109,7 @@ cluster_dbscan <- function(data_matrices,
   snp_c_dist_list <- lapply(nan_snp_list, f2)
   nan_cluster_df <- Reduce(rbind, snp_cluster_list)
   nan_clust_dist_df <- Reduce(rbind, snp_c_dist_list)
-  nan_cluster_df$clust_prob <- calc_clust_prob(nan_cluster_df$clust_dist)
+  nan_cluster_df$clust_prob <- calc_clust_prob(nan_cluster_df)
   clust_out$clusters <- rbind(clust_out$clusters, nan_cluster_df)
   clust_out$clust_dist <- rbind(clust_out$clust_dist, nan_clust_dist_df)
   # Add number of axis to the dataframe to combine outputs from iterative case.
