@@ -36,6 +36,7 @@ Calculate the distance between the point in "b_mat"
 }
 \seealso{
 Other distance_functions: 
+\code{\link{calc_all_clust_dist}()},
 \code{\link{find_closest_clust_snp}()}
 
 Other centroid_functions: 

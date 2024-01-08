@@ -4,7 +4,7 @@
 \alias{cluster_dbscan}
 \title{Cluster the data using kmeans then minimising aic.}
 \usage{
-cluster_dbscan(data_matrices, nclust = 10, eps = 0.4, bin_p_clust = FALSE)
+cluster_dbscan(data_matrices, eps = 0.4, bin_p_clust = FALSE)
 }
 \arguments{
 \item{data_matrices}{List of the matrices of data.
@@ -18,8 +18,6 @@ Conatins the\:
   * "pval" reformatted matrix of p-value data
   * "transform" matrix used for the pca transformation
   * Rows correspond to snps, columns to traits}
-
-\item{nclust}{The maximum number of clusters to consider. default\:10}
 
 \item{eps}{The density deining a cluster. default \: 0.4}
 

@@ -20,6 +20,7 @@ Contains\:
 * `bin_p_clust`\: 1 or 0 use p-vals in clustering
 * `bin_p_score`\: 1 or 0 use p-vals in score
 * `bin_d_score`\: 1 or 0 use cluster distance for cluster scoring
+* `point_eps` \: the density of points for density based methods. default \:0.4
 * `nan_rm`\: how to handle NaN values. If 1 remove and use pairwise.}
 
 \item{test}{Indicator for whether to run as a test or full program.

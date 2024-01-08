@@ -45,6 +45,7 @@ The dataframe "snp_clust_df"  has a row labelled by the "snp_id".
 }
 \seealso{
 Other distance_functions: 
+\code{\link{calc_all_clust_dist}()},
 \code{\link{calc_member_dist_cent}()}
 }
 \concept{distance_functions}
