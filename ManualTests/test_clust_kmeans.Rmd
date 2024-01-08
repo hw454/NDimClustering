@@ -25,24 +25,30 @@ The second is principal component analysis, which identifies to the strongest tr
 In this testing process we will look at different combinations of these.
 
 For the test cases I have created synthetics which intentionally has pathways in.
-
-| Test No.      | No. of pathways | [PCA method](#pca) | [Angles used (Y or N)](#angles) | [Weight cluster contribution with p-values.](#cluster_p_weight) | Clustering method               | [Centroid assignment](#how_cents) |
+### Test Case Table
+| Test No.      | No. of pathways | [PCA method](#pca) | [Angles used (Y or N)](#angles) | [Weight cluster contribution with p-values.](#cluster_p_weight) | Clustering method               | [Centroid assignment](#how_cents) | [Density](#density) |
 |-----------|-----------|-----------|-----------|-----------|-----------|-----------|
-| [1](#test1)   | 2               | none               | N                               | N                                                               | standard k-means                | random                            |
-| [2](#test2)   | **4**           | none               | N                               | N                                                               | standard k-means                | random                            |
-| [3](#test3)   | 2               | none               | **Y**                           | N                                                               | standard k-means                | random                            |
-| [4](#test4)   | **4**           | none               | Y                               | N                                                               | standard k-means                | random                            |
-| [5](#test5)   | 4               | none               | N                               | N                                                               | standard k-means                | **random from points**            |
-| [6](#test6)   | 4               | none               | Y                               | N                                                               | standard k-means                | **random from points**            |
-| [7](#test7)   | 4               | **prcomp**         | N                               | N                                                               | standard k-means                | random from points                |
-| [8](#test8)   | 4               | prcomp             | **Y**                           | N                                                               | standard k-means                | random from points                |
-| [9](#test9)   | 4               | prcomp             | Y                               | **Y**                                                           | standard k-means                | random from points                |
-| [10](#test10) | 4               | **none**           | **N**                           | **N**                                                           | [**min-aic k-means**](#min_aic) | random from points                |
-| [11](#test11) | 4               | none               | Y                               | N                                                               | **min-aic k-means**             | random from points                |
-| [12](#test12) | 4               | none               | Y                               | **Y**                                                           | min-aic k-means                 | random from points                |
-| [13](#test13) | 4               | **prcomp**         | **N**                           | **N**                                                           | min-aic k-means                 | random from points                |
-| [14](#test14) | 4               | prcomp             | **Y**                           | N                                                               | min-aic k-means                 | random from points                |
-| [15](#test15) | 4               | prcomp             | Y                               | **Y**                                                           | min-aic k-means                 | random from points                |
+| [1](#test1)   | 2               | none               | N                               | N                                                               | standard k-means                | random                            | NA |
+| [2](#test2)   | **4**           | none               | N                               | N                                                               | standard k-means                | random                            | NA |
+| [3](#test3)   | 2               | none               | **Y**                           | N                                                               | standard k-means                | random                            | NA |
+| [4](#test4)   | **4**           | none               | Y                               | N                                                               | standard k-means                | random                            | NA |
+| [5](#test5)   | 4               | none               | N                               | N                                                               | standard k-means                | **random from points**            | NA |
+| [6](#test6)   | 4               | none               | Y                               | N                                                               | standard k-means                | **random from points**            | NA |
+| [7](#test7)   | 4               | **prcomp**         | N                               | N                                                               | standard k-means                | random from points                | NA |
+| [8](#test8)   | 4               | prcomp             | **Y**                           | N                                                               | standard k-means                | random from points                | NA |
+| [9](#test9)   | 4               | prcomp             | Y                               | **Y**                                                           | standard k-means                | random from points                | NA |
+| [10](#test10) | 4               | **none**           | **N**                           | **N**                                                           | [**min-aic k-means**](#min_aic) | random from points                | NA |
+| [11](#test11) | 4               | none               | Y                               | N                                                               | **min-aic k-means**             | random from points                | NA |
+| [12](#test12) | 4               | none               | Y                               | **Y**                                                           | min-aic k-means                 | random from points                | NA |
+| [13](#test13) | 4               | **prcomp**         | **N**                           | **N**                                                           | min-aic k-means                 | random from points                | NA |
+| [14](#test14) | 4               | prcomp             | **Y**                           | N                                                               | min-aic k-means                 | random from points                | NA |
+| [15](#test15) | 4               | prcomp             | Y                               | **Y**                                                           | min-aic k-means                 | random from points                | NA |
+| [10](#test16) | 4               | **none**           | **N**                           | **N**                                                           | [**dbscan**](#dbscan) | centroids not assigned in density based methods   | **0.4**|
+| [11](#test17) | 4               | none               | Y                               | N                                                               | **dbscan**             | centroids not assigned in density based methods | 0.4|
+| [13](#test18) | 4               | **prcomp**         | **N**                           | **N**                                                           | dbscan                 | centroids not assigned in density based methods  | 0.4|
+| [14](#test19) | 4               | prcomp             | **Y**                           | N                                                               | dbscan                 | centroids not assigned in density based methods  | 0.4|
+| [15](#test20) | 4               | prcomp             | Y                               | N                                                           | dbscan                 | centroids not assigned in density based methods     | 0.2|
+| [15](#test20) | 4               | prcomp             | Y                               | N                                                           | dbscan                 | centroids not assigned in density based methods     | 0.8|
 
 # Instructions for using the package.
 
@@ -51,7 +57,8 @@ For the test cases I have created synthetics which intentionally has pathways in
 Load the "ndimclusteringR" package
 
 ```{r include=FALSE}
-devtools::install("../ndimclusteringR/")
+devtools::update_packages(upgrade= "always")
+devtools::install("../ndimclusteringR/", dependencies = TRUE, upgrade = "always")
 library("ndimclusteringR")
 ```
 
@@ -158,6 +165,7 @@ iter_traits <- list(
     bin_angles = bin_angles,
     bin_p_clust = bin_p_clust,
     bin_p_score = 1,
+    point_eps = NA,
     how_cents = "rand"
   )
 res_dir <- make_path_label_str(iter_traits)
@@ -197,6 +205,7 @@ iter_traits <- list(
     bin_angles = bin_angles,
     bin_p_clust = bin_p_clust,
     bin_p_score = 1,
+    point_eps = NA,
     how_cents = "rand"
   )
 res_dir <- make_path_label_str(iter_traits)
@@ -246,6 +255,7 @@ iter_traits <- list(
     bin_angles = bin_angles,
     bin_p_clust = bin_p_clust,
     bin_p_score = 1,
+    point_eps = NA,
     how_cents = "rand"
   )
 res_dir <- make_path_label_str(iter_traits)
@@ -284,6 +294,7 @@ iter_traits <- list(
     bin_angles = bin_angles,
     bin_p_clust = bin_p_clust,
     bin_p_score = 1,
+    point_eps = NA,
     how_cents = "rand"
   )
 res_dir <- make_path_label_str(iter_traits)
@@ -332,6 +343,7 @@ iter_traits <- list(
     bin_angles = bin_angles,
     bin_p_clust = bin_p_clust,
     bin_p_score = 1,
+    point_eps = NA,
     how_cents = how_cents
   )
 res_dir <- make_path_label_str(iter_traits)
@@ -372,6 +384,7 @@ iter_traits <- list(
     bin_angles = bin_angles,
     bin_p_clust = bin_p_clust,
     bin_p_score = 1,
+    point_eps = NA,
     how_cents = how_cents
   )
 res_dir <- make_path_label_str(iter_traits)
@@ -434,7 +447,8 @@ iter_traits <- list(
   n_pcs = 3,     
   bin_angles = bin_angles,     
   bin_p_clust = bin_p_clust,     
-  bin_p_score = 1,     
+  bin_p_score = 1,
+  point_eps = NA,
   how_cents = how_cents   ) 
 res_dir <- make_path_label_str(iter_traits) 
 iter_traits$res_dir <- res_dir 
@@ -474,7 +488,8 @@ iter_traits <- list(
   n_pcs = 3,        
   bin_angles = bin_angles,        
   bin_p_clust = bin_p_clust,        
-  bin_p_score = 1,        
+  bin_p_score = 1,
+  point_eps = NA,
   how_cents = how_cents   )  
 res_dir <- make_path_label_str(iter_traits)  
 iter_traits$res_dir <- res_dir  
@@ -525,6 +540,7 @@ iter_traits <- list(
   bin_angles = bin_angles,
   bin_p_clust = bin_p_clust,
   bin_p_score = 1,
+  point_eps = NA,
   how_cents = how_cents   ) 
 res_dir <- make_path_label_str(iter_traits) 
 iter_traits$res_dir <- res_dir
@@ -600,6 +616,7 @@ iter_traits <- list(
   bin_angles = bin_angles,
   bin_p_clust = bin_p_clust,
   bin_p_score = 1,
+  point_eps = NA,
   how_cents = how_cents   ) 
 res_dir <- make_path_label_str(iter_traits) 
 iter_traits$res_dir <- res_dir
@@ -640,6 +657,7 @@ iter_traits <- list(
   bin_angles = bin_angles,
   bin_p_clust = bin_p_clust,
   bin_p_score = 1,
+  point_eps = NA,
   how_cents = how_cents   ) 
 res_dir <- make_path_label_str(iter_traits) 
 iter_traits$res_dir <- res_dir
@@ -680,6 +698,7 @@ iter_traits <- list(
   bin_angles = bin_angles,
   bin_p_clust = bin_p_clust,
   bin_p_score = 1,
+  point_eps = NA,
   how_cents = how_cents   ) 
 res_dir <- make_path_label_str(iter_traits) 
 iter_traits$res_dir <- res_dir
@@ -720,6 +739,7 @@ iter_traits <- list(
   bin_angles = bin_angles,
   bin_p_clust = bin_p_clust,
   bin_p_score = 1,
+  point_eps = NA,
   how_cents = how_cents   ) 
 res_dir <- make_path_label_str(iter_traits) 
 iter_traits$res_dir <- res_dir
@@ -767,6 +787,7 @@ iter_traits <- list(
   bin_angles = bin_angles,
   bin_p_clust = bin_p_clust,
   bin_p_score = 1,
+  point_eps = NA,
   how_cents = how_cents   ) 
 res_dir <- make_path_label_str(iter_traits) 
 iter_traits$res_dir <- res_dir
@@ -807,8 +828,241 @@ iter_traits <- list(
   bin_angles = bin_angles,
   bin_p_clust = bin_p_clust,
   bin_p_score = 1,
+  point_eps = NA,
   how_cents = how_cents   ) 
 res_dir <- make_path_label_str(iter_traits) 
 iter_traits$res_dir <- res_dir
-clustering_program(iter_aits)
+clustering_program(iter_traits)
 ```
+
+## DBSCAN {#dbscan}
+**dbscan** is a density based clustering method. Points are assigned to the cluster if there are within range of another point in the cluster. As a result the clusters can be different shapes and not necessarily balls.
+
+Dbscan does not require a predefined number of clusters, it instead takes in a set density for the points `point_eps`.
+
+We will repeat the tests we used for [min-aic](#minaic) changing the clustering method to dbscan, however we won't vary the centroid calculations as centroids aren't used in density clustering. 
+
+### Test 16 {#test16}
+Run the tests with:
+
+*   No PCA
+*   **dbscan clustering.**
+*   no angles calculated before clustering.
+*   number of pathways 4.
+*   Centroids not assigned in density based methods.
+
+```{r include=FALSE}
+pc_type <- "none"
+clust_typ <- "dbscan"
+bin_angles <- 0
+num_paths <- 4
+point_eps <- 0.4
+```
+
+```{r echo=FALSE}
+nc <- num_paths
+iter_traits <- list(
+  dname = paste0(data_dir, num_paths, "/"),
+  clust_type = clust_typ,
+  pca_type = pc_type,
+  nclust = nc,
+  n_pcs = 3,
+  bin_angles = bin_angles,
+  bin_p_clust = 1,
+  bin_p_score = 1,
+  point_eps = point_eps,
+  how_cents = NA ) 
+res_dir <- make_path_label_str(iter_traits) 
+iter_traits$res_dir <- res_dir
+clustering_program(iter_traits)
+```
+
+### Test 17 {#test17}
+Take the case from [test 16](#test16) and introduce the conversion to angles before clustering.
+
+Run the tests with:
+
+*   No PCA
+*   dbscan clustering.
+*   **Angles calculated before clustering.**
+*   number of pathways 4.
+*   Centroids not assigned in density based methods.
+
+```{r include=FALSE}
+pc_type <- "none"
+clust_typ <- "dbscan"
+bin_angles <- 1
+num_paths <- 4
+point_eps <- 0.4
+```
+
+```{r echo=FALSE}
+nc <- num_paths
+iter_traits <- list(
+  dname = paste0(data_dir, num_paths, "/"),
+  clust_type = clust_typ,
+  pca_type = pc_type,
+  nclust = nc,
+  n_pcs = 3,
+  bin_angles = bin_angles,
+  bin_p_clust = 1,
+  bin_p_score = 1,
+  point_eps = point_eps,
+  how_cents = NA ) 
+res_dir <- make_path_label_str(iter_traits) 
+iter_traits$res_dir <- res_dir
+clustering_program(iter_traits)
+```
+
+
+
+### Test 18 {#test18}
+Take the case from [test 16](#test16) and introduce the conversion to principal components before clustering. First we will do this without calculating the angles.
+
+Run the tests with:
+
+*   No PCA
+*   dbscan clustering.
+*   **Angles calculated before clustering.**
+*   number of pathways 4.
+*   Centroids not assigned in density based methods.
+
+```{r include=FALSE}
+pc_type <- "prcomp"
+clust_typ <- "dbscan"
+bin_angles <- 0
+num_paths <- 4
+point_eps <- 0.4
+```
+
+```{r echo=FALSE}
+nc <- num_paths
+iter_traits <- list(
+  dname = paste0(data_dir, num_paths, "/"),
+  clust_type = clust_typ,
+  pca_type = pc_type,
+  nclust = nc,
+  n_pcs = 3,
+  bin_angles = bin_angles,
+  bin_p_clust = 1,
+  bin_p_score = 1,
+  point_eps = point_eps,
+  how_cents = NA ) 
+res_dir <- make_path_label_str(iter_traits) 
+iter_traits$res_dir <- res_dir
+clustering_program(iter_traits)
+```
+### Test 19 {#test19}
+Now let's combine [test 17](#test17) and [test 18](#test18) and calculate the principal components and the angles before clustering.
+
+Run the tests with:
+
+*   **PCA calculated using prcomp**
+*   dbscan clustering.
+*   **Angles calculated before clustering.**
+*   number of pathways 4.
+*   Centroids not assigned in density based methods.
+
+```{r include=FALSE}
+pc_type <- "prcomp"
+clust_typ <- "dbscan"
+bin_angles <- 1
+num_paths <- 4
+point_eps <- 0.4
+```
+
+```{r echo=FALSE}
+nc <- num_paths
+iter_traits <- list(
+  dname = paste0(data_dir, num_paths, "/"),
+  clust_type = clust_typ,
+  pca_type = pc_type,
+  nclust = nc,
+  n_pcs = 3,
+  bin_angles = bin_angles,
+  bin_p_clust = 1,
+  bin_p_score = 1,
+  point_eps = point_eps,
+  how_cents = NA) 
+res_dir <- make_path_label_str(iter_traits) 
+iter_traits$res_dir <- res_dir
+clustering_program(iter_traits)
+```
+## Vary the density
+
+### Test 20 {#test20}
+Now let's investigate the density parameter to **dbscan**. Let's make it smaller and try `point_eps = 0.2`.
+
+Run the tests with:
+
+*   No PCA
+*   dbscan clustering.
+*   **Angles calculated before clustering.**
+*   number of pathways 4.
+*   Centroids not assigned in density based methods.
+
+```{r include=FALSE}
+pc_type <- "prcomp"
+clust_typ <- "dbscan"
+bin_angles <- 1
+num_paths <- 4
+point_eps <- 0.2
+```
+
+```{r echo=FALSE}
+nc <- num_paths
+iter_traits <- list(
+  dname = paste0(data_dir, num_paths, "/"),
+  clust_type = clust_typ,
+  pca_type = pc_type,
+  nclust = nc,
+  n_pcs = 3,
+  bin_angles = bin_angles,
+  bin_p_clust = 1,
+  bin_p_score = 1,
+  point_eps = point_eps,
+  how_cents = NA ) 
+res_dir <- make_path_label_str(iter_traits) 
+iter_traits$res_dir <- res_dir
+clustering_program(iter_traits)
+```
+
+### Test 21 {#test21}
+Let's test the density parameter again but this time increase to `point_eps = 0.8`
+
+Run the tests with:
+
+*   No PCA
+*   dbscan clustering.
+*   **Angles calculated before clustering.**
+*   number of pathways 4.
+*   Centroids not assigned in density based methods.
+
+```{r include=FALSE}
+pc_type <- "prcomp"
+clust_typ <- "dbscan"
+bin_angles <- 1
+num_paths <- 4
+point_eps <- 0.8
+```
+
+```{r echo=FALSE}
+nc <- num_paths
+iter_traits <- list(
+  dname = paste0(data_dir, num_paths, "/"),
+  clust_type = clust_typ,
+  pca_type = pc_type,
+  nclust = nc,
+  n_pcs = 3,
+  bin_angles = bin_angles,
+  bin_p_clust = 1,
+  bin_p_score = 1,
+  point_eps = point_eps,
+  how_cents = NA ) 
+res_dir <- make_path_label_str(iter_traits) 
+iter_traits$res_dir <- res_dir
+clustering_program(iter_traits)
+```
+| [14](#test19) | 4               | prcomp             | **Y**                           | N                                                               | dbscan                 | centroids not assigned in density based methods  | 0.4|
+| [15](#test20) | 4               | prcomp             | Y                               | N                                                           | dbscan                 | centroids not assigned in density based methods     | 0.2|
+| [15](#test20) | 4               | prcomp             | Y                               | N                                                           | dbscan                 | centroids not assigned in density based methods     | 0.8|
