@@ -10,7 +10,10 @@ test_convert_point_to_angle <- function() {
   nc <- length(dummy_traits)
   dummy_points_t1 <- Reduce(rbind, lapply(dummy_angles, cos))
   dummy_points_t2 <- Reduce(rbind, lapply(dummy_angles, sin))
-  dummy_points <- as.matrix(cbind(dummy_points_t1, dummy_points_t2))
+  dummy_points <- as.matrix(cbind(
+    dummy_points_t1,
+    dummy_points_t2
+  ))
   unit_mat <- diag(nc)
   expec_nang <- ncol(dummy_points) - 1
   ang <- convert_point_to_angle(col = 1,

@@ -12,6 +12,7 @@
 #' @export
 crop_mat_colnames <- function(mat, num_rows, col_names) {
   mat_out <- mat[1:num_rows,
-                 which(colnames(mat) %in% col_names)]
+    which(colnames(mat) %in% col_names)
+  ]
   return(mat_out)
 }
