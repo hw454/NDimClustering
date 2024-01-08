@@ -24,12 +24,17 @@ calc_all_clust_dist <- function(b_mat, centroids_df
     snp_clust_dist_df <- data.frame(
       row.names = snp_id
     )
-    p_cols <- lapply(seq_len(nrow(centroids_df)),
+    p_cols <- lapply(rownames(centroids_df),
       make_clust_col,
-      rows = row.names(snp_clust_dist_df)
+      rows = rownames(snp_clust_dist_df)
     )
     np_df <- Reduce(cbind, p_cols)
-    snp_clust_dist_df <- cbind(snp_clust_dist_df, np_df)
+    snp_clust_dist_df <- cbind(
+      rn = rownames(snp_clust_dist_df),
+      snp_clust_dist_df,
+      np_df,
+      row.names = NULL
+    )
     snp_score <- b_mat[snp_id, ]
     # Find the distance between the snp and all clusters. Store in
     # cluster distance dataframe.
