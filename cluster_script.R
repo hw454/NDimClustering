@@ -23,10 +23,11 @@ for (i in 0:3){
     bin_p_score = 1,
     bin_d_score = 1,
     nan_rm = 1,
+    point_eps = 0.4,
     how_cents = "points"
   )
   res_dir1 <- paste0(res_dir0, "paths", i)
-  if (!file.exists(res_dir1)){
+  if (!file.exists(res_dir1)) {
     dir.create(res_dir1)
   }
   res_dir <- paste0(res_dir1, "/", make_path_label_str(iter_traits))
