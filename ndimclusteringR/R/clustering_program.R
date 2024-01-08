@@ -13,6 +13,7 @@
 #'   * `bin_p_clust`\: 1 or 0 use p-vals in clustering
 #'   * `bin_p_score`\: 1 or 0 use p-vals in score
 #'   * `bin_d_score`\: 1 or 0 use cluster distance for cluster scoring
+#'   * `point_eps` \: the density of points for density based methods. default \:0.4
 #'   * `nan_rm`\: how to handle NaN values. If 1 remove and use pairwise.
 #' @param test Indicator for whether to run as a test or full program.
 #'  default \: 1 (test case)
@@ -33,17 +34,25 @@ clustering_program <- function(iter_traits, test = 0) {
   # Cluster the data
   # - `basic`: kmeans clustering
   # - `min`: minimise aic
-  if (iter_traits$clust_type == "basic") {
+  if (grepl("basic", iter_traits$clust_type,
+            ignore.case = TRUE)) {
     clust_out <- cluster_kmeans(data_matrices,
       nclust = iter_traits$nclust,
       how_cents = iter_traits$how_cents,
       bin_p_clust = iter_traits$bin_p_clust
     )
-  } else if (iter_traits$clust_type == "min") {
+  } else if (grepl("min", iter_traits$clust_type,
+                   ignore.case = TRUE)) {
     clust_out <- cluster_kmeans_min(data_matrices,
       nclust = iter_traits$nclust,
       how_cents = iter_traits$how_cents,
       bin_p_clust = iter_traits$bin_p_clust
+    )
+  } else if (grepl("dbscan", iter_traits$clust_type,
+                   ignore.case = TRUE)) {
+    clust_out <- cluster_dbscan(data_matrices,
+      eps = iter_traits$point_eps,
+      bin_p_clust = FALSE
     )
   }
   num_axis <- ncol(data_matrices$beta_pc)
