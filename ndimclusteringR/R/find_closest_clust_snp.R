@@ -41,11 +41,20 @@ find_closest_clust_snp <- function(snp_id, b_mat, cluster_df, centroids_df,
   snp_clust_dist_df <- data.frame(
     row.names = snp_id
   )
-  p_cols <- lapply(seq_len(nrow(centroids_df)),
+  p_cols <- lapply(rownames(centroids_df),
                    make_clust_col,
                    rows = row.names(snp_clust_dist_df))
   np_df <- Reduce(cbind, p_cols)
-  snp_clust_dist_df <- cbind(snp_clust_dist_df, np_df)
+  snp_clust_dist_df <- cbind(
+    rn = rownames(snp_clust_dist_df),
+    snp_clust_dist_df,
+    np_df,
+    row.names = NULL
+  )
+  snp_clust_dist_df <- tibble::column_to_rownames(
+    snp_clust_dist_df,
+    var = "rn"
+  )
   snp_score <- b_mat[snp_id, ]
   # Initialise distance and cluster number
   if (!(snp_id %in% row.names(cluster_df))) {

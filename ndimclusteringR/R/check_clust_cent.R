@@ -75,9 +75,20 @@ check_clust_cent <- function(c_num, clustnum_df, b_mat, centroids_df, p_mat,
     thresh_check = (centroidchange < clust_threshold)
   )
   if (check_df[c_num, "thresh_check"]) {
-    out_centroid_df <- cbind(check_df, centroids_df)
+    out_centroid_df <- cbind(
+      rn = rownames(check_df),
+      check_df,
+      centroids_df,
+      row.names = NULL
+    )
   } else {
-    out_centroid_df <- cbind(check_df, new_centroids_df)
+    out_centroid_df <- cbind(
+      rn = rownames(check_df),
+      check_df,
+      new_centroids_df,
+      row.names = NULL
+    )
   }
+  out_centroid_df <- tibble::column_to_rownames(out_centroid_df, var = "rn")
   return(out_centroid_df[c_num, ])
 }
