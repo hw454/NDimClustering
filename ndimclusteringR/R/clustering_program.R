@@ -79,7 +79,7 @@ clustering_program <- function(iter_traits, test = 0) {
     save_suffix = "_pc"
   )
   # If angles then plot the angles
-  if (iter_traits$bin_p_clust) {
+  if (iter_traits$bin_angles) {
     c1 <- colnames(data_matrices$beta_ang)[1]
     c2 <- colnames(data_matrices$beta_ang)[2]
     plot_clust_scatter_test(clust_out$clusters,
