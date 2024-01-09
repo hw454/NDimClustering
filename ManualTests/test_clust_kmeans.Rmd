@@ -25,30 +25,31 @@ The second is principal component analysis, which identifies to the strongest tr
 In this testing process we will look at different combinations of these.
 
 For the test cases I have created synthetics which intentionally has pathways in.
-### Test Case Table
-| Test No.      | No. of pathways | [PCA method](#pca) | [Angles used (Y or N)](#angles) | [Weight cluster contribution with p-values.](#cluster_p_weight) | Clustering method               | [Centroid assignment](#how_cents) | [Density](#density) |
-|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
-| [1](#test1)   | 2               | none               | N                               | N                                                               | standard k-means                | random                            | NA |
-| [2](#test2)   | **4**           | none               | N                               | N                                                               | standard k-means                | random                            | NA |
-| [3](#test3)   | 2               | none               | **Y**                           | N                                                               | standard k-means                | random                            | NA |
-| [4](#test4)   | **4**           | none               | Y                               | N                                                               | standard k-means                | random                            | NA |
-| [5](#test5)   | 4               | none               | N                               | N                                                               | standard k-means                | **random from points**            | NA |
-| [6](#test6)   | 4               | none               | Y                               | N                                                               | standard k-means                | **random from points**            | NA |
-| [7](#test7)   | 4               | **prcomp**         | N                               | N                                                               | standard k-means                | random from points                | NA |
-| [8](#test8)   | 4               | prcomp             | **Y**                           | N                                                               | standard k-means                | random from points                | NA |
-| [9](#test9)   | 4               | prcomp             | Y                               | **Y**                                                           | standard k-means                | random from points                | NA |
-| [10](#test10) | 4               | **none**           | **N**                           | **N**                                                           | [**min-aic k-means**](#min_aic) | random from points                | NA |
-| [11](#test11) | 4               | none               | Y                               | N                                                               | **min-aic k-means**             | random from points                | NA |
-| [12](#test12) | 4               | none               | Y                               | **Y**                                                           | min-aic k-means                 | random from points                | NA |
-| [13](#test13) | 4               | **prcomp**         | **N**                           | **N**                                                           | min-aic k-means                 | random from points                | NA |
-| [14](#test14) | 4               | prcomp             | **Y**                           | N                                                               | min-aic k-means                 | random from points                | NA |
-| [15](#test15) | 4               | prcomp             | Y                               | **Y**                                                           | min-aic k-means                 | random from points                | NA |
-| [10](#test16) | 4               | **none**           | **N**                           | **N**                                                           | [**dbscan**](#dbscan) | centroids not assigned in density based methods   | **0.4**|
-| [11](#test17) | 4               | none               | Y                               | N                                                               | **dbscan**             | centroids not assigned in density based methods | 0.4|
-| [13](#test18) | 4               | **prcomp**         | **N**                           | **N**                                                           | dbscan                 | centroids not assigned in density based methods  | 0.4|
-| [14](#test19) | 4               | prcomp             | **Y**                           | N                                                               | dbscan                 | centroids not assigned in density based methods  | 0.4|
-| [15](#test20) | 4               | prcomp             | Y                               | N                                                           | dbscan                 | centroids not assigned in density based methods     | 0.2|
-| [15](#test20) | 4               | prcomp             | Y                               | N                                                           | dbscan                 | centroids not assigned in density based methods     | 0.8|
+
+### Test Case Table 
+
+| Test No. | No. of pathways | [PCA method](#pca) | [Angles used (Y or N)](#angles) | [Weight cluster contribution with p-values.](#cluster_p_weight) | Clustering method | [Centroid assignment](#how_cents) | [Density](#density) |
+|-----------|-----------|-----------|-----------|-----------|-----------|-----------| 
+| [1](#test1) | 2 | none | N | N | standard k-means | random | NA |
+| [2](#test2) | **4** | none | N | N | standard k-means | random | NA |
+| [3](#test3) | 2 | none | **Y** | N | standard k-means | random | NA |
+| [4](#test4) | **4** | none | Y | N | standard k-means | random | NA | | [5](#test5) | 4 | none | N | N | standard k-means | **random from points** | NA |
+| [6](#test6) | 4 | none | Y | N | standard k-means | **random from points** | NA |
+| [7](#test7) | 4 | **prcomp** | N | N | standard k-means | random from points | NA |
+| [8](#test8) | 4 | prcomp | **Y** | N | standard k-means | random from points | NA |
+| [9](#test9) | 4 | prcomp | Y | **Y** | standard k-means | random from points | NA |
+| [10](#test10) | 4 | **none** | **N** | **N** | [**min-aic k-means**](#min_aic) | random from points | NA |
+| [11](#test11) | 4 | none | Y | N | **min-aic k-means** | random from points | NA |
+| [12](#test12) | 4 | none | Y | **Y** | min-aic k-means | random from points | NA |
+| [13](#test13) | 4 | **prcomp** | **N** | **N** | min-aic k-means | random from points | NA |
+| [14](#test14) | 4 | prcomp | **Y** | N | min-aic k-means | random from points | NA |
+| [15](#test15) | 4 | prcomp | Y | **Y** | min-aic k-means | random from points | NA |
+| [10](#test16) | 4 | **none** | **N** | **N** | [**dbscan**](#dbscan) | centroids not assigned in density based methods | **0.4**|
+| [11](#test17) | 4 | none | Y | N | **dbscan** | centroids not assigned in density based methods | 0.4 |
+| [13](#test18) | 4 | **prcomp** | **N** | **N** | dbscan | centroids not assigned in density based methods | 0.4 |
+| [14](#test19) | 4 | prcomp | **Y** | N | dbscan | centroids not assigned in density based methods | 0.4|
+| [15](#test20) | 4 | prcomp | Y | N | dbscan | centroids not assigned in density based methods | 0.2|
+| [15](#test20) | 4 | prcomp | Y | N | dbscan | centroids not assigned in density based methods | 0.8|
 
 # Instructions for using the package.
 
@@ -57,8 +58,7 @@ For the test cases I have created synthetics which intentionally has pathways in
 Load the "ndimclusteringR" package
 
 ```{r include=FALSE}
-devtools::update_packages(upgrade= "always")
-devtools::install("../ndimclusteringR/", dependencies = TRUE, upgrade = "always")
+devtools::install("../ndimclusteringR/", dependencies = TRUE)
 library("ndimclusteringR")
 ```
 
@@ -139,11 +139,11 @@ If all the steps are included then they are performed in the following order.
 
 Run the tests with:
 
-*   No PCA
-*   basic k-means clustering.
-    +   k is set to the number of pathways.
-*   no angles calculated before clustering.
-*   number of pathways 2.
+-   No PCA
+-   basic k-means clustering.
+    -   k is set to the number of pathways.
+-   no angles calculated before clustering.
+-   number of pathways 2.
 
 ```{r include=FALSE}
 data_dir <- "../TestData/paths"
@@ -179,12 +179,12 @@ For test2 we will keep the parameters the same as [test1](#test1) but increase t
 
 Run the tests with:
 
-*   No PCA
-*   basic k-means clustering.
-    +   k is set to the number of pathways.
-*   no angles calculated before clustering.
-*   **number of pathways 4.**
-*   Clusters centres are not weighted by the p-values.
+-   No PCA
+-   basic k-means clustering.
+    -   k is set to the number of pathways.
+-   no angles calculated before clustering.
+-   **number of pathways 4.**
+-   Clusters centres are not weighted by the p-values.
 
 ```{r include=FALSE}
 pc_type <- "none"
@@ -221,8 +221,8 @@ To try and convert data that is visualised as lines to something that looks like
 
 1.  Create a unit-vector for each axis (you can remove one axis since the angles reduce the dimension), the algorithm removes the last axis.
 2.  For each unit vector found and each data-point $x$:
-    +   $$\theta = \frac{x \cdot u}{||u|| ||x||}$$
-    +   If $\theta > \pi$ reassign the angle $\theta= \theta-\pi$. These are angles on opposite sides of the circle but they lie on the same line so we want the algorithm to group them together.
+    -   $$\theta = \frac{x \cdot u}{||u|| ||x||}$$
+    -   If $\theta > \pi$ reassign the angle $\theta= \theta-\pi$. These are angles on opposite sides of the circle but they lie on the same line so we want the algorithm to group them together.
 
 ### Test 3 {#test3}
 
@@ -231,11 +231,11 @@ We will transform the data from the raw $\beta$ intensity scores to the angles o
 
 Run the tests with:
 
-*   No PCA
-*   basic k-means clustering.
-    +   k is set to the number of pathways.
-*   **angles calculated.**
-*   number of pathways 2.
+-   No PCA
+-   basic k-means clustering.
+    -   k is set to the number of pathways.
+-   **angles calculated.**
+-   number of pathways 2.
 
 ```{r include=FALSE}
 pc_type <- "none"
@@ -269,11 +269,11 @@ For test4 we use the angles again but we investigate the case with 4 pathways.
 
 Run the tests with:
 
-*   No PCA
-*   basic k-means clustering.
-    +   k is set to the number of pathways.
-*   angles calculated before clustering.
-*   **number of pathways 4.**
+-   No PCA
+-   basic k-means clustering.
+    -   k is set to the number of pathways.
+-   angles calculated before clustering.
+-   **number of pathways 4.**
 
 ```{r include=FALSE}
 pc_type <- "none"
@@ -316,12 +316,12 @@ For test5 we keep the parameters the same as [test2](#test2) but we change the i
 
 Run the tests with:
 
-*   No PCA
-*   basic k-means clustering.
-    *   k is set to the number of pathways.
-*   no angles calculated before clustering.
-*   number of pathways 4.
-*   **Centroids assigned using points.**
+-   No PCA
+-   basic k-means clustering.
+    +   k is set to the number of pathways.
+-   no angles calculated before clustering.
+-   number of pathways 4.
+-   **Centroids assigned using points.**
 
 ```{r include=FALSE}
 pc_type <- "none"
@@ -357,12 +357,12 @@ For test6 we keep the parameters the same as [test5](#test5) but we include the 
 
 Run the tests with:
 
-*   No PCA
-*   basic k-means clustering.
-    *   k is set to the number of pathways.
-*   **angles calculated before clustering.**
-*   number of pathways 4.
-*   Centroids assigned using points
+-   No PCA
+-   basic k-means clustering.
+    +   k is set to the number of pathways.
+-   **angles calculated before clustering.**
+-   number of pathways 4.
+-   Centroids assigned using points
 
 ```{r include=FALSE}
 pc_type <- "none"
@@ -421,12 +421,12 @@ This is [test5](#test5) with `how_cents` changed.
 
 Run the tests with:
 
-*   **PCA method prcomp**
-*   basic k-means clustering.
-    +   k is set to the number of pathways.
-*   no angles calculated before clustering.
-*   number of pathways 4.
-*   Centroids assigned using points
+-   **PCA method prcomp**
+-   basic k-means clustering.
+    -   k is set to the number of pathways.
+-   no angles calculated before clustering.
+-   number of pathways 4.
+-   Centroids assigned using points
 
 ```{r include=FALSE}
 pc_type <- "prcomp" 
@@ -462,12 +462,12 @@ This is [test6](#test6) with `how_cents` changed.
 
 Run the tests with:
 
-*   PCA method prcomp
-*   basic k-means clustering.
+-   PCA method prcomp
+-   basic k-means clustering.
     +   k is set to the number of pathways.
-*   **angles calculated before clustering.**
-*   number of pathways 4.
-*   Centroids assigned using points
+-   **angles calculated before clustering.**
+-   number of pathways 4.
+-   Centroids assigned using points
 
 ```{r include=FALSE}
 pc_type <- "prcomp"
@@ -512,13 +512,13 @@ $$
 
 Run the tests with:
 
-*   PCA method prcomp
-*   basic k-means clustering.
+-   PCA method prcomp
+-   basic k-means clustering.
     +   k is set to the number of pathways.
-*   angles calculated before clustering.
-*   number of pathways 4.
-*   Centroids assigned using points
-*   **Centroids reassigned during clustering using a p-value weighting.**
+-   angles calculated before clustering.
+-   number of pathways 4.
+-   Centroids assigned using points
+-   **Centroids reassigned during clustering using a p-value weighting.**
 
 ```{r include=FALSE}
 pc_type <- "prcomp"
@@ -565,7 +565,7 @@ $$
 For $nc$ in $[1,k]$
 
 1.  Set the number of clusters to $nc$.
-    +   If $nc>k$ go to step 6.
+    -   If $nc>k$ go to step 6.
 2.  Run k-means clustering for $k=nc$.
 3.  Calculate the $aic$ for the clusters.
 4.  Increase $nc$ by $1$.
@@ -576,7 +576,7 @@ For $nc$ in $[1,k]$
 We will perform the following tests on the min-aic clustering method:
 
 | Test No.      | No. of pathways | [PCA method](#pca) | [Angles used (Y or N)](#angles) | [Weight cluster contribution with p-values.](#cluster_p_weight) | Clustering method               | [Centroid assignment](#how_cents) |
-|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
+|----------|----------|----------|----------|-------------|----------|----------|
 | [10](#test10) | 4               | **none**           | **N**                           | **N**                                                           | [**min-aic k-means**](#min_aic) | random from points                |
 | [11](#test11) | 4               | none               | Y                               | N                                                               | **min-aic k-means**             | random from points                |
 | [12](#test12) | 4               | none               | Y                               | **Y**                                                           | min-aic k-means                 | random from points                |
@@ -588,13 +588,13 @@ We will perform the following tests on the min-aic clustering method:
 
 Run the tests with:
 
-*   No PCA
-*   **min-aic k-means clustering.**
+-   No PCA
+-   **min-aic k-means clustering.**
     +   Max $k$ is set to the number of pathways.
-*   no angles calculated before clustering.
-*   number of pathways 4.
-*   Centroids assigned using points
-*   Centroids are not reassigned during clustering using a p-value weighting.
+-   no angles calculated before clustering.
+-   number of pathways 4.
+-   Centroids assigned using points
+-   Centroids are not reassigned during clustering using a p-value weighting.
 
 ```{r include=FALSE}
 pc_type <- "none"
@@ -629,13 +629,13 @@ For test 11 we keep everything the same as [test10](#test10) with the addition o
 
 Run the tests with:
 
-*   No PCA
-*   min-aic k-means clustering.
+-   No PCA
+-   min-aic k-means clustering.
     +   Max $k$ is set to the number of pathways.
-*   **angles calculated before clustering.**
-*   number of pathways 4.
-*   Centroids assigned using points
-*   Centroids are not reassigned during clustering using a p-value weighting.
+-   **angles calculated before clustering.**
+-   number of pathways 4.
+-   Centroids assigned using points
+-   Centroids are not reassigned during clustering using a p-value weighting.
 
 ```{r include=FALSE}
 pc_type <- "none"
@@ -670,13 +670,13 @@ For test 12 we keep everything the same as [test11](#test11) with the addition o
 
 Run the tests with:
 
-*   No PCA
-*   min-aic k-means clustering.
+-   No PCA
+-   min-aic k-means clustering.
     +   Max $k$ is set to the number of pathways.
-*   angles calculated before clustering.
-*   number of pathways 4.
-*   Centroids assigned using points
-*   **Centroids are reassigned during clustering using a p-value weighting.**
+-   angles calculated before clustering.
+-   number of pathways 4.
+-   Centroids assigned using points
+-   **Centroids are reassigned during clustering using a p-value weighting.**
 
 ```{r include=FALSE}
 pc_type <- "none"
@@ -711,13 +711,13 @@ For test 13 we return to the set up of the first min-aic test in [test10](#test1
 
 Run the tests with:
 
-*   **PCA using prcomp**
-*   min-aic k-means clustering.
+-   **PCA using prcomp**
+-   min-aic k-means clustering.
     +   Max $k$ is set to the number of pathways.
-*   no angles calculated before clustering.
-*   number of pathways 4.
-*   Centroids assigned using points
-*   Centroids are not reassigned during clustering using a p-value weighting.
+-   no angles calculated before clustering.
+-   number of pathways 4.
+-   Centroids assigned using points
+-   Centroids are not reassigned during clustering using a p-value weighting.
 
 ```{r include=FALSE}
 pc_type <- "prcomp"
@@ -746,26 +746,19 @@ iter_traits$res_dir <- res_dir
 clustering_program(iter_traits)
 ```
 
-| [15](#test15) \| 4 \| prcomp \| Y \| **Y** \| min-aic k-means \| random from points \|
-| 
-| 
-| 
-| 
-| 
-
 ### Test 14 {#test14}
 
 For test 14 we add the angle conversion to [test13](#test13).
 
 Run the tests with:
 
-*   PCA using prcomp
-*   min-aic k-means clustering.
+-   PCA using prcomp
+-   min-aic k-means clustering.
     +   Max $k$ is set to the number of pathways.
-*   **angles calculated before clustering.**
-*   number of pathways 4.
-*   Centroids assigned using points
-*   Centroids are not reassigned during clustering using a p-value weighting.
+-   **angles calculated before clustering.**
+-   number of pathways 4.
+-   Centroids assigned using points
+-   Centroids are not reassigned during clustering using a p-value weighting.
 
 ```{r include=FALSE}
 pc_type <- "prcomp"
@@ -800,13 +793,13 @@ For test 15 we take the set up in [test14](#test14) and we [weight the cluster c
 
 Run the tests with:
 
-*   PCA using prcomp
-*   min-aic k-means clustering.
+-   PCA using prcomp
+-   min-aic k-means clustering.
     +   Max $k$ is set to the number of pathways.
-*   angles calculated before clustering.
-*   number of pathways 4.
-*   Centroids assigned using points
-*   [**Centroids are reassigned during clustering using a p-value weighting.**](#cluster_p_weight)
+-   angles calculated before clustering.
+-   number of pathways 4.
+-   Centroids assigned using points
+-   [**Centroids are reassigned during clustering using a p-value weighting.**](#cluster_p_weight)
 
 ```{r include=FALSE}
 pc_type <- "prcomp"
@@ -836,20 +829,24 @@ clustering_program(iter_traits)
 ```
 
 ## DBSCAN {#dbscan}
-**dbscan** is a density based clustering method. Points are assigned to the cluster if there are within range of another point in the cluster. As a result the clusters can be different shapes and not necessarily balls.
+
+**dbscan** is a density based clustering method.
+Points are assigned to the cluster if there are within range of another point in the cluster.
+As a result the clusters can be different shapes and not necessarily balls.
 
 Dbscan does not require a predefined number of clusters, it instead takes in a set density for the points `point_eps`.
 
-We will repeat the tests we used for [min-aic](#minaic) changing the clustering method to dbscan, however we won't vary the centroid calculations as centroids aren't used in density clustering. 
+We will repeat the tests we used for [min-aic](#minaic) changing the clustering method to dbscan, however we won't vary the centroid calculations as centroids aren't used in density clustering.
 
 ### Test 16 {#test16}
+
 Run the tests with:
 
-*   No PCA
-*   **dbscan clustering.**
-*   no angles calculated before clustering.
-*   number of pathways 4.
-*   Centroids not assigned in density based methods.
+-   No PCA
+-   **dbscan clustering.**
+-   no angles calculated before clustering.
+-   number of pathways 4.
+-   Centroids not assigned in density based methods.
 
 ```{r include=FALSE}
 pc_type <- "none"
@@ -878,15 +875,16 @@ clustering_program(iter_traits)
 ```
 
 ### Test 17 {#test17}
+
 Take the case from [test 16](#test16) and introduce the conversion to angles before clustering.
 
 Run the tests with:
 
-*   No PCA
-*   dbscan clustering.
-*   **Angles calculated before clustering.**
-*   number of pathways 4.
-*   Centroids not assigned in density based methods.
+-   No PCA
+-   dbscan clustering.
+-   **Angles calculated before clustering.**
+-   number of pathways 4.
+-   Centroids not assigned in density based methods.
 
 ```{r include=FALSE}
 pc_type <- "none"
@@ -914,18 +912,18 @@ iter_traits$res_dir <- res_dir
 clustering_program(iter_traits)
 ```
 
-
-
 ### Test 18 {#test18}
-Take the case from [test 16](#test16) and introduce the conversion to principal components before clustering. First we will do this without calculating the angles.
+
+Take the case from [test 16](#test16) and introduce the conversion to principal components before clustering.
+First we will do this without calculating the angles.
 
 Run the tests with:
 
-*   No PCA
-*   dbscan clustering.
-*   **Angles calculated before clustering.**
-*   number of pathways 4.
-*   Centroids not assigned in density based methods.
+-   No PCA
+-   dbscan clustering.
+-   **Angles calculated before clustering.**
+-   number of pathways 4.
+-   Centroids not assigned in density based methods.
 
 ```{r include=FALSE}
 pc_type <- "prcomp"
@@ -952,16 +950,18 @@ res_dir <- make_path_label_str(iter_traits)
 iter_traits$res_dir <- res_dir
 clustering_program(iter_traits)
 ```
+
 ### Test 19 {#test19}
+
 Now let's combine [test 17](#test17) and [test 18](#test18) and calculate the principal components and the angles before clustering.
 
 Run the tests with:
 
-*   **PCA calculated using prcomp**
-*   dbscan clustering.
-*   **Angles calculated before clustering.**
-*   number of pathways 4.
-*   Centroids not assigned in density based methods.
+-   **PCA calculated using prcomp**
+-   dbscan clustering.
+-   **Angles calculated before clustering.**
+-   number of pathways 4.
+-   Centroids not assigned in density based methods.
 
 ```{r include=FALSE}
 pc_type <- "prcomp"
@@ -988,18 +988,21 @@ res_dir <- make_path_label_str(iter_traits)
 iter_traits$res_dir <- res_dir
 clustering_program(iter_traits)
 ```
+
 ## Vary the density
 
 ### Test 20 {#test20}
-Now let's investigate the density parameter to **dbscan**. Let's make it smaller and try `point_eps = 0.2`.
+
+Now let's investigate the density parameter to **dbscan**.
+Let's make it smaller and try `point_eps = 0.2`.
 
 Run the tests with:
 
-*   No PCA
-*   dbscan clustering.
-*   **Angles calculated before clustering.**
-*   number of pathways 4.
-*   Centroids not assigned in density based methods.
+-   No PCA
+-   dbscan clustering.
+-   **Angles calculated before clustering.**
+-   number of pathways 4.
+-   Centroids not assigned in density based methods.
 
 ```{r include=FALSE}
 pc_type <- "prcomp"
@@ -1028,15 +1031,16 @@ clustering_program(iter_traits)
 ```
 
 ### Test 21 {#test21}
+
 Let's test the density parameter again but this time increase to `point_eps = 0.8`
 
 Run the tests with:
 
-*   No PCA
-*   dbscan clustering.
-*   **Angles calculated before clustering.**
-*   number of pathways 4.
-*   Centroids not assigned in density based methods.
+-   No PCA
+-   dbscan clustering.
+-   **Angles calculated before clustering.**
+-   number of pathways 4.
+-   Centroids not assigned in density based methods.
 
 ```{r include=FALSE}
 pc_type <- "prcomp"
@@ -1063,6 +1067,3 @@ res_dir <- make_path_label_str(iter_traits)
 iter_traits$res_dir <- res_dir
 clustering_program(iter_traits)
 ```
-| [14](#test19) | 4               | prcomp             | **Y**                           | N                                                               | dbscan                 | centroids not assigned in density based methods  | 0.4|
-| [15](#test20) | 4               | prcomp             | Y                               | N                                                           | dbscan                 | centroids not assigned in density based methods     | 0.2|
-| [15](#test20) | 4               | prcomp             | Y                               | N                                                           | dbscan                 | centroids not assigned in density based methods     | 0.8|
