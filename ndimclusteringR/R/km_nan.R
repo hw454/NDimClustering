@@ -75,7 +75,11 @@ km_nan <- function(b_mat, p_mat,
   }
   # Randomly assign cluster to snps
   nsnps <- length(snp_list)
-  clust_samp <- sample(rownames(centroids_df), nsnps, replace = TRUE)
+  clust_samp <- sample(
+    rownames(centroids_df),
+    nsnps,
+    replace = TRUE
+  )
   cluster_df <- data.frame(
     row.names = snp_list,
     clust_num = clust_samp
@@ -86,10 +90,12 @@ km_nan <- function(b_mat, p_mat,
                                 cluster_df = cluster_df,
                                 centroids_df = centroids_df)
   clust_dist_mem_df <- Reduce(rbind, clust_dist_mem_list)
-  cluster_df <- cbind(rn = rownames(cluster_df),
-                      cluster_df,
-                      clust_dist_mem_df,
-                      row.names = NULL)
+  cluster_df <- cbind(
+    rn = rownames(cluster_df),
+    cluster_df,
+    clust_dist_mem_df,
+    row.names = NULL
+  )
   cluster_df <- tibble::column_to_rownames(cluster_df, var = "rn")
   for (iter in 1:iter_max){
     # For each SNP find the cluster with the closest centre.
