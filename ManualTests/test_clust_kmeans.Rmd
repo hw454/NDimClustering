@@ -61,7 +61,6 @@ Load the "ndimclusteringR" package
 devtools::install("../ndimclusteringR/", dependencies = TRUE)
 library("ndimclusteringR")
 ```
-
 ## Iteration parameters
 
 The parameters for the program are:
