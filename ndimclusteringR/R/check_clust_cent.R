@@ -56,7 +56,7 @@ check_clust_cent <- function(c_num, clustnum_df, b_mat, centroids_df, p_mat,
           tot_ps <- sum(1 - snp_ps[col])
           new_centroids_df[c_num, col] <- sp_col / tot_ps
         }
-      } else{
+      } else {
         new_centroids_df[c_num, ] <- colMeans(snp_scores, na.rm = TRUE)
       }
     }
@@ -78,14 +78,14 @@ check_clust_cent <- function(c_num, clustnum_df, b_mat, centroids_df, p_mat,
     out_centroid_df <- cbind(
       rn = rownames(check_df),
       check_df,
-      centroids_df,
+      centroids_df[c_num, ],
       row.names = NULL
     )
   } else {
     out_centroid_df <- cbind(
       rn = rownames(check_df),
       check_df,
-      new_centroids_df,
+      new_centroids_df[c_num, ],
       row.names = NULL
     )
   }
