@@ -14,7 +14,7 @@ for (i in 0:3){
   } else { nc <- 1}
   iter_traits <- list(
     dname = paste0(data_dir, i, "/"),
-    clust_type = "basic",
+    clust_type = "dbscan",
     pca_type = "prcomp",
     nclust = nc,
     n_pcs = 3,
