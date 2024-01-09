@@ -1,0 +1,1274 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Testing Clustering methods.},
+  pdfauthor={Hayley Wragg},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Testing Clustering methods.}
+\author{Hayley Wragg}
+\date{21st Nov 2023}
+
+\begin{document}
+\maketitle
+
+\hypertarget{description}{%
+\section{Description}\label{description}}
+
+The clustering program takes in GWAS data. This includes a matrix
+\(\beta\) which contains the strength of association with a trait. The
+trait forms the column and the snp is the row. There's also a matrix of
+\(p\)-values these represented the probability that the observed
+association is due to chance. There's also the \(SE\) matrix with the
+standard error association with the association scores for each snp,
+trait pair.
+
+The snp's are chosen based on those with the strongest association to
+the exposure.
+
+The algorithm attempts to use the association with different traits to
+identify separate pathways within the data. We expect the pathways to
+appear as lines in the original data-space, in order to identify
+clusters we use two methods to reformat the data. The first is
+transforming into the space given by the angles to the axes, this should
+take lines through the origin with different gradients to balls of data.
+The second is principal component analysis, which identifies to the
+strongest trends within the data. In this testing process we will look
+at different combinations of these.
+
+For the test cases I have created synthetics which intentionally has
+pathways in.
+
+\hypertarget{test-case-table}{%
+\subsubsection{Test Case Table}\label{test-case-table}}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1429}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Test No.
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+No.~of pathways
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\protect\hyperlink{pca}{PCA method}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\protect\hyperlink{angles}{Angles used (Y or N)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\protect\hyperlink{cluster_p_weight}{Weight cluster contribution with
+p-values.}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Clustering method
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\protect\hyperlink{how_cents}{Centroid assignment}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\protect\hyperlink{test1}{1} & 2 & none & N & N & standard k-means &
+random \\
+\protect\hyperlink{test2}{2} & \textbf{4} & none & N & N & standard
+k-means & random \\
+\protect\hyperlink{test3}{3} & 2 & none & \textbf{Y} & N & standard
+k-means & random \\
+\protect\hyperlink{test4}{4} & \textbf{4} & none & Y & N & standard
+k-means & random \\
+\protect\hyperlink{test6}{6} & 4 & none & Y & N & standard k-means &
+\textbf{random from points} \\
+\protect\hyperlink{test7}{7} & 4 & \textbf{prcomp} & N & N & standard
+k-means & random from points \\
+\protect\hyperlink{test8}{8} & 4 & prcomp & \textbf{Y} & N & standard
+k-means & random from points \\
+\protect\hyperlink{test9}{9} & 4 & prcomp & Y & \textbf{Y} & standard
+k-means & random from points \\
+\protect\hyperlink{test10}{10} & 4 & \textbf{none} & \textbf{N} &
+\textbf{N} & \protect\hyperlink{min_aic}{\textbf{min-aic k-means}} &
+random from points \\
+\protect\hyperlink{test11}{11} & 4 & none & Y & N & \textbf{min-aic
+k-means} & random from points \\
+\protect\hyperlink{test12}{12} & 4 & none & Y & \textbf{Y} & min-aic
+k-means & random from points \\
+\protect\hyperlink{test13}{13} & 4 & \textbf{prcomp} & \textbf{N} &
+\textbf{N} & min-aic k-means & random from points \\
+\protect\hyperlink{test14}{14} & 4 & prcomp & \textbf{Y} & N & min-aic
+k-means & random from points \\
+\protect\hyperlink{test15}{15} & 4 & prcomp & Y & \textbf{Y} & min-aic
+k-means & random from points \\
+\protect\hyperlink{test16}{10} & 4 & \textbf{none} & \textbf{N} &
+\textbf{N} & \protect\hyperlink{dbscan}{\textbf{dbscan}} & centroids not
+assigned in density based methods \\
+\protect\hyperlink{test17}{11} & 4 & none & Y & N & \textbf{dbscan} &
+centroids not assigned in density based methods \\
+\protect\hyperlink{test18}{13} & 4 & \textbf{prcomp} & \textbf{N} &
+\textbf{N} & dbscan & centroids not assigned in density based methods \\
+\protect\hyperlink{test19}{14} & 4 & prcomp & \textbf{Y} & N & dbscan &
+centroids not assigned in density based methods \\
+\protect\hyperlink{test20}{15} & 4 & prcomp & Y & N & dbscan & centroids
+not assigned in density based methods \\
+\protect\hyperlink{test20}{15} & 4 & prcomp & Y & N & dbscan & centroids
+not assigned in density based methods \\
+\end{longtable}
+
+\hypertarget{instructions-for-using-the-package.}{%
+\section{Instructions for using the
+package.}\label{instructions-for-using-the-package.}}
+
+\hypertarget{install-package}{%
+\subsection{Install package}\label{install-package}}
+
+Load the ``ndimclusteringR'' package
+
+\hypertarget{iteration-parameters}{%
+\subsection{Iteration parameters}\label{iteration-parameters}}
+
+The parameters for the program are:
+
+\begin{itemize}
+\item
+  \texttt{dname} The directory where the data is saved. This should
+  include the following files:
+
+  \begin{itemize}
+  \item
+    \texttt{unstdBeta\_df.csv} A \texttt{.csv} file with columns
+    seperated by \texttt{,} and rows by \texttt{;} , each row
+    corresponds to a snp and each column is a trait. The values
+    correspond to the intensity of association determined from a GWAS.
+    The data is sourced from openGWAS.
+  \item
+    \texttt{unstdSE\_df.csv} A \texttt{.csv} file with columns seperated
+    by \texttt{,} and rows by \texttt{;} , each row corresponds to a snp
+    and each column is a trait. The values correspond to the standard
+    error of the association determined from a GWAS. The data is sourced
+    from openGWAS.
+  \item
+    \texttt{pval\_df.csv} A \texttt{.csv} file with columns seperated by
+    \texttt{,} and rows by \texttt{;} , each row corresponds to a snp
+    and each column is a trait. The values correspond to the
+    \(p\)-values of the association determined from a GWAS. The
+    \(p\)-values are the probability that the intensity values are
+    observed due to chance. The data is sourced from openGWAS.
+  \item
+    \texttt{trait\_info\_nfil.csv} A \texttt{.csv} file with columns
+    seperated by \texttt{,} and rows by \texttt{;} , each row
+    corresponds to a trait. The label for the trait is
+    \texttt{phenotype}, to get the full definition for the trait as used
+    in the data collection this is found in the column
+    \texttt{description}.
+  \end{itemize}
+\item
+  \texttt{clust\_type} method of clustering to be used.
+\item
+  \texttt{basic} is a standard \(k\)-means clustering method.
+\item
+  \texttt{min} is an iteration of \(k\)-means, which minimises the
+  \(aic\) from cluster sets run from \(1\) cluster to \(k\).
+\item
+  \texttt{dbscan} density based clustering method.
+\item
+  \texttt{pca\_type} method for determining the principle components.
+  See \protect\hyperlink{pca}{PCA section}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{prcomp} PCA is performed using the \texttt{prcomp} package.
+  \item
+    \texttt{none} no PCA is performed and the data is clustered without
+    PCA.
+  \end{itemize}
+\item
+  \texttt{nclust} The number of clusters to search for when using
+  \texttt{basic} or \texttt{min} clustering.
+\item
+  \texttt{n\_pcs} The number of principal components to reduce to. This
+  term is only used if \texttt{pca\_type} is NOT \texttt{none}.
+\item
+  \texttt{bin\_angles} Binary switch determining whether the data should
+  be transformed to the angle space or not. If \(0\) then nothing is
+  done, if \(1\) then the data is transformed from the intensity scores
+  to the angle of those scores to the axis in that data-space. Since the
+  angle describe a position betwen two axes by using the angles we can
+  reduce the dimension of the data-space by \(1\), if we wanted to
+  retained all information we would also store the distance from the
+  origin but we are searching for elements on the same line, it does not
+  matter to our clusters where on the line they are, therefore we do not
+  store this distance.
+\item
+  \texttt{bin\_p\_clust} Binary switch. If \(0\) then \(k\)-means
+  clustering calculated the cluster centroids based on the average of
+  the terms in that cluster. If \(1\) then the cluster centroids are
+  recalculated based on a weighted average using the intensity and the
+  \(p\)-values. See \protect\hyperlink{cluster_p_weight}{\(p\)-value
+  weighting section}.
+\item
+  \texttt{bin\_p\_score} Binary switch indicating the weighting when
+  scoring clusters on trait axis. If \(0\) then the clusters are scored
+  based on their elements average intensity scores on each axis. If
+  \(1\) then the clusters are scored based on a weight average of their
+  elements scores on each trait, weighted by the \(p\)-value that the
+  intensity score is a true representation.
+\item
+  \texttt{how\_cents} The method to be used for initialising the centres
+  of the clusters.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{rand} The value on each axis is randomly assigned using a
+    uniform distribution between the max and min on each axis.
+  \item
+    \texttt{points} The centre for each cluster is assigned to points
+    from the dataset. The points are randomly selected with a uniform
+    distribution.
+  \end{itemize}
+\end{itemize}
+
+\hypertarget{alg_steps}{%
+\subsubsection{What happens within the program? - Algorithm: Step by
+step}\label{alg_steps}}
+
+If all the steps are included then they are performed in the following
+order.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Crop data to complete cases.
+\item
+  Convert data to angles.
+\item
+  Perform PCA on angle data.
+\item
+  Cluster on the PCA
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  Set cluster centres
+\item
+  Converge cluster centres
+\item
+  if cluster type ``min'' then rerun for different number of clusters
+  and choose set with min-aic.
+\end{itemize}
+
+\hypertarget{test1}{%
+\subsubsection{Test 1}\label{test1}}
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  No PCA
+\item
+  basic k-means clustering.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    k is set to the number of pathways.
+  \end{itemize}
+\item
+  no angles calculated before clustering.
+\item
+  number of pathways 2.
+\end{itemize}
+
+\begin{verbatim}
+## [1] "Clusters converged 3"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-3-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-3-2.pdf}
+
+\hypertarget{test2}{%
+\subsubsection{Test 2}\label{test2}}
+
+For test2 we will keep the parameters the same as
+\protect\hyperlink{test1}{test1} but increase the number of pathways.
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  No PCA
+\item
+  basic k-means clustering.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    k is set to the number of pathways.
+  \end{itemize}
+\item
+  no angles calculated before clustering.
+\item
+  \textbf{number of pathways 4.}
+\item
+  Clusters centres are not weighted by the p-values.
+\end{itemize}
+
+\begin{verbatim}
+## [1] "Clusters converged 5"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-5-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-5-2.pdf}
+
+\hypertarget{angles}{%
+\subsection{Calculating Angles}\label{angles}}
+
+The data-points for each snp have an intensity score associated with
+each trait. We want to identify lines within our data but we can see
+from the first two tests that standard clustering does not detect these
+lines. To try and convert data that is visualised as lines to something
+that looks like balls of data we convert the data to the angle to each
+axis.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Create a unit-vector for each axis (you can remove one axis since the
+  angles reduce the dimension), the algorithm removes the last axis.
+\item
+  For each unit vector found and each data-point \(x\):
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \[\theta = \frac{x \cdot u}{||u|| ||x||}\]
+  \item
+    If \(\theta > \pi\) reassign the angle \(\theta= \theta-\pi\). These
+    are angles on opposite sides of the circle but they lie on the same
+    line so we want the algorithm to group them together.
+  \end{itemize}
+\end{enumerate}
+
+\hypertarget{test3}{%
+\subsubsection{Test 3}\label{test3}}
+
+For test3 we will return to the case of two pathways but this time we
+will reformat the data before clustering. We will transform the data
+from the raw \(\beta\) intensity scores to the angles of the scores when
+transformed to a polar-coordinate system.
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  No PCA
+\item
+  basic k-means clustering.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    k is set to the number of pathways.
+  \end{itemize}
+\item
+  \textbf{angles calculated.}
+\item
+  number of pathways 2.
+\end{itemize}
+
+\begin{verbatim}
+## [1] "Clusters converged 4"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-7-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-7-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-7-3.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-7-4.pdf}
+
+\hypertarget{test4}{%
+\subsubsection{Test 4}\label{test4}}
+
+For test4 we use the angles again but we investigate the case with 4
+pathways.
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  No PCA
+\item
+  basic k-means clustering.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    k is set to the number of pathways.
+  \end{itemize}
+\item
+  angles calculated before clustering.
+\item
+  \textbf{number of pathways 4.}
+\end{itemize}
+
+\begin{verbatim}
+## [1] "Clusters converged 3"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-9-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-9-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-9-3.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-9-4.pdf}
+
+\hypertarget{how_cents}{%
+\subsection{Consider the location of the centroids.}\label{how_cents}}
+
+The previous tests used centroids assigned randomly within the ranges on
+each axis. The results show that although we ask for \(k\) clusters we
+often get some of the clusters returning as empty. This is likely to be
+caused by the initial centroids being outside the data-space.
+
+Instead we will initialise the centroids using randomly selected points
+from out dataset.
+
+\hypertarget{test5}{%
+\subsubsection{Test 5}\label{test5}}
+
+For test5 we keep the parameters the same as
+\protect\hyperlink{test2}{test2} but we change the initialisation of the
+cluster centroids.
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  No PCA
+\item
+  basic k-means clustering.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    k is set to the number of pathways.
+  \end{itemize}
+\item
+  no angles calculated before clustering.
+\item
+  number of pathways 4.
+\item
+  \textbf{Centroids assigned using points.}
+\end{itemize}
+
+\begin{verbatim}
+## [1] "Clusters converged 6"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-11-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-11-2.pdf}
+
+\hypertarget{test6}{%
+\subsubsection{Test 6}\label{test6}}
+
+For test6 we keep the parameters the same as
+\protect\hyperlink{test5}{test5} but we include the conversion to
+angles.
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  No PCA
+\item
+  basic k-means clustering.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    k is set to the number of pathways.
+  \end{itemize}
+\item
+  \textbf{angles calculated before clustering.}
+\item
+  number of pathways 4.
+\item
+  Centroids assigned using points
+\end{itemize}
+
+\begin{verbatim}
+## [1] "Clusters converged 2"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-13-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-13-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-13-3.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-13-4.pdf}
+
+\hypertarget{pca}{%
+\subsection{Principal Components}\label{pca}}
+
+So far we have ignored the principal components option. This is another
+method for reducing the dimension. It identifies the eigen-vectors and
+corresponding eigen-values of the data space. Then outputs the set of
+eigen-vectors with the largest eigen-values as a matrix. This matrix is
+then used to transform the data onto a new data-space with reduced
+dimension. The principal components characterise the variation in the
+data. By defining the axes as the eigen-vectors we remove the highest
+levels of correlation within the data. In doing this we are trying to
+find the level at which the data separates into distinct categories.
+
+PCA steps:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Ensure each data axis is normalised.
+\item
+  Identify the eigen-vectors and eigen-values of the data-space.
+\item
+  Use the eigen-vectors of the \texttt{n\_pc} largest eigen-values to
+  form the columns of a matrix.
+\item
+  Take each data-point as a row-vector and multiply by the matrix to
+  transform the data onto a new data-space.
+\item
+  Transform the p-value matrix and standard error matrix onto the same
+  dataspace.
+\item
+  Store the transform matrix. This represents the proportion of each
+  trait which makes up each pc vector.
+\end{enumerate}
+
+\href{https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/prcomp}{\texttt{prcomp}}
+is a pca package in R.
+
+\hypertarget{test7}{%
+\subsubsection{Test 7}\label{test7}}
+
+For the first pca test we will turn off the calculation of angles and
+use a standard k-means clustering to try and visualise what the pca is
+doing on it's own. This is \protect\hyperlink{test5}{test5} with
+\texttt{how\_cents} changed.
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{PCA method prcomp}
+\item
+  basic k-means clustering.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    k is set to the number of pathways.
+  \end{itemize}
+\item
+  no angles calculated before clustering.
+\item
+  number of pathways 4.
+\item
+  Centroids assigned using points
+\end{itemize}
+
+\begin{verbatim}
+## [1] "Clusters converged 4"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-15-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-15-2.pdf}
+
+\hypertarget{test8}{%
+\subsubsection{Test 8}\label{test8}}
+
+For the second pca test we will include the calculation of angles and
+use a standard k-means clustering to try and visualise what how the pca
+works with the angle data. This is \protect\hyperlink{test6}{test6} with
+\texttt{how\_cents} changed.
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  PCA method prcomp
+\item
+  basic k-means clustering.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    k is set to the number of pathways.
+  \end{itemize}
+\item
+  \textbf{angles calculated before clustering.}
+\item
+  number of pathways 4.
+\item
+  Centroids assigned using points
+\end{itemize}
+
+\begin{verbatim}
+## [1] "Clusters converged 7"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-17-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-17-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-17-3.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-17-4.pdf}
+
+\hypertarget{cluster_p_weight}{%
+\subsection{Weight cluster centroid by p-value}\label{cluster_p_weight}}
+
+Each data-point has an associated p-value. This corresponds to the
+chance the score observed is due to chance. We do not want to skew our
+conclusions by unreliable snps. Therefore when the cluster centroids are
+found we will use a weighted average based on the p-value. For each
+co-ordinate in the cluster centroid the new centroid after cluster
+assignment is given by:
+
+\[
+\pmb{c}_i = \frac{\sum_{\text{points in cluster}}\beta_i(1-p_i)}{\sum_{\text{points in cluster}}(1-p_i)}
+\]
+
+\hypertarget{test9}{%
+\subsubsection{Test 9}\label{test9}}
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  PCA method prcomp
+\item
+  basic k-means clustering.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    k is set to the number of pathways.
+  \end{itemize}
+\item
+  angles calculated before clustering.
+\item
+  number of pathways 4.
+\item
+  Centroids assigned using points
+\item
+  \textbf{Centroids reassigned during clustering using a p-value
+  weighting.}
+\end{itemize}
+
+\begin{verbatim}
+## [1] "Clusters converged 1"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-19-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-19-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-19-3.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-19-4.pdf}
+
+\hypertarget{min-aic}{%
+\subsection{Min-AIC}\label{min-aic}}
+
+So far we have clustered using a fixed number of clusters. Since we are
+using synthetic test data we can set the value for \(k\) to the number
+of clusters we expect. However when data-mining we don't know how many
+clusters we are looking for. We consider an iterative clustering
+approach, running a standard k-means clustering on \(1\) to \(k\)
+clusters. For each set of clusters calculate the Akaike Information
+Criterion (AIC), then proceed with the cluster set that minimises this.
+
+The AIC is given by: \[ 
+l = \frac{\sum_{\text{data_points}}\text{dist}\left(\beta_i, c_{\text{centre for cluster assigned to } \beta_i}\right)^2}{\text{var}(\text{dist}\left(\pmb{\beta}\right))}, \\
+d = \text{dimension of each point},\\
+k = \text{number of points}, \\
+AIC = d + 2  k  l
+\]
+
+For \(nc\) in \([1,k]\)
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Set the number of clusters to \(nc\).
+
+  \begin{itemize}
+  \tightlist
+  \item
+    If \(nc>k\) go to step 6.
+  \end{itemize}
+\item
+  Run k-means clustering for \(k=nc\).
+\item
+  Calculate the \(aic\) for the clusters.
+\item
+  Increase \(nc\) by \(1\).
+\item
+  Go to step 1.
+\item
+  Find the number of clusters which gives the minimum aic.
+\item
+  Return the cluster set for this number of clusters.
+\end{enumerate}
+
+We will perform the following tests on the min-aic clustering method:
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1370}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1370}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1370}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1370}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1781}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1370}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1370}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Test No.
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+No.~of pathways
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\protect\hyperlink{pca}{PCA method}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\protect\hyperlink{angles}{Angles used (Y or N)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\protect\hyperlink{cluster_p_weight}{Weight cluster contribution with
+p-values.}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Clustering method
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\protect\hyperlink{how_cents}{Centroid assignment}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\protect\hyperlink{test10}{10} & 4 & \textbf{none} & \textbf{N} &
+\textbf{N} & \protect\hyperlink{min_aic}{\textbf{min-aic k-means}} &
+random from points \\
+\protect\hyperlink{test11}{11} & 4 & none & Y & N & \textbf{min-aic
+k-means} & random from points \\
+\protect\hyperlink{test12}{12} & 4 & none & Y & \textbf{Y} & min-aic
+k-means & random from points \\
+\protect\hyperlink{test13}{13} & 4 & \textbf{prcomp} & \textbf{N} &
+\textbf{N} & min-aic k-means & random from points \\
+\protect\hyperlink{test14}{14} & 4 & prcomp & \textbf{Y} & N & min-aic
+k-means & random from points \\
+\protect\hyperlink{test15}{15} & 4 & prcomp & Y & \textbf{Y} & min-aic
+k-means & random from points \\
+\end{longtable}
+
+\hypertarget{test10}{%
+\subsubsection{Test 10}\label{test10}}
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  No PCA
+\item
+  \textbf{min-aic k-means clustering.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Max \(k\) is set to the number of pathways.
+  \end{itemize}
+\item
+  no angles calculated before clustering.
+\item
+  number of pathways 4.
+\item
+  Centroids assigned using points
+\item
+  Centroids are not reassigned during clustering using a p-value
+  weighting.
+\end{itemize}
+
+\begin{verbatim}
+## [1] "Clusters converged 2"
+## [1] "Clusters converged 2"
+## [1] "Clusters converged 5"
+## [1] "Clusters converged 3"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-21-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-21-2.pdf}
+
+\hypertarget{test11}{%
+\subsubsection{Test 11}\label{test11}}
+
+For test 11 we keep everything the same as
+\protect\hyperlink{test10}{test10} with the addition of the conversion
+to angles before clustering.
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  No PCA
+\item
+  min-aic k-means clustering.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Max \(k\) is set to the number of pathways.
+  \end{itemize}
+\item
+  \textbf{angles calculated before clustering.}
+\item
+  number of pathways 4.
+\item
+  Centroids assigned using points
+\item
+  Centroids are not reassigned during clustering using a p-value
+  weighting.
+\end{itemize}
+
+\begin{verbatim}
+## [1] "Clusters converged 2"
+## [1] "Clusters converged 2"
+## [1] "Clusters converged 2"
+## [1] "Clusters converged 5"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-23-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-23-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-23-3.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-23-4.pdf}
+
+\hypertarget{test12}{%
+\subsubsection{Test 12}\label{test12}}
+
+For test 12 we keep everything the same as
+\protect\hyperlink{test11}{test11} with the addition of weighting the
+cluster centre's by the p-values.
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  No PCA
+\item
+  min-aic k-means clustering.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Max \(k\) is set to the number of pathways.
+  \end{itemize}
+\item
+  angles calculated before clustering.
+\item
+  number of pathways 4.
+\item
+  Centroids assigned using points
+\item
+  \textbf{Centroids are reassigned during clustering using a p-value
+  weighting.}
+\end{itemize}
+
+\begin{verbatim}
+## [1] "Clusters converged 1"
+## [1] "Clusters converged 1"
+## [1] "Clusters converged 1"
+## [1] "Clusters converged 1"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-25-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-25-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-25-3.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-25-4.pdf}
+
+\hypertarget{test13}{%
+\subsubsection{Test 13}\label{test13}}
+
+For test 13 we return to the set up of the first min-aic test in
+\protect\hyperlink{test10}{test10} with the addition of principal
+component analysis.
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{PCA using prcomp}
+\item
+  min-aic k-means clustering.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Max \(k\) is set to the number of pathways.
+  \end{itemize}
+\item
+  no angles calculated before clustering.
+\item
+  number of pathways 4.
+\item
+  Centroids assigned using points
+\item
+  Centroids are not reassigned during clustering using a p-value
+  weighting.
+\end{itemize}
+
+\begin{verbatim}
+## [1] "Clusters converged 2"
+## [1] "Clusters converged 3"
+## [1] "Clusters converged 2"
+## [1] "Clusters converged 3"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-27-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-27-2.pdf}
+
+\hypertarget{test14}{%
+\subsubsection{Test 14}\label{test14}}
+
+For test 14 we add the angle conversion to
+\protect\hyperlink{test13}{test13}.
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  PCA using prcomp
+\item
+  min-aic k-means clustering.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Max \(k\) is set to the number of pathways.
+  \end{itemize}
+\item
+  \textbf{angles calculated before clustering.}
+\item
+  number of pathways 4.
+\item
+  Centroids assigned using points
+\item
+  Centroids are not reassigned during clustering using a p-value
+  weighting.
+\end{itemize}
+
+\begin{verbatim}
+## [1] "Clusters converged 2"
+## [1] "Clusters converged 4"
+## [1] "Clusters converged 5"
+## [1] "Clusters converged 5"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-29-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-29-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-29-3.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-29-4.pdf}
+
+\hypertarget{test15}{%
+\subsubsection{Test 15}\label{test15}}
+
+For test 15 we take the set up in \protect\hyperlink{test14}{test14} and
+we \protect\hyperlink{cluster_p_weight}{weight the cluster centre's
+using the p-value weighting}.
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  PCA using prcomp
+\item
+  min-aic k-means clustering.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Max \(k\) is set to the number of pathways.
+  \end{itemize}
+\item
+  angles calculated before clustering.
+\item
+  number of pathways 4.
+\item
+  Centroids assigned using points
+\item
+  \protect\hyperlink{cluster_p_weight}{\textbf{Centroids are reassigned
+  during clustering using a p-value weighting.}}
+\end{itemize}
+
+\begin{verbatim}
+## [1] "Clusters converged 1"
+## [1] "Clusters converged 1"
+## [1] "Clusters converged 1"
+## [1] "Clusters converged 1"
+\end{verbatim}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-31-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-31-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-31-3.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-31-4.pdf}
+
+\hypertarget{dbscan}{%
+\subsection{DBSCAN}\label{dbscan}}
+
+\textbf{dbscan} is a density based clustering method. Points are
+assigned to the cluster if there are within range of another point in
+the cluster. As a result the clusters can be different shapes and not
+necessarily balls.
+
+Dbscan does not require a predefined number of clusters, it instead
+takes in a set density for the points \texttt{point\_eps}.
+
+We will repeat the tests we used for \protect\hyperlink{minaic}{min-aic}
+changing the clustering method to dbscan, however we won't vary the
+centroid calculations as centroids aren't used in density clustering.
+
+\hypertarget{test16}{%
+\subsubsection{Test 16}\label{test16}}
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  No PCA
+\item
+  \textbf{dbscan clustering.}
+\item
+  no angles calculated before clustering.
+\item
+  number of pathways 4.
+\item
+  Centroids not assigned in density based methods.
+\end{itemize}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-33-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-33-2.pdf}
+
+\hypertarget{test17}{%
+\subsubsection{Test 17}\label{test17}}
+
+Take the case from \protect\hyperlink{test16}{test 16} and introduce the
+conversion to angles before clustering.
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  No PCA
+\item
+  dbscan clustering.
+\item
+  \textbf{Angles calculated before clustering.}
+\item
+  number of pathways 4.
+\item
+  Centroids not assigned in density based methods.
+\end{itemize}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-35-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-35-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-35-3.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-35-4.pdf}
+
+\hypertarget{test18}{%
+\subsubsection{Test 18}\label{test18}}
+
+Take the case from \protect\hyperlink{test16}{test 16} and introduce the
+conversion to principal components before clustering. First we will do
+this without calculating the angles.
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  No PCA
+\item
+  dbscan clustering.
+\item
+  \textbf{Angles calculated before clustering.}
+\item
+  number of pathways 4.
+\item
+  Centroids not assigned in density based methods.
+\end{itemize}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-37-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-37-2.pdf}
+
+\hypertarget{test19}{%
+\subsubsection{Test 19}\label{test19}}
+
+Now let's combine \protect\hyperlink{test17}{test 17} and
+\protect\hyperlink{test18}{test 18} and calculate the principal
+components and the angles before clustering.
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{PCA calculated using prcomp}
+\item
+  dbscan clustering.
+\item
+  \textbf{Angles calculated before clustering.}
+\item
+  number of pathways 4.
+\item
+  Centroids not assigned in density based methods.
+\end{itemize}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-39-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-39-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-39-3.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-39-4.pdf}
+
+\hypertarget{vary-the-density}{%
+\subsection{Vary the density}\label{vary-the-density}}
+
+\hypertarget{test20}{%
+\subsubsection{Test 20}\label{test20}}
+
+Now let's investigate the density parameter to \textbf{dbscan}. Let's
+make it smaller and try \texttt{point\_eps\ =\ 0.2}.
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  No PCA
+\item
+  dbscan clustering.
+\item
+  \textbf{Angles calculated before clustering.}
+\item
+  number of pathways 4.
+\item
+  Centroids not assigned in density based methods.
+\end{itemize}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-41-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-41-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-41-3.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-41-4.pdf}
+
+\hypertarget{test21}{%
+\subsubsection{Test 21}\label{test21}}
+
+Let's test the density parameter again but this time increase to
+\texttt{point\_eps\ =\ 0.8}
+
+Run the tests with:
+
+\begin{itemize}
+\tightlist
+\item
+  No PCA
+\item
+  dbscan clustering.
+\item
+  \textbf{Angles calculated before clustering.}
+\item
+  number of pathways 4.
+\item
+  Centroids not assigned in density based methods.
+\end{itemize}
+
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-43-1.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-43-2.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-43-3.pdf}
+\includegraphics{test_clust_kmeans_files/figure-latex/unnamed-chunk-43-4.pdf}
+
+\end{document}
