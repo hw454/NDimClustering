@@ -73,7 +73,6 @@ cluster_kmeans <- function(data_matrices,
     bin_p_clust = bin_p_clust,
     how_cents = how_cents
   )
-
   # Cluster number identification for each observation
   nan_snp_list <- lapply(setdiff(rownames(b_mat), crop_snp_list),
                          find_closest_clust_snp,
