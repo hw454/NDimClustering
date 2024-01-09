@@ -19,7 +19,7 @@ Other tests:
 \code{\link{test_convert_point_to_angle}()},
 \code{\link{test_crop_matrices}()},
 \code{\link{test_get_aic}()},
-\code{\link{test_join_matlist_on_name}()},
+\code{\link{test_join_mat_on_name}()},
 \code{\link{test_km_nan}()},
 \code{\link{test_reformat_data}()}
 }

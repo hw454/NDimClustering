@@ -1,8 +1,8 @@
 devtools::install("ndimclusteringR")
 library("ndimclusteringR")
 
-print("Testing `join_matlist_on_name`")
-test_join_matlist_on_name()
+print("Testing `join_mat_on_name`")
+test_join_mat_on_name()
 print("Testing `crop_matrices`")
 test_crop_matrices()
 print("Testing `convert_point_to_angle`")
