@@ -31,8 +31,8 @@ plot_clust_scatter_test <- function(cluster_df, b_mat,
   clust_nums <- crop_cluster_df[snp_list, "clust_num"]
   res_df <- data.frame(
     row.names = snp_list,
-    bx = b_mat[, c1],
-    by = b_mat[, c2],
+    bx = b_mat[snp_list, c1],
+    by = b_mat[snp_list, c2],
     clust_num = clust_nums
   )
   np <- iter_traits$num_paths + 1
