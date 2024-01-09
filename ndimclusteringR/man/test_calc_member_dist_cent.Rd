@@ -15,17 +15,16 @@ test_calc_member_dist_cent()
 }
 \seealso{
 Other tests: 
-\code{\link{test_add_nclust_cols_empty}()},
-\code{\link{test_add_nclust_cols_onerow}()},
-\code{\link{test_add_np_cols_empty}()},
-\code{\link{test_add_np_cols_onerow}()},
-\code{\link{test_calc_clust_dist_col}()},
-\code{\link{test_calc_clust_dist}()},
-\code{\link{test_find_aic}()},
-\code{\link{test_find_low_percent_col_mat}()},
-\code{\link{test_find_low_percent_col}()},
+\code{\link{test_calc_clust_cent}()},
+\code{\link{test_cluster_dbscan}()},
+\code{\link{test_cluster_kmeans_min}()},
+\code{\link{test_cluster_kmeans}()},
+\code{\link{test_convert_point_to_angle}()},
+\code{\link{test_crop_matrices}()},
+\code{\link{test_get_aic}()},
+\code{\link{test_join_mat_on_name}()},
 \code{\link{test_km_nan}()},
-\code{\link{test_make_clust_col}()},
-\code{\link{test_na_check}()}
+\code{\link{test_reformat_data}()},
+\code{\link{test_rescale_by_end_col}()}
 }
 \concept{tests}

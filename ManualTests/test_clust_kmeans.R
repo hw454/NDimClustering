@@ -20,12 +20,15 @@ test_clust_kmeans_function <- function(d = 10,
                                        n_pc = 2,
                                        space_typ = "angle",
                                        clust_typ = "min",
-                                       how_cents = "rand") {
-  print(paste("Test", pc_type, "with", num_path, "pathways"))
+                                       how_cents = "rand",
+                                       ndim_typ = "all") {
+  np <- num_path + 1
+  print(paste("Test", pc_type, "with", np, "pathways"))
   iter_traits <- data.frame("bp_on" = TRUE,
     "clust_prob_on" = TRUE,
-    "clust_typ" = "test",
-    "ndim_typ" = "test",
+    "clust_typ" = paste0("test_", clust_typ, space_typ),
+    "ndim_typ" = paste0("test_", ndim_typ),
+    "how_cents" = how_cents,
     "pc_type" = pc_type,
     "num_paths" = num_path,
     "res_dir" = paste0("PC_TestResults/"),
@@ -89,6 +92,11 @@ test_clust_kmeans_function <- function(d = 10,
   cluster_df <- tibble::rownames_to_column(cluster_df, "snp_id")
   c1 <- colnames(dummy_beta)[1]
   c2 <- colnames(dummy_beta)[2]
+  ndimclusteringR::plot_clust_scatter_rgb_test(cluster_df,
+                                               out_list$beta,
+                                               out_list$se,
+                                               iter_traits,
+                                               num_axis = num_axis)
   ndimclusteringR::plot_clust_scatter_test(cluster_df,
                                            out_list$beta,
                                            out_list$se,

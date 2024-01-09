@@ -16,7 +16,8 @@
 #'
 #' @return cent_df
 #'
-#' @importFrom stats runif
+#' @family clustering_components
+#' @family k_means
 #'
 #' @export
 make_rand_cent <- function(a, min_max_df, n_cents = 5) {

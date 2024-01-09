@@ -7,9 +7,9 @@
 setup_matrices(
   data_dir,
   test = 0,
-  num_rows = 0,
+  num_rows = 5,
   num_trait0 = 0,
-  num_trait1 = 0
+  num_trait1 = 5
 )
 }
 \arguments{
@@ -18,7 +18,7 @@ setup_matrices(
 \item{test}{Switch 0,1. If 1 then crop the data with the
 test variables. default\:0}
 
-\item{num_rows}{If test=1 then this is the number of rows
+\item{num_rows}{If test==1 then this is the number of rows
 of the data that will be used. default\:0}
 
 \item{num_trait0}{if test==1 then this is the first column
@@ -40,3 +40,8 @@ the functions on a smaller dataset.
 rows labeled by SNP_id and columns labelled by trait info.
 The entries at each position correspond to the values for beta, se, t, and p
 }
+\seealso{
+Other setup_functions: 
+\code{\link{make_path_label_str}()}
+}
+\concept{setup_functions}

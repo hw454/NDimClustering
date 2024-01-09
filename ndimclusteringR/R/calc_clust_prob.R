@@ -3,15 +3,16 @@
 #' @description
 #'   \deqn{p=\frac{1.0}{1.0+d}}
 #'
-#' @param d The snp distance to the cluster centre
+#' @param cluster_df The cluster dataframe.
 #'
 #' @return p
 #'
 #' @family probability_functions
-#' @family cluster_properties
+#' @family clustering_components
 #'
 #' @export
-calc_clust_prob <- function(d) {
-  dist <- 1.0 / (1.0 + d)
-  return(dist)
+calc_clust_prob <- function(cluster_df) {
+  d <- cluster_df$clust_dist
+  prob <- 1.0 / (1.0 + d)
+  return(prob)
 }

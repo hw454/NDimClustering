@@ -2,21 +2,30 @@
 % Please edit documentation in R/make_clust_col_name.R
 \name{make_clust_col_name}
 \alias{make_clust_col_name}
-\title{make_clust_col_name}
+\title{Function for making the label for a cluster column}
 \usage{
-make_clust_col_name(c_num)
+make_clust_col_name(i)
 }
 \arguments{
-\item{c_num}{integer for cluster number}
-}
-\value{
-"clust_"c_num
+\item{i}{the cluster number}
 }
 \description{
-Function for creating the cluster label.
+Function for making the label for a cluster column
 }
 \seealso{
-Other label_functions: 
-\code{\link{make_pc_col_name}()}
+Other cluster_labels: 
+\code{\link{make_clust_col}()}
+
+Other clustering_components: 
+\code{\link{calc_clust_cent}()},
+\code{\link{calc_clust_prob}()},
+\code{\link{calc_member_dist_cent}()},
+\code{\link{check_clust_cent}()},
+\code{\link{convert_mat_to_angle_mat}()},
+\code{\link{get_aic}()},
+\code{\link{km_nan}()},
+\code{\link{make_clust_col}()},
+\code{\link{make_rand_cent}()}
 }
-\concept{label_functions}
+\concept{cluster_labels}
+\concept{clustering_components}

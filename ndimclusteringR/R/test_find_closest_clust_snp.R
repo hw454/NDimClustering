@@ -21,6 +21,15 @@
 #'
 #' @export
 test_find_closest_clust_snp <- function() {
+  make_clust_col_name <- function(i) {
+    return(paste0("clust_", i))
+  }
+  df_cols <- function(df, col) {
+    testit::assert("not dataframe in function",
+      is.data.frame(df[[col]])
+    )
+    return(df[[col]])
+  }
   # DUMMY INPUTS
   nclust <- 5
   dummy_traits <- c("T1", "T2", "T3")
@@ -47,7 +56,7 @@ test_find_closest_clust_snp <- function() {
   snp_clust_list <- lapply(dummy_snps, find_closest_clust_snp,
     b_mat = b_mat,
     cluster_df = cluster_df,
-    centroids_df = centres_df,
+    centroids_df = centres_df
   )
   # Combine the list of dataframes into one dataframe.
   # Override Cluster_df with the new assignment
@@ -72,9 +81,4 @@ test_find_closest_clust_snp <- function() {
                  all(names(clust_dist_df) == expect_cols_dist))
   testit::assert("find_closest_clust_snp wrong type",
                  is.data.frame(cluster_df))
-}
-df_cols <- function(df, col) {
-  testit::assert("not dataframe in function",
-                 is.data.frame(df[[col]]))
-  return(df[[col]])
 }

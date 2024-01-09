@@ -1,15 +1,13 @@
-#' Create a dataframe with column clust_i.
+#' Function for making the columns for clusters
 #'
-#' @details i is the input number
-#'
-#' @param i - The number for the column label
-#' @param rows - The rows for the dataframe,
-#'  defalut\: character() for an empty dataframe
-#' @param col_val Value for column, default\: NA
-#'
-#' @return dataframe(Pi = numeric())
+#' @param i the cluster number
+#' @param rows Optional input of the row names for the dataframe
+#' @param col_val Default value for the column. default \:NA
 #'
 #' @export
+#'
+#' @family cluster_labels
+#' @family clustering_components
 make_clust_col <- function(i, rows = character(), col_val = NA) {
   # Create a dataframe with column Pi
   cname <- make_clust_col_name(i)

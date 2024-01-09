@@ -9,9 +9,9 @@ check_clust_cent(
   clustnum_df,
   b_mat,
   centroids_df,
-  na_rm = TRUE,
-  norm_typ = "F",
-  clust_threshold = 1e-05
+  p_mat,
+  clust_threshold = 1e-05,
+  bin_p_clust = TRUE
 )
 }
 \arguments{
@@ -26,14 +26,13 @@ The columns are "clust_num".}
 the previous iteration. The rows are the cluster numbers and the
 columns are the centroid value on that trait axis.}
 
-\item{na_rm}{Boolean. If TRUE (default) then remove NaNs in means.}
-
-\item{norm_typ}{String indicating the type of norm to be used when
-calculating the distance between the centroids. Default is the Froebenius
-norm "F".}
+\item{p_mat}{Matrix of p-values corresponding to b_mat}
 
 \item{clust_threshold}{The threshold for how close the clusters should
 be to be considered converged. default \:1e-5}
+
+\item{bin_p_clust}{Bool switch 1 if pvalues should be used to weight averages
+of snps}
 }
 \value{
 out_centroid_df
@@ -46,6 +45,7 @@ The check can only be made if there are snps which are members of the
   cluster.
   If the cluster is not empty then the new centres are found using
     the means of the snps in the cluster.
+  If the bin_p_clust then weight the average by the p-values
   If the new cluster centroid is within "clust_threshold" of the previous
     centroid then "thresh_check"=TRUE.
   If thresh_check then create a dataframe "out_centroid_df" with the
@@ -55,11 +55,20 @@ The check can only be made if there are snps which are members of the
 }
 \seealso{
 Other clustering_components: 
-\code{\link{calc_clust_dist_col}()},
-\code{\link{calc_clust_dist}()},
+\code{\link{calc_clust_cent}()},
+\code{\link{calc_clust_prob}()},
 \code{\link{calc_member_dist_cent}()},
-\code{\link{calc_snp_cent_dist}()},
-\code{\link{convert_mat_to_angle_mat}()}
+\code{\link{convert_mat_to_angle_mat}()},
+\code{\link{get_aic}()},
+\code{\link{km_nan}()},
+\code{\link{make_clust_col_name}()},
+\code{\link{make_clust_col}()},
+\code{\link{make_rand_cent}()}
+
+Other centroid_functions: 
+\code{\link{calc_clust_cent}()},
+\code{\link{calc_member_dist_cent}()}
 }
 \concept{centroid_functions}
 \concept{clustering_components}
+\concept{k_means functions}

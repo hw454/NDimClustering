@@ -5,76 +5,75 @@
 \title{Cluster the data using kmeans then minimising aic.}
 \usage{
 cluster_kmeans(
-  data_list,
-  iter_traits,
+  data_matrices,
   nclust = 10,
   max_dist = 10,
-  space_typ = "regular",
-  clust_typ = "basic",
   how_cents = "rand",
-  clust_prob_on = TRUE,
-  norm_typ = "F",
-  threshold = 1e-05,
-  narm = TRUE
+  bin_p_clust = TRUE,
+  threshold = 1e-05
 )
 }
 \arguments{
-\item{data_list}{List of the matrices of data.
+\item{data_matrices}{List of the matrices of data.
 Conatins the\:
-  * "beta" matrix of assocaition data
-  * "se" matrix of standard error data
-  * "pval" matrix of p-value data
+  * "beta" initial matrix of assocaition data
+  * "se" initial matrix of standard error data
+  * "pval" initial matrix of p-value data
+  * "trait_info" list of informations about the traits
+  * "beta_pc" reformatted matrix of assocaition data
+  * "se" reformatted matrix of standard error data
+  * "pval" reformatted matrix of p-value data
+  * "transform" matrix used for the pca transformation
   * Rows correspond to snps, columns to traits}
-
-\item{iter_traits}{- list of terms indicating the type of program.
-* "iter" - integer, (default 0)
-* "bp_on" - TRUE (default) if probability of scores is to be used.
-* "clust_prob_on" - TRUE\:default switch for using prob of being in cluster
-* "clust_typ" - default\:"basic", the clustering method to use.}
 
 \item{nclust}{The maximum number of clusters to consider. default\:10}
 
 \item{max_dist}{The maximum distance between any two points.}
-
-\item{space_typ}{The spatial structure of the data when clustering.
-If "angle" then the data is converted to angles. If "regular" the
-data is left the same.}
-
-\item{clust_typ}{String describing the clsutering method.
-* "basic" then find fixed number of clusters
-* "min" then minimise the aic}
 
 \item{how_cents}{How the centroids will be initialised. If "rand (default)"
 then the coordinates are created using a uniform distribution on the range
 of each axis. If "points" then the centroid coordinates are assign to
 nclust random points from the dataspace.}
 
-\item{clust_prob_on}{Bool switch. If TRUE (default) then cluster
+\item{bin_p_clust}{Bool switch. If TRUE (default) then cluster
 probability if used to weight the cluster scores.}
-
-\item{norm_typ}{The type of norm to be used for distance calculations.
-The default is the Froebenius norm "F".}
 
 \item{threshold}{The threshold for distance between cluster centres
 for clusters to be considered converged.}
-
-\item{narm}{Bool to indicate how to handle NaNs. If TRUE (default)
-NaNs are ignored in calculations.}
 }
 \value{
 clusters_df
 }
 \description{
-If space_typ == "angle" then data is converted to angles.
-  for i=1:(nr+1)
-     The points are clustered using [km_nan] and i clusters
-     find the aic for each cluster using [find_ic].
-  The set of clusters which minimises the aic is chosen.
-  The "clusters_df" dataframe of the cluster membership with columns\:
+1. Data is cropped to the complete cases.
+2. The points are clustered using a k-means clustering [km_nan].
+3. The data removed in the crop is assigned to the closest cluster.
+4. The "clusters_df" dataframe of the cluster membership with columns\:
     * "clust_num" the number of clusters
     * "clust_dist" the distance from the snp to the cluster centre
       (or distance between angles)
     * "clust_prob" probability the snp is in the cluster. Calculated
       using [calc_clust_prob].
+  clust_out = [clusters, clust_dist, centres].
+  clust_out$clusters is cluster_df.
+  The clust_dist dataframe has columns corresponding to the clusters,
+    the rows are the datapoints and each value is the distance from that
+    point to the cluster centre.
+  The centres dataframe has columns corresponding to the axis and the rows
+    corresponding to the clusters. Each row is the co-ordinate of the cluster
+    centroid.
+}
+\seealso{
+Other cluster_functions: 
+\code{\link{cluster_dbscan}()},
+\code{\link{cluster_kmeans_min}()},
+\code{\link{get_aic}()},
+\code{\link{km_nan}()}
+
+Other k_means: 
+\code{\link{cluster_kmeans_min}()},
+\code{\link{km_nan}()},
+\code{\link{make_rand_cent}()}
 }
 \concept{cluster_functions}
+\concept{k_means}

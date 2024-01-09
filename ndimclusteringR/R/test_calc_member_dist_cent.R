@@ -28,7 +28,10 @@ test_calc_member_dist_cent <- function() {
   }
   c_dist_rnd <- runif(nsnps, 0, 10)
   c_prob_rnd <- runif(nsnps, 0, 1)
-  c_num_rnd <- sample(nsnps, 1, nclust)
+  c_num_rnd <- sample.int(nclust,
+    size = nsnps,
+    replace = TRUE
+  )
   cluster_df <- data.frame(
     row.names = dummy_snps,
     clust_num = c_num_rnd,

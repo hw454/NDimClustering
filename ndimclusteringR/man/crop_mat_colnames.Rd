@@ -17,3 +17,13 @@ crop_mat_colnames(mat, num_rows, col_names)
 Return the matrix with row 1:num_rows
   and column names in col_names
 }
+\seealso{
+Other preconditioning_functions: 
+\code{\link{convert_mat_to_angle_mat}()},
+\code{\link{convert_point_to_angle}()},
+\code{\link{crop_mat_colnums}()},
+\code{\link{crop_matrices}()},
+\code{\link{reformat_data}()},
+\code{\link{rescale_by_end_col}()}
+}
+\concept{preconditioning_functions}

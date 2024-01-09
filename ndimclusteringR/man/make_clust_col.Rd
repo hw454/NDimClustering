@@ -2,24 +2,34 @@
 % Please edit documentation in R/make_clust_col.R
 \name{make_clust_col}
 \alias{make_clust_col}
-\title{Create a dataframe with column clust_i.}
+\title{Function for making the columns for clusters}
 \usage{
 make_clust_col(i, rows = character(), col_val = NA)
 }
 \arguments{
-\item{i}{- The number for the column label}
+\item{i}{the cluster number}
 
-\item{rows}{- The rows for the dataframe,
-defalut\: character() for an empty dataframe}
+\item{rows}{Optional input of the row names for the dataframe}
 
-\item{col_val}{Value for column, default\: NA}
-}
-\value{
-dataframe(Pi = numeric())
+\item{col_val}{Default value for the column. default \:NA}
 }
 \description{
-Create a dataframe with column clust_i.
+Function for making the columns for clusters
 }
-\details{
-i is the input number
+\seealso{
+Other cluster_labels: 
+\code{\link{make_clust_col_name}()}
+
+Other clustering_components: 
+\code{\link{calc_clust_cent}()},
+\code{\link{calc_clust_prob}()},
+\code{\link{calc_member_dist_cent}()},
+\code{\link{check_clust_cent}()},
+\code{\link{convert_mat_to_angle_mat}()},
+\code{\link{get_aic}()},
+\code{\link{km_nan}()},
+\code{\link{make_clust_col_name}()},
+\code{\link{make_rand_cent}()}
 }
+\concept{cluster_labels}
+\concept{clustering_components}

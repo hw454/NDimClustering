@@ -1,14 +1,10 @@
-#' make_clust_col_name
+#' Function for making the label for a cluster column
 #'
-#' @description Function for creating the cluster label.
-#'
-#' @param c_num integer for cluster number
-#'
-#' @return "clust_"c_num
-#'
-#' @family label_functions
+#' @param i the cluster number
 #'
 #' @export
-make_clust_col_name <- function(c_num) {
-  return(paste0("clust_", c_num))
+#' @family cluster_labels
+#' @family clustering_components
+make_clust_col_name <- function(i) {
+  return(paste0("clust_", i))
 }

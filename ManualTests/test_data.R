@@ -26,10 +26,11 @@ setup_algorithm_data(threshmul = threshmul,
                     thresh_norm = thresh_norm)
 
 setup_matrices(data_dir = data_dir,
-              test = test,
-              num_rows = num_rows,
-              num_trait0 = num_trait0,
-              num_trait1 = num_trait1)
+  test = test,
+  num_rows = num_rows,
+  num_trait0 = num_trait0,
+  num_trait1 = num_trait1
+)
 M2 <- data_matrices$beta
 M3 <- data_matrices$se
 M4 <- data_matrices$pval

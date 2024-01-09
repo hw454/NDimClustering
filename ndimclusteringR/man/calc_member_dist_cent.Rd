@@ -36,24 +36,24 @@ Calculate the distance between the point in "b_mat"
 }
 \seealso{
 Other distance_functions: 
-\code{\link{calc_clust_dist_col}()},
-\code{\link{calc_clust_dist}()},
-\code{\link{calc_pair_dist_df}()},
-\code{\link{calc_snp_cent_dist}()},
-\code{\link{max_dist_calc}()}
+\code{\link{calc_all_clust_dist}()},
+\code{\link{find_closest_clust_snp}()}
 
-Other centroid functions: 
-\code{\link{calc_clust_dist_col}()},
-\code{\link{calc_clust_dist}()},
-\code{\link{calc_snp_cent_dist}()}
+Other centroid_functions: 
+\code{\link{calc_clust_cent}()},
+\code{\link{check_clust_cent}()}
 
 Other clustering_components: 
-\code{\link{calc_clust_dist_col}()},
-\code{\link{calc_clust_dist}()},
-\code{\link{calc_snp_cent_dist}()},
+\code{\link{calc_clust_cent}()},
+\code{\link{calc_clust_prob}()},
 \code{\link{check_clust_cent}()},
-\code{\link{convert_mat_to_angle_mat}()}
+\code{\link{convert_mat_to_angle_mat}()},
+\code{\link{get_aic}()},
+\code{\link{km_nan}()},
+\code{\link{make_clust_col_name}()},
+\code{\link{make_clust_col}()},
+\code{\link{make_rand_cent}()}
 }
-\concept{centroid functions}
+\concept{centroid_functions}
 \concept{clustering_components}
 \concept{distance_functions}

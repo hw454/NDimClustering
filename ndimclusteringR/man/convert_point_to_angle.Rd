@@ -28,3 +28,13 @@ Convert the point co-ordinates to values corresponding
   vector.
   \deqn{\theta = \pi - \theta}
 }
+\seealso{
+Other preconditioning_functions: 
+\code{\link{convert_mat_to_angle_mat}()},
+\code{\link{crop_mat_colnames}()},
+\code{\link{crop_mat_colnums}()},
+\code{\link{crop_matrices}()},
+\code{\link{reformat_data}()},
+\code{\link{rescale_by_end_col}()}
+}
+\concept{preconditioning_functions}

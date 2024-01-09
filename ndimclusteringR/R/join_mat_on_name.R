@@ -8,7 +8,13 @@
 #' @return matrix combine the matrix named name in each list. Bound on columns.
 #'
 #' @export
+#'
+#' @family utility
 join_mat_on_name <- function(name, mat_list_a, mat_list_b) {
-  out <- cbind(mat_list_a[name], mat_list_b[name])
+  out <- cbind(
+    mat_list_a[[name]],
+    mat_list_b[[name]]
+  )
+  out <- out[, !duplicated(colnames(out), fromLast = TRUE)]
   return(out)
 }

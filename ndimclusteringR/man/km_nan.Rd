@@ -6,18 +6,19 @@
 \usage{
 km_nan(
   b_mat,
+  p_mat,
   nclust = 5,
   iter_max = 300,
   clust_threshold = 1e-05,
-  norm_typ = "F",
-  na_rm = TRUE,
-  prob_on = TRUE,
-  how_cents = "rand"
+  bin_p_clust = TRUE,
+  how_cents = "point"
 )
 }
 \arguments{
 \item{b_mat}{Matrix of the data, each row is a snp and the columns
 are the traits.}
+
+\item{p_mat}{matrix of p-values corresponding to the scores in b_mat}
 
 \item{nclust}{The number of clusters to allocate. default\:5}
 
@@ -27,13 +28,7 @@ convergence. default\:300}
 \item{clust_threshold}{The threshold for how close cluster
 centres need to be to be considered converged. default\:1e-5}
 
-\item{norm_typ}{The type of norm to be used in distance calculation.
-The default is the Froebenius norm "F".}
-
-\item{na_rm}{Bool to indicate how to deal with NaNs. If TRUE (default)
-then NaNs are ignored.}
-
-\item{prob_on}{Bool to indicate whether cluster probability is to be
+\item{bin_p_clust}{Bool to indicate whether cluster probability is to be
 assign. default\:TRUE}
 
 \item{how_cents}{How the centroids will be initialised. If "rand (default)"
@@ -65,3 +60,29 @@ whose columns are the traits and rows are the cluster numbers. Additional
 column "thresh_check" contains Bool indicating whether that cluster
 converged.
 }
+\seealso{
+Other k_means: 
+\code{\link{cluster_kmeans_min}()},
+\code{\link{cluster_kmeans}()},
+\code{\link{make_rand_cent}()}
+
+Other clustering_components: 
+\code{\link{calc_clust_cent}()},
+\code{\link{calc_clust_prob}()},
+\code{\link{calc_member_dist_cent}()},
+\code{\link{check_clust_cent}()},
+\code{\link{convert_mat_to_angle_mat}()},
+\code{\link{get_aic}()},
+\code{\link{make_clust_col_name}()},
+\code{\link{make_clust_col}()},
+\code{\link{make_rand_cent}()}
+
+Other cluster_functions: 
+\code{\link{cluster_dbscan}()},
+\code{\link{cluster_kmeans_min}()},
+\code{\link{cluster_kmeans}()},
+\code{\link{get_aic}()}
+}
+\concept{cluster_functions}
+\concept{clustering_components}
+\concept{k_means}

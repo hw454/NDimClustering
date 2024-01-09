@@ -17,6 +17,8 @@
 #'
 #' @return \eqn{\theta}
 #'
+#' @family preconditioning_functions
+#'
 #' @export
 convert_point_to_angle <- function(col, unit_mat, p) {
   # Convert the scores on the axis for the point
@@ -26,8 +28,8 @@ convert_point_to_angle <- function(col, unit_mat, p) {
   norm_x <- norm(p, type = "F")
   norm_y <- norm(unit_vec, type = "F")
   theta <- acos(dot_prod / (norm_x * norm_y))
-  if (theta > pi * 0.5) {
-    theta <- pi - theta
+  if (theta > pi) {
+    theta <- theta - pi
   }
   return(as.numeric(theta))
 }

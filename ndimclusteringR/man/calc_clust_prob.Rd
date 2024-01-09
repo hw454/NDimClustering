@@ -4,10 +4,10 @@
 \alias{calc_clust_prob}
 \title{Calculate the probability the snp is in the cluster}
 \usage{
-calc_clust_prob(d)
+calc_clust_prob(cluster_df)
 }
 \arguments{
-\item{d}{The snp distance to the cluster centre}
+\item{cluster_df}{The cluster dataframe.}
 }
 \value{
 p
@@ -16,10 +16,16 @@ p
 \deqn{p=\frac{1.0}{1.0+d}}
 }
 \seealso{
-Other cluster_properties: 
-\code{\link{calc_clust_ic}()},
-\code{\link{calc_sum_sq_clusts}()},
-\code{\link{calc_tot_within}()}
+Other clustering_components: 
+\code{\link{calc_clust_cent}()},
+\code{\link{calc_member_dist_cent}()},
+\code{\link{check_clust_cent}()},
+\code{\link{convert_mat_to_angle_mat}()},
+\code{\link{get_aic}()},
+\code{\link{km_nan}()},
+\code{\link{make_clust_col_name}()},
+\code{\link{make_clust_col}()},
+\code{\link{make_rand_cent}()}
 }
-\concept{cluster_properties}
+\concept{clustering_components}
 \concept{probability_functions}

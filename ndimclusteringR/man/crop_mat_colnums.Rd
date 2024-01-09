@@ -21,3 +21,13 @@ cropped matrix
 \description{
 Return the matrix with rows 1\:num_rows and columns col0\:col1
 }
+\seealso{
+Other preconditioning_functions: 
+\code{\link{convert_mat_to_angle_mat}()},
+\code{\link{convert_point_to_angle}()},
+\code{\link{crop_mat_colnames}()},
+\code{\link{crop_matrices}()},
+\code{\link{reformat_data}()},
+\code{\link{rescale_by_end_col}()}
+}
+\concept{preconditioning_functions}

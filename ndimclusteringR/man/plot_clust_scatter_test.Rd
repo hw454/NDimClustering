@@ -7,11 +7,13 @@
 plot_clust_scatter_test(
   cluster_df,
   b_mat,
-  se_mat,
   iter_traits,
+  c1,
+  c2,
   num_axis = 2,
   pw = 8,
-  ph = 4
+  ph = 4,
+  save_suffix = ""
 )
 }
 \arguments{
@@ -19,18 +21,23 @@ plot_clust_scatter_test(
 
 \item{b_mat}{The matrix of the score data}
 
-\item{se_mat}{The matrix of the standarad errors associated with the scores.}
-
 \item{iter_traits}{The iteration variables for the type of iteration.}
+
+\item{c1}{The column for the x-axis}
+
+\item{c2}{The column for the y-axis}
 
 \item{num_axis}{The number of trait axis, default\:0}
 
 \item{pw}{The plot width, default\:8}
 
 \item{ph}{The plot heigh, default\:4}
+
+\item{save_suffix}{String to add to plot save name. default \: ""}
 }
 \description{
 Colour by cluster number.
 The x and y axis are the assocation with the principal component
 The width and height of the errorbars are given by the standard error.
 }
+\concept{plotting_functions}

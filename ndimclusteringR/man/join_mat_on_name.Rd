@@ -21,3 +21,4 @@ matrix combine the matrix named name in each list. Bound on columns.
 Take the matrices with matching label name from each list
 and column bind them
 }
+\concept{utility}
