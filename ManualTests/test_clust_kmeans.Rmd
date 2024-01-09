@@ -2,7 +2,7 @@
 title: Testing Clustering methods.
 author: Hayley Wragg
 date: "21st Nov 2023"
-output: md_document
+output: html_document
 editor_options: 
   markdown: 
     wrap: sentence
