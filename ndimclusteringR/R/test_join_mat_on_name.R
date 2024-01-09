@@ -3,7 +3,7 @@
 #' @export
 #'
 #' @family tests
-test_join_matlist_on_name <- function() {
+test_join_mat_on_name <- function() {
   # Test whether the function for checking the NaNs in a column works.
   dummy_traits <- c("T1", "T2", "T3", "T4", "T5", "T6")
   dummy_snps <- c("rs35662", "rs301884", "rs69696",

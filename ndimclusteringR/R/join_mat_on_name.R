@@ -12,12 +12,8 @@
 #' @family utility
 join_mat_on_name <- function(name, mat_list_a, mat_list_b) {
   out <- cbind(
-    rn = rownames(mat_list_a[[name]]),
-    mat_list_a[[name]], mat_list_b[[name]],
-    row.names = NULL
-  )
-  out <- tibble::column_to_rownames(out,
-    var = "rn"
+    mat_list_a[[name]],
+    mat_list_b[[name]]
   )
   out <- out[, !duplicated(colnames(out), fromLast = TRUE)]
   return(out)
