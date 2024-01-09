@@ -55,24 +55,32 @@ cluster_dbscan <- function(data_matrices,
   b_mat_crop <- b_mat[crop_snp_list, ]
   p_mat_crop <- p_mat[crop_snp_list, ]
 
-  # Cluster the data
+  # CLUSTER USING DBSCAN
   clust_dbscan <- dbscan::dbscan(b_mat_crop, eps = eps)
   cluster_df <- data.frame(row.names = crop_snp_list,
-    clust_num = clust_dbscan$cluster
+    clust_num = as.integer(clust_dbscan$cluster)
   )
   # Find the number of clusters identified
   nclust <- length(unique(cluster_df$clust_num))
+
+  # CALCULATIONS ON THE CLUSTERING OUTPUT
   # Calculate cluster centres
+  # - Not needed for clustering but to assign any unassigned points and
+  #   to ensure the output is the same structure as kmeans.
   centroids_df <- calc_clust_cent(cluster_df,
     b_mat = b_mat_crop,
     p_mat = p_mat_crop,
     bin_p_clust = bin_p_clust
   )
   # Calculate cluster distances
+  # - Not needed for clustering but to ensure the output is the same
+  #   structure as kmeans.
   clust_dist_df <- calc_all_clust_dist(centroids_df,
     b_mat = b_mat_crop
   )
-  # Add member distance to clust dataframe
+  # Add the distance from each point to it's assigned cluster
+  # centroid to the cluster dataframe.
+  # - to ensure the output has same structure as other clustering algoritihms.
   mem_dist_list <- lapply(crop_snp_list,
     calc_member_dist_cent,
     b_mat = b_mat_crop,
@@ -89,10 +97,13 @@ cluster_dbscan <- function(data_matrices,
   cluster_df <- tibble::column_to_rownames(cluster_df, var = "rn")
   cluster_df$clust_prob <- calc_clust_prob(cluster_df)
   # Assign all cluster info to clust_out
-  clust_out <- list("clusters" = cluster_df,
+  clust_out <- list(
+    "clusters" = cluster_df,
     "centres" = centroids_df,
     "clust_dist" = clust_dist_df
   )
+
+  # ASSIGN THE REMAINING POINTS TO CLUSTERS
   # Cluster number identification for each observation
   nan_snp_list <- lapply(setdiff(rownames(b_mat), crop_snp_list),
                          find_closest_clust_snp,
