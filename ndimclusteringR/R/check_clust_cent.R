@@ -38,7 +38,7 @@ check_clust_cent <- function(c_num, clustnum_df, b_mat, centroids_df, p_mat,
 ) {
   sub_snp_list <- which(clustnum_df == c_num)
   snp_scores <- b_mat[sub_snp_list, ]
-  snp_ps <- p_mat[sub_snp_list, ]
+  snp_ps <- -log10(p_mat[sub_snp_list, ])
   nterms <- length(sub_snp_list)
   # Initialise the centroids checking dataframe
   new_centroids_df <- centroids_df
@@ -52,8 +52,8 @@ check_clust_cent <- function(c_num, clustnum_df, b_mat, centroids_df, p_mat,
     } else {
       if (bin_p_clust) {
         for (col in colnames(snp_scores)){
-          sp_col <- snp_scores[col] * (1 - snp_ps[col])
-          tot_ps <- sum(1 - snp_ps[col])
+          sp_col <- snp_scores[col] * snp_ps[col]
+          tot_ps <- sum(snp_ps[col])
           new_centroids_df[c_num, col] <- sp_col / tot_ps
         }
       } else {
