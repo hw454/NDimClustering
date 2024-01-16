@@ -14,12 +14,11 @@ form_beta_corr <- function(n_path, d, rand_shift, a_list, b_list) {
 create_pc <- function(i) {
   return(paste0("PC", i))
 }
-create_test_data <- function(d = 50, num_path = 0) {
-  np <- num_path + 1
+create_test_data <- function(d = 50, np = 0) {
   print(paste("Create test data with", np, "pathways"))
-  iter_dir <- paste0("paths", num_path, "/")
+  iter_dir <- paste0("paths", np, "/")
   rand_mat <- matrix(runif(d * d, -1, 1), nrow = d)
-  if (num_path > 0) {
+  if (np > 0) {
     a_list <- runif(np, 0, 3)
     b_list <- runif(np, 0, 0)
     mat_list <- lapply(1:np,
@@ -29,13 +28,15 @@ create_test_data <- function(d = 50, num_path = 0) {
                        a_list = a_list,
                        b_list = b_list)
     dummy_beta <- Reduce(rbind, mat_list)
+    dummy_se <- matrix(runif(np * d * d),
+                       nrow = np * d)
+    dummy_p <- matrix(runif(np * d * d, 0, 1),
+                      nrow = np * d)
   } else {
     dummy_beta <- rand_mat
+    dummy_se <- rand_mat
+    dummy_p <- rand_mat
   }
-  dummy_se <- matrix(runif(np * d * d, 0, 1),
-                     nrow = np * d)
-  dummy_p <- matrix(runif(np * d * d),
-                    nrow = np * d)
   dummy_beta <- number_row_col_names(dummy_beta)
   dummy_se <- number_row_col_names(dummy_se)
   dummy_p <- number_row_col_names(dummy_p)
@@ -61,7 +62,6 @@ create_test_data <- function(d = 50, num_path = 0) {
   if (!file.exists(paste0(maindir, iter_dir))) {
     dir.create(paste0(maindir, iter_dir))
   }
-  print(dummy_beta)
   write.csv(dummy_beta,
     paste0(maindir, iter_dir, betafilename),
     row.names = TRUE,
@@ -92,7 +92,7 @@ create_test_data <- function(d = 50, num_path = 0) {
   )
 }
 
-num_path_list <- 0:4
+num_path_list <- 0:5
 for (np in num_path_list){
-  create_test_data(num_path = np)
+  create_test_data(np = np)
 }
