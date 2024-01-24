@@ -1,3 +1,5 @@
+
+
 number_row_col_names <- function(mat) {
   colnames(mat) <- seq_len(ncol(mat))
   rownames(mat) <- seq_len(nrow(mat))
@@ -17,16 +19,20 @@ create_pc <- function(i) {
 create_test_data <- function(d = 50, np = 0) {
   print(paste("Create test data with", np, "pathways"))
   iter_dir <- paste0("paths", np, "/")
-  rand_mat <- matrix(runif(d * d, -1, 1), nrow = d)
+  rand_mat <- matrix(runif(d * d, -10, 10), nrow = d)
   if (np > 0) {
-    a_list <- runif(np, 0, 3)
-    b_list <- runif(np, 0, 0)
+    a_list <- seq(from = 2,
+                  to = -2,
+                  length.out = np)
+    b_list <- seq(from = 2*50,
+                  to = 0,
+                  length.out = np)
     mat_list <- lapply(1:np,
                        form_beta_corr,
                        d = d,
                        rand_shift = rand_mat,
-                       a_list = a_list,
-                       b_list = b_list)
+                       a_list = sample(a_list),
+                       b_list = sample(b_list))
     dummy_beta <- Reduce(rbind, mat_list)
     dummy_se <- matrix(runif(np * d * d),
                        nrow = np * d)
@@ -51,7 +57,7 @@ create_test_data <- function(d = 50, np = 0) {
   cat_list[1] <- "Outcome"
   trait_info <- list("pheno_category" = cat_list,
                      "phenotype" = trait_list)
-  maindir <- "TestData/"
+  maindir <- "TestData_moveintercept/"
   betafilename <- "unstdBeta_df.csv"
   sefilename <- "unstdSE_df.csv"
   pvalfilename <- "pval_df.csv"
