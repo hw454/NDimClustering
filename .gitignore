@@ -36,11 +36,9 @@ rsconnect/
 *.Rproj
 *.txt
 *.pdf
-*.csv
 
 # PYTHON FILES
 # Log and cache
 *.pycache
 *.log
-basic_bpOFF_clustprobOFF/*
 *.png

@@ -35,9 +35,9 @@ calc_clust_cent <- function(clustnum_df, b_mat, p_mat, bin_p_clust = TRUE
     } else {
       b_clust <- b_mat[clust_snps, ]
       if (bin_p_clust) {
-        p_clust <- p_mat[clust_snps, ]
+        p_clust <- - log10(p_mat[clust_snps, ])
         tot <- colSums(p_clust)
-        scores <- b_clust * p_clust
+        scores <- b_clust * -log10(p_clust)
         cent <- colSums(scores) / tot
       } else {
         cent <- colMeans(b_clust)
