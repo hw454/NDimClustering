@@ -65,7 +65,7 @@ for row in duplicates:
     trait_rem_ids = trait_rem_ids + rem_traits.id
 phe_df = phe_df.drop("id" in trait_rem_ids)
 
-print(phe)
+print(phe_df)
 
 # Filter the traits by sample size
 # Filter by high correlation to BMI r>0.75
