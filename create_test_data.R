@@ -5,11 +5,12 @@ number_row_col_names <- function(mat) {
   rownames(mat) <- seq_len(nrow(mat))
   return(mat)
 }
-form_beta_corr <- function(n_path, d, rand_shift, a_list, b_list) {
-  a <- a_list[n_path]
-  b <- b_list[n_path]
+form_beta_corr <- function(n_path, d, a_list, b_list) {
+  rand_mat <- matrix(runif(d * d, -1, 1), nrow = d)
+  a <-  2.0 #a_list[n_path]
+  b <-  b_list[n_path]
   x_mat <- matrix(rep(1:d, times = d), nrow = d)
-  beta <- (a * x_mat + b) + rand_shift
+  beta <- (a * x_mat + b) + rand_mat
   beta[, 1] <- 1:d
   return(beta)
 }
@@ -19,18 +20,16 @@ create_pc <- function(i) {
 create_test_data <- function(d = 50, np = 0) {
   print(paste("Create test data with", np, "pathways"))
   iter_dir <- paste0("paths", np, "/")
-  rand_mat <- matrix(runif(d * d, -10, 10), nrow = d)
   if (np > 0) {
     a_list <- seq(from = 2,
                   to = -2,
                   length.out = np)
-    b_list <- seq(from = 2*50,
-                  to = 0,
+    b_list <- seq(from = 0,
+                  to = 100,
                   length.out = np)
     mat_list <- lapply(1:np,
                        form_beta_corr,
                        d = d,
-                       rand_shift = rand_mat,
                        a_list = sample(a_list),
                        b_list = sample(b_list))
     dummy_beta <- Reduce(rbind, mat_list)
@@ -39,6 +38,7 @@ create_test_data <- function(d = 50, np = 0) {
     dummy_p <- matrix(runif(np * d * d, 0, 1),
                       nrow = np * d)
   } else {
+    rand_mat <- matrix(runif(d * d, -10, 10), nrow = d)
     dummy_beta <- rand_mat
     dummy_se <- rand_mat
     dummy_p <- rand_mat
@@ -57,7 +57,7 @@ create_test_data <- function(d = 50, np = 0) {
   cat_list[1] <- "Outcome"
   trait_info <- list("pheno_category" = cat_list,
                      "phenotype" = trait_list)
-  maindir <- "TestData_moveintercept/"
+  maindir <- "TestData_parallel/"
   betafilename <- "unstdBeta_df.csv"
   sefilename <- "unstdSE_df.csv"
   pvalfilename <- "pval_df.csv"
