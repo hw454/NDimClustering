@@ -7,7 +7,7 @@ number_row_col_names <- function(mat) {
 }
 form_beta_corr <- function(n_path, d, a_list, b_list) {
   rand_mat <- matrix(runif(d * d, -1, 1), nrow = d)
-  a <-  2.0 #a_list[n_path]
+  a <-  2.0 # uncomment to switch to mixed parallel & radial. a_list[n_path]
   b <-  b_list[n_path]
   x_mat <- matrix(rep(1:d, times = d), nrow = d)
   beta <- (a * x_mat + b) + rand_mat
@@ -38,7 +38,7 @@ create_test_data <- function(d = 50, np = 0) {
     dummy_p <- matrix(runif(np * d * d, 0, 1),
                       nrow = np * d)
   } else {
-    rand_mat <- matrix(runif(d * d, -10, 10), nrow = d)
+    rand_mat <- matrix(runif(d * d, -20, 20), nrow = d)
     dummy_beta <- rand_mat
     dummy_se <- rand_mat
     dummy_p <- rand_mat
