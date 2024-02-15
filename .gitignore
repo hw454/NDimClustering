@@ -42,3 +42,8 @@ rsconnect/
 *.pycache
 *.log
 *.png
+ManualTests/compare_clustering_iterate_origin_files/MathJax.js.download
+ManualTests/compare_clustering_iterate_origin_files/require.min.js.download
+ManualTests/compare_clustering_iterate_origin_files/vega-embed@6
+ManualTests/compare_clustering_iterate_origin_files/vega-lite@5.16.3
+ManualTests/compare_clustering_iterate_origin_files/vega@5
